@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
-    
+  <div class="joker-page-layout-main">
+    main
   </div>
 </template>

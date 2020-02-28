@@ -1,7 +1,5 @@
 <template>
-  <div class="joker-page-layout-breadcrumbs">
-    breadcrumbs
-  </div>
+  <div class="joker-page-404">404</div>
 </template>
 
 <script>

@@ -1,8 +1,6 @@
 <template>
   <div class="joker-container">
-    <div class="joker-sidebar">
-      <sidebar/>
-    </div>
+    <sidebar/>
     <div class="joker-main">
       <router-view/>
     </div>
@@ -11,7 +9,7 @@
 
 <script>
 import Main from './Main';
-import Sidebar from './Sidebar';
+import sidebar from './Sidebar';
 export default {
   components:{
     Main,
