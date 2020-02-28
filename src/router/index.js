@@ -6,6 +6,16 @@ import Layout from '@/page/layout';
 Vue.use(Router)
 // 默认路由表
 const staticRouteMap = [
+  // 登录页
+  {
+    path: '/login',
+    name: 'login',
+    hide: true,
+    meta: {
+      title: 'Login'
+    },
+    component: () => import('@/page/function/login.vue')
+  },
   // 默认页
   {
     path: '/',
