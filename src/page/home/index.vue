@@ -1,6 +1,6 @@
 <template>
-  <div class="joker-page-layout-breadcrumbs">
-    breadcrumbs
+  <div class="joker-page-home">
+    home
   </div>
 </template>
 
