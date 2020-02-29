@@ -14,25 +14,25 @@
       <el-submenu v-for="(item) in allroutes" :key="item.path" :index="item.path">
         <template slot="title">
             <i :class="['title-icon iconfont',item.icon?item.icon:'not-icon']"></i>
-            <span slot="title">{{item.title}}</span>
+            <span slot="title">{{item.meta.title}}</span>
         </template>
         <template v-for="(ite) in item.children" >
           <el-submenu v-if="ite.children.length>0" :key="ite.path" :index="ite.path">
             <template slot="title">
               <i :class="['title-icon iconfont',ite.icon?item.icon:'not-icon']"></i>
-              {{ite.title}}
+              {{ite.meta.title}}
             </template>
             <router-link v-for="(it) in ite.children" :key="it.path" :to="it.path">
               <el-menu-item :index="it.path">
                   <i :class="['title-icon iconfont',it.icon?it.icon:'not-icon']"></i>
-                  {{it.title}}
+                  {{it.meta.title}}
               </el-menu-item>
             </router-link>
           </el-submenu>
           <router-link v-else :key="ite.path" :to="ite.path">
             <el-menu-item :index="ite.path">
                 <i :class="['title-icon iconfont',ite.icon?ite.icon:'not-icon']"></i>
-                {{ite.title}}
+                {{ite.meta.title}}
             </el-menu-item>
           </router-link>
         </template>

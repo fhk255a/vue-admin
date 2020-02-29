@@ -5,25 +5,26 @@ const routerList = [
     name: 'HelloWorld',
     component: Layout,
     icon:'icon-shangpingouwudai',
-    title:'商品模块',
-		redirect: '/product/list',
+    redirect: '/product/list',
+    meta:{title:'商品模块'},
     children:[
       {
         path:'list',
         title:'商品列表模块',
         name:'product/list',
         component: () => import('@/page/product/index.vue'),
+        meta:{title:'商品列表'},
       },
       {
         path:'listCofig',
-        title:'商品列表模块',
         name:'product/listCofig',
         component: () => import('@/page/product/index.vue'),
+        meta:{title:'商品列表模块'},
         children:[
           {
             path:'listItem',
-            title:'商品列表再列表',
             name:'product/listCofig/listItem',
+            meta:{title:'商品列表模块再列表'},
             component: () => import('@/page/product/index.vue'),  
           },
         ]
@@ -35,13 +36,14 @@ const routerList = [
     name: 'order',
     component: Layout,
 		redirect: '/order/list',
-    title:'订单模块',
     icon:'icon-biaodan',
+    meta:{title:'订单模块'},
     children:[
       {
         path:'list',
         title:'订单列表',
         name:'order/list',
+        meta:{title:'订单列表'},
         component: () => import('@/page/order/index.vue'),
       },
     ]

@@ -4,7 +4,9 @@
       <Menu/>
     </div>
     <div class="joker-layout-container">
-      <div class="joker-layout-header">Header</div>
+      <div class="joker-layout-header">
+        <Breadcrumb/>
+      </div>
       <div class="joker-layout-main">
         <router-view/>
       </div>
@@ -13,10 +15,12 @@
 </template>
 
 <script>
+import Breadcrumb from './Breadcrumbs';
 import sidebar from './Sidebar';
 import Menu from './Mennu';
 export default {
   components:{
+    Breadcrumb,
     sidebar,
     Menu
   }
@@ -45,6 +49,7 @@ export default {
       right: 0;
       background:#f3f3f3;
       height: 40px;
+      line-height: 20px;
       padding:10px 20px;
       top:0;
       overflow: hidden;
