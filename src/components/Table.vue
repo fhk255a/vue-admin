@@ -6,7 +6,7 @@
           <template v-if="item.set">
             <!-- 回调给设置了set的 :scope="tableItem.row" -->
             <a class="j-table-func" @click="setItem(tableItem.row)">
-              <slot :scope="tableItem.row" :name="item.value" />
+              <slot :index="tableItem.$index" :scope="{data:tableItem.row,index:tableItem.$index}" :name="item.value" />
             </a>
           </template>
           <!-- 默认情况直接展示值就好了 -->

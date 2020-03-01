@@ -15,22 +15,22 @@
         <template slot="mainImage" slot-scope="row">
           <div class="product-img">
             <img class="img" 
-            @click="$store.dispatch('imgDialog',{status:true,img:row.scope.mainImage})" 
-            :src="row.scope.mainImage" />
+            @click="$store.dispatch('imgDialog',{status:true,img:row.scope.data.mainImage})" 
+            :src="row.scope.data.mainImage" />
           </div>
         </template>
         <!-- 状态 -->
         <template slot="status" slot-scope="row">
           <div>
-            <el-switch @change="changeStatus(row.scope)" v-model="row.scope.status"></el-switch>
+            <el-switch @change="changeStatus(row.scope)" v-model="row.scope.data.status"></el-switch>
           </div>
         </template>
         <!-- 操作 -->
         <template slot="set" slot-scope="row">
           <div>
-            <span class="icon-btn iconfont icon-bianjiqianbixieshuru" @click="view(row.scope)"></span>
+            <span class="icon-btn iconfont icon-bianjiqianbixieshuru" @click="view(row.scope.data)"></span>
             <span class="icon-btn iconfont icon-shanchu" @click="remove(row.scope)"></span>
-            <span class="icon-btn iconfont icon-qushuchakanshuxing" @click="set(row.scope)"></span>
+            <span class="icon-btn iconfont icon-qushuchakanshuxing" @click="set(row.scope.data)"></span>
           </div>
         </template>
       </Table>
@@ -73,8 +73,8 @@ export default {
     },
     // 切换状态
     changeStatus(item){
-      this.notify(`<span style="color:#070f14">[ ${item.id} ]</span>
-       的状态改为 <span style="color:#409EFF">"${item.status}"</span>`);
+      this.notify(`<span style="color:#070f14">[ ${item.data.id} ]</span>
+       的状态改为 <span style="color:#409EFF">"${item.data.status}"</span>`);
     },
     search(from){
       this.header = from;
@@ -94,10 +94,24 @@ export default {
       console.log('remove',row);
     },
     remove(row){
-      console.log('remove',row);
+      this.$confirm(`是否删除<span style="color:#409EFF">[ ${row.data.id} ]</span>?`, '提示', {
+        confirmButtonText: '确定',
+        dangerouslyUseHTMLString: true,
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.notify(`<span style="color:#070f14">你手滑删除了商品 <span style="color:#409EFF">[${row.data.id}]</span></span>`);
+        this.tableList.splice(row.index,1);
+      }).catch(() => {
+        this.notify('您点了取消');          
+      });
+      this.tableList[row.index]
     },
     view(row){
-      console.log('view',row);
+      this.$router.push({
+        path:`/product/details/${row.id}`,
+        query:row
+      })
     }
   },
   data(){

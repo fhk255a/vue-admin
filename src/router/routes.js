@@ -16,6 +16,14 @@ const routerList = [
         meta:{title:'商品列表'},
       },
       {
+        path:'details/:id',
+        title:'商品详情',
+        name:'product/details',
+        isHide:true,
+        component: () => import('@/page/product/details/index.vue'),
+        meta:{title:'商品详情'},
+      },
+      {
         path:'listCofig',
         name:'product/listCofig',
         component: () => import('@/page/product/index.vue'),

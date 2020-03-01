@@ -1,6 +1,9 @@
+
+// 功能性数据
 const func = {
   state:{
-    collapse:false,
+    // 菜单的显示与隐藏
+    collapse:false, 
   },
   mutations: {
     changeCollapse(state,collapse){

@@ -6,22 +6,22 @@
       <Table :tableList="tableList" :config="tableConfig">
         <!-- 创建时间 -->
         <template slot-scope="row" slot="createTime">
-          {{$timer(row.scope.createTime)}}
+          {{$timer(row.scope.data.createTime)}}
         </template>
         <!-- 订单状态 -->
         <template slot-scope="row" slot="orderStatus">
-          {{searchConfig[4].data[searchConfig[4].data.findIndex(item=>item.value == row.scope.orderStatus)].label}}
+          {{searchConfig[4].data[searchConfig[4].data.findIndex(item=>item.value == row.scope.data.orderStatus)].label}}
         </template>
         <!-- 支付状态 -->
         <template slot-scope="row" slot="payStatus">
-          {{row.scope.payStatus == 1? '已支付':'未支付'}}
+          {{row.scope.data.payStatus == 1? '已支付':'未支付'}}
         </template>
         <!-- 操作 -->
         <template slot-scope="row" slot="set">
-          <span class="set-text" @click="viewOrder(row.scope)">
+          <span class="set-text" @click="viewOrder(row.scope.data)">
             查看订单
           </span>
-          <span class="set-text" v-if="row.scope.orderStatus != 'CANCEL'" @click="cancelOrder(row.scope)">
+          <span class="set-text" v-if="row.scope.data.orderStatus != 'CANCEL'" @click="cancelOrder(row.scope.data)">
             取消订单
           </span>
         </template>

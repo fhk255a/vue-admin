@@ -67,7 +67,7 @@
       <Table :tableList="orderInfo.packageList[0].erpPackageDetailInfoDtos" :config="tableConfig">
         <template slot-scope="row" slot="image">
           <div style="width:80px;height:80px">
-            <img class="img" :src="row.scope.image" @click="$store.dispatch('imgDialog',{status:true,img:row.scope.image})" alt="">
+            <img class="img" :src="row.scope.data.image" @click="$store.dispatch('imgDialog',{status:true,img:row.scope.data.image})" alt="">
           </div>
         </template>
       </Table>
