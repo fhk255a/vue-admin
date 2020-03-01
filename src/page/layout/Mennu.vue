@@ -1,7 +1,8 @@
 <template>
   <div class="joker-component-menu">
+    <div class="logo" v-show="!isCollapse">LOGO</div>
     <p class="open" @click="isCollapse = !isCollapse">open</p>
-    <el-menu class="el-menu-vertical" 
+    <el-menu class="joker-menu el-menu-vertical" 
       :collapse="isCollapse"
       :unique-opened="true"  
       :default-active="$route.path"
@@ -9,12 +10,12 @@
       <!-- 
         1、有子集的菜单   1->[1-1,1-2,1-3]
         2、无子集 或者 只有自己一个菜单 1->[1-1]
+        3、只做了3层 超过3层可优化成递归组件 但是这里用不上。
        -->
-      <div class="logo" v-show="!isCollapse">LOGO</div>
       <el-submenu v-for="(item) in allroutes" :key="item.path" :index="item.path">
         <template slot="title">
-            <i :class="['title-icon iconfont',item.icon?item.icon:'not-icon']"></i>
-            <span slot="title">{{item.meta.title}}</span>
+          <i :class="['title-icon iconfont',item.icon?item.icon:'not-icon']"></i>
+          <span slot="title">{{item.meta.title}}</span>
         </template>
         <template v-for="(ite) in item.children" >
           <el-submenu v-if="ite.children.length>0" :key="ite.path" :index="ite.path">
@@ -23,16 +24,16 @@
               {{ite.meta.title}}
             </template>
             <router-link v-for="(it) in ite.children" :key="it.path" :to="it.path">
-              <el-menu-item :index="it.path">
-                  <i :class="['title-icon iconfont',it.icon?it.icon:'not-icon']"></i>
-                  {{it.meta.title}}
+              <el-menu-item :index="it.path" v-if="!it.isHide">
+                <i :class="['title-icon iconfont',it.icon?it.icon:'not-icon']"></i>
+                {{it.meta.title}}
               </el-menu-item>
             </router-link>
           </el-submenu>
           <router-link v-else :key="ite.path" :to="ite.path">
-            <el-menu-item :index="ite.path">
-                <i :class="['title-icon iconfont',ite.icon?ite.icon:'not-icon']"></i>
-                {{ite.meta.title}}
+            <el-menu-item :index="ite.path" v-if="!ite.isHide">
+              <i :class="['title-icon iconfont',ite.icon?ite.icon:'not-icon']"></i>
+              {{ite.meta.title}}
             </el-menu-item>
           </router-link>
         </template>
@@ -72,14 +73,19 @@ export default {
 
 <style lang="scss">
 .el-menu-vertical:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 100%;
+  width: 240px;
+}
+.joler-menu{
+  border-right:0;
 }
 .joker-component-menu{
   background: #070f14;
+  overflow-x: hidden;
   height: 100%;
+  overflow-y: scroll;
   .el-menu{
     background: #070f14;
+    border-right:0;
   }    
 }
 .open{

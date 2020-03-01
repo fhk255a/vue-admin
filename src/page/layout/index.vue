@@ -11,17 +11,22 @@
         <router-view/>
       </div>
     </div>
+    <el-dialog
+      :visible.sync="$store.state.dialog.bigImg.dialog"
+      width="400px">
+      <div style="width:100%;height:100%">
+        <img class="img" :src="$store.state.dialog.bigImg.img" alt="">
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Breadcrumb from './Breadcrumbs';
-import sidebar from './Sidebar';
 import Menu from './Mennu';
 export default {
   components:{
     Breadcrumb,
-    sidebar,
     Menu
   }
 }
@@ -33,13 +38,16 @@ export default {
     width: 100%;
     height: 100%;
   .joker-layout-sidebar {
+    max-height: 100vh;
+    overflow: hidden;
   }
   
   .joker-layout-container {
     flex:1;
-    background-color: #fff;
-    min-height: 100vh;
+    background-color: #fff; 
     color: #333;
+    overflow-y: scroll;
+    max-height: 100vh;
     position: relative;
     .joker-layout-header{
       border-bottom: 1px solid #ddd;

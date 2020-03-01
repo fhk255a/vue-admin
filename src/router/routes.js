@@ -46,6 +46,14 @@ const routerList = [
         meta:{title:'订单列表'},
         component: () => import('@/page/order/index.vue'),
       },
+      {
+        path:'details/:id',
+        title:'订单列表',
+        isHide:true,
+        name:'order/details',
+        meta:{title:'订单详情页'},
+        component: () => import('@/page/order/details/index.vue'),
+      },
     ]
   }
 ]

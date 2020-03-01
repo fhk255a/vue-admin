@@ -25,9 +25,6 @@ export default {
       return this.$route.matched;
     },
   },
-  mounted(){
-    console.log(this.$route.path)
-  }
 }
 </script>
 

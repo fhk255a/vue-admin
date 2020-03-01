@@ -1,2 +1,39 @@
 #app {
+  height: 100vh;
+  .mb-20{
+    margin-bottom: 20px;
+  }
+  .el-switch.is-checked .el-switch__core{
+    border-color: #070f14;
+    background-color: #070f14
+  }
+  .icon-btn{
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  // 默认图片
+  .img{
+    width: 100%;
+    cursor: pointer;
+    height: 100%;
+  }
+  .set-text{
+    color:#409EFF;
+    text-decoration: underline;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  // 修改滚动条属性
+  ::-webkit-scrollbar{width:3px;}
+  ::-webkit-scrollbar-track{background-color: #fff;}
+  ::-webkit-scrollbar-thumb{background-color: #070f14;}
+  ::-webkit-scrollbar-thumb:hover {background-color: #070f14}
+  ::-webkit-scrollbar-thumb:active {background-color: #070f14}
+}
+// notify展示框
+.el-notification__content .notify-list{
+  border-top: 1px solid #eee;
+  margin-top: 10px;
+  padding-top: 10px;
+  color: #333;
 }

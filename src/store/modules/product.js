@@ -1,6 +1,7 @@
+import PRODUCT from '../data/product';
 const product = {
   state: {
-    list:[],
+    list:PRODUCT,
   },
   mutations: {
     changeProductList(state,list){
