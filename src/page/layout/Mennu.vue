@@ -1,9 +1,8 @@
 <template>
   <div class="joker-component-menu">
-    <div class="logo" v-show="!isCollapse">LOGO</div>
-    <p class="open" @click="isCollapse = !isCollapse">open</p>
+    <div class="logo" v-show="!$store.state.func.collapse">LOGO</div>
     <el-menu class="joker-menu el-menu-vertical" 
-      :collapse="isCollapse"
+      :collapse="$store.state.func.collapse"
       :unique-opened="true"  
       :default-active="$route.path"
     > 
@@ -47,7 +46,6 @@ import routes from '@/router/routes';
 export default {
   data(){
     return{
-      isCollapse:false,
       allroutes:[], // 默认路由表
     }
   },

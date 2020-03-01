@@ -5,7 +5,10 @@
     </div>
     <div class="joker-layout-container">
       <div class="joker-layout-header">
-        <Breadcrumb/>
+        <!-- 菜单缩放开关 -->
+        <div class="joker-layout-header-item collapse-btn iconfont icon-biaodan2" @click="toggleCollapse"></div>
+        <!-- 面包屑 -->
+        <Breadcrumb class="joker-layout-header-item"/>
       </div>
       <div class="joker-layout-main">
         <router-view/>
@@ -28,6 +31,12 @@ export default {
   components:{
     Breadcrumb,
     Menu
+  },
+  methods:{
+    // 切换菜单的状态
+    toggleCollapse(){
+      this.$store.dispatch('changeCollapse',!this.$store.state.func.collapse);
+    }
   }
 }
 </script>
@@ -61,6 +70,14 @@ export default {
       padding:10px 20px;
       top:0;
       overflow: hidden;
+      .joker-layout-header-item{
+        float: left;
+        margin-right: 20px;
+      }
+      .collapse-btn{
+        font-size: 24px;
+        cursor: pointer;
+      }
     }
     .joker-layout-main{
       padding:20px;
