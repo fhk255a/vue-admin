@@ -12,6 +12,7 @@ const routerList = [
         path:'list',
         title:'商品列表模块',
         name:'product/list',
+        icon:'icon-chanpin',
         component: () => import('@/page/product/index.vue'),
         meta:{title:'商品列表'},
       },
@@ -27,6 +28,7 @@ const routerList = [
         path:'shop',
         title:'店铺列表',
         name:'product/shop',
+        icon:'icon-dianpu',
         component: () => import('@/page/product/shop/index.vue'),
         meta:{title:'店铺列表'},
       },
@@ -43,6 +45,7 @@ const routerList = [
       {
         path:'list',
         title:'订单列表',
+        icon:'icon-biaodan',
         name:'order/list',
         meta:{title:'订单列表'},
         component: () => import('@/page/order/index.vue'),
