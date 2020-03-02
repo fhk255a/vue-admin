@@ -1,6 +1,6 @@
 <template>
   <div class="joker-page-product">
-    <Search-form @search="search" ref="searchForm" :data="searchConfig" :header="header" :btns="true" >
+    <Search-form @search="search" ref="searchForm" :config="searchConfig" :header="header" :btns="true" >
       <template slot="btns" slot-scope="row">
         <div class="joker-form-item" >
           <el-button class="j-btn" @click="$refs.searchForm.search()">查询</el-button>
@@ -110,7 +110,6 @@ export default {
     view(row){
       this.$router.push({
         path:`/product/details/${row.id}`,
-        query:row
       })
     }
   },

@@ -4,7 +4,7 @@
       <Menu/>
     </div>
     <div class="joker-layout-container">
-      <div class="joker-layout-header">
+      <div class="joker-layout-header" :style="{left:!$store.state.func.collapse?'240px':'64px'}">
         <!-- 菜单缩放开关 -->
         <div class="joker-layout-header-item collapse-btn iconfont icon-biaodan2" @click="toggleCollapse"></div>
         <!-- 面包屑 -->
@@ -61,7 +61,8 @@ export default {
     .joker-layout-header{
       border-bottom: 1px solid #ddd;
       padding:10px;
-      position: absolute;
+      z-index: 99;
+      position: fixed;
       left: 0;
       right: 0;
       background:#f3f3f3;

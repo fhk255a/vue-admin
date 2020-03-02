@@ -1,6 +1,6 @@
 <template>
   <div class="joker-page-order">
-    <Search-form @search="search" ref="searchForm" :data="searchConfig" :header="header"/>
+    <Search-form @search="search" ref="searchForm" :config="searchConfig" :header="header"/>
     <div class="mb-20"/>
     <Container>
       <Table :tableList="tableList" :config="tableConfig">

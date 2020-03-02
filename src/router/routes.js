@@ -24,19 +24,12 @@ const routerList = [
         meta:{title:'商品详情'},
       },
       {
-        path:'listCofig',
-        name:'product/listCofig',
-        component: () => import('@/page/product/index.vue'),
-        meta:{title:'商品列表模块'},
-        children:[
-          {
-            path:'listItem',
-            name:'product/listCofig/listItem',
-            meta:{title:'商品列表模块再列表'},
-            component: () => import('@/page/product/index.vue'),  
-          },
-        ]
-      }
+        path:'shop',
+        title:'店铺列表',
+        name:'product/shop',
+        component: () => import('@/page/product/shop/index.vue'),
+        meta:{title:'店铺列表'},
+      },
     ]
   },
   {

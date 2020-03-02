@@ -1,6 +1,11 @@
 <template>
   <div class="joker-component-card">
-    <div class="j-card-title" :style="{background:color?color:''}">{{title}}</div>
+    <div class="j-card-title" :style="{background:color?color:''}">
+      <div class="left">{{title}}</div>
+      <div class="right">
+        <slot name="right"></slot>
+      </div>
+    </div>
     <div class="j-card-body">
       <slot></slot>
     </div>
@@ -32,6 +37,9 @@ export default {
       font-weight: 600;
       font-size: 16px;
       line-height: 20px;
+      align-items: center;
+      justify-content: space-between;
+      display: flex;
       padding: 16px 20px;
       border-bottom:1px solid #eee;
     }

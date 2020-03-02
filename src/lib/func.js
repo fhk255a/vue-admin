@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import {Notification}  from 'element-ui';
 // 通知提醒
-Vue.prototype.notify=(msg,slot=null)=>{
-  Notification.info({
-    title: '操作提示',
+Vue.prototype.notify=(msg,type,title,subTitle=null)=>{
+  Notification({
+		type:type?type:'info',
+    title: title?title:'操作提示',
     dangerouslyUseHTMLString: true,
     // duration:3,
     message: `<div>
-                <p style="color:#ff9800">演示，不发任何请求。</p>
-                <p style="color:#666">只是告知你干了什么操作。</p>
+                ${!subTitle?`<p style="color:#ff9800">演示，不发任何请求。</p>
+                <p style="color:#666">只是告知你干了什么操作。</p>`:`<p style="color:#666"></p>${subTitle}</p>`}
                 <p class="notify-list">${msg}</p>
-                ${slot?slot:''}
               <div>`});
 }
 

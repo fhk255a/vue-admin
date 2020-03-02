@@ -1,7 +1,7 @@
 <template>
   <div class="joker-component-search-form">
     <div class="joker-form">
-      <template v-for="(item) in data" >
+      <template v-for="(item) in config" >
         <!-- input -->
         <div class="joker-form-item" :key="item.key" v-if="item.type=='input'">
           <div class="joker-form-item-label">{{item.label}}</div>
@@ -61,7 +61,7 @@ export default {
       type:Object,
       default:()=>{}
     },
-    data:{
+    config:{
       type:Array,
       default:()=>{
         return [];
