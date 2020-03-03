@@ -11,7 +11,9 @@
         2、无子集 或者 只有自己一个菜单 1->[1-1]
         3、只做了3层 超过3层可优化成递归组件 但是这里用不上。
        -->
-      <el-submenu v-for="(item) in allroutes" :key="item.path" :index="item.path">
+       <!-- v-for="(item) in allroutes" 2020-2-28 初始化菜单 -->
+       <!-- v-for="(item) in $store.state.competence.menuList" 2020-3-3 读取vuex菜单 -->
+      <el-submenu v-for="(item) in $store.state.competence.menuList" :key="item.path" :index="item.path">
         <template slot="title">
           <i :class="['title-icon iconfont',item.icon?item.icon:'not-icon']"></i>
           <span slot="title">{{item.meta.title}}</span>
@@ -64,7 +66,8 @@ export default {
     }
   },
   mounted(){
-    this.allroutes = this.initRoute(routes);
+    // 2020-2-28 初始化的操作 获取菜单
+    // this.allroutes = this.initRoute(routes);
   }
 }
 </script>

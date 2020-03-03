@@ -115,7 +115,7 @@ export default {
     },
     // 切换状态
     changeStatus(status,index){
-      this.notify('你的操作被某种神秘力量销毁了','error','OHHHHHHH',' ');
+      this.notify('你的操作被某种神秘力量销毁了','error','淦',' ');
       this.tableList[index].status = !status;
     },
     add(){
@@ -190,7 +190,7 @@ export default {
     remove(INDEX){
       let res = this.$store.state.competence.userList;
       const ID = res[INDEX].id;
-      this.$confirm('是否删除该店铺?', '提示', {
+      this.$confirm('是否删除该用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -282,22 +282,22 @@ export default {
       searchConfig:[
         {
           label:'用户ID',
-          value:'id',
+          key:'id',
           type:'input'
         },
         {
           label:'用户名',
-          value:'username',
+          key:'username',
           type:'input'
         },
         {
           label:'昵称',
-          value:'nickname',
+          key:'nickname',
           type:'input'
         },
         {
           label:'等级',
-          value:'role',
+          key:'role',
           type:'select',
           data:[]
         },
