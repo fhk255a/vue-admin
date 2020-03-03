@@ -17,6 +17,7 @@ import Card from '@/components/Card';
 export default {
   watch:{
     show(d){
+      console.log(d);
       this.defaultShow = d;
     }
   },

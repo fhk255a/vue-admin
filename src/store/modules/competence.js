@@ -1,5 +1,6 @@
 import routes from '@/router/routes';
 import userList from '../data/user';
+import SOURCE from '../data/resource';
 function initRoute(data,path=''){
   return data.map(item=>{
     item.path=path+item.path;
@@ -21,7 +22,7 @@ const competence = {
         id:'1',
         name:'普通用户',
         resource:[],
-        menu:[],
+        menu:["/product", "/product/list", "/product/details", "/product/shop"],
         remark:'只可浏览不可操作',
         createTime:1582137230000,
         createUser:'Joker',
@@ -30,8 +31,16 @@ const competence = {
       {
         id:'2',
         name:'商品管理员',
-        resource:[],
-        menu:[],
+        resource:[
+          'product::list::edit',
+          'product::list::remove',
+          'product::list::status',
+          'product::details::skuStatus',
+          'product::details::editJianJie',
+          'product::details::editDetails',
+          'product::details::save'
+        ],
+        menu: ["/product", "/product/list", "/product/details", "/product/shop"],
         remark:'可以操作商品模块',
         createTime:1582180668000,
         createUser:'Joker',
@@ -40,8 +49,10 @@ const competence = {
       {
         id:'3',
         name:'订单管理员',
-        resource:[],
-        menu:[],
+        resource:[
+          'order::list::cancel',
+        ],
+        menu:["/order", "/order/list", "/order/details"],
         remark:'可以操作订单模块',
         createTime:1582180668000,
         createUser:'Joker',
@@ -50,8 +61,21 @@ const competence = {
       {
         id:'8888',
         name:'管理员',
-        resource:[],
-        menu:[],
+        resource:[
+          'competence::user::edit',
+          'competence::user::remove',
+          'competence::user::add',
+          'competence::user::status',
+          'product::list::edit',
+          'order::list::cancel',
+          'product::list::remove',
+          'product::list::status',
+          'product::details::skuStatus',
+          'product::details::editJianJie',
+          'product::details::editDetails',
+          'product::details::save',
+        ],
+        menu: ["/product", "/product/list", "/product/details", "/product/shop", "/order", "/order/list", "/order/details", "/competence/user", "/competence/menu", "/competence/resource"],
         remark:'大部分可以操作',
         createTime:1582137663000,
         createUser:'Joker',
@@ -60,8 +84,30 @@ const competence = {
       {
         id:'9999',
         name:'超级管理员',
-        resource:[],
-        menu:[],
+        resource:[
+          'competence::user::edit',
+          'competence::user::remove',
+          'competence::user::add',
+          'competence::user::status',
+          'product::list::edit',
+          'product::list::remove',
+          'order::list::cancel',
+          'product::list::status',
+          'product::details::skuStatus',
+          'product::details::editJianJie',
+          'product::details::editDetails',
+          'product::details::save',
+          'competence::user::edit',
+          'competence::user::remove',
+          'competence::user::add',
+          'competence::user::status',
+          'competence::role::edit',
+          'competence::role::remove',
+          'competence::role::add',
+          'competence::role::menu',
+          'competence::role::resource',
+        ],
+        menu:["/product", "/product/list", "/product/details", "/product/shop", "/order", "/order/list", "/order/details", "/competence", "/competence/user", "/competence/role", "/competence/menu", "/competence/resource"],
         remark:'一看就很厉害',
         createTime:1582107045000,
         createUser:'Joker',
@@ -69,6 +115,7 @@ const competence = {
       },
     ],
     menuList:allRoutes,
+    resource:SOURCE
   },
   mutations:{
     userList(state,userList){
@@ -80,6 +127,9 @@ const competence = {
     menuList(state,menuList){
       state.menuList = menuList;
     },
+    resourceList(state,resource){
+      state.resource = resource;
+    },
   },
   actions:{
     changeUserList(context,userList){
@@ -90,6 +140,9 @@ const competence = {
     },
     changeMenuList(context,menuList){
       context.commit('menuList',menuList);
+    },
+    changeResourceList(context,resource){
+      context.commit('resourceList',resource);
     },
   }
 }
