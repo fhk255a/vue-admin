@@ -15,6 +15,7 @@
       </div>
     </div>
     <el-dialog
+      class="j-big-img-show"
       :visible.sync="$store.state.dialog.bigImg.dialog"
       width="400px">
       <div style="width:100%;height:100%">
@@ -90,5 +91,21 @@ export default {
 
 body > .el-container {
   margin-bottom: 40px;
+}
+.joker-layout-container{
+  .joker-layout-header{
+    transition: left 0.3s;
+  }
+}
+#app .j-big-img-show .el-dialog{
+  background: #fff;
+  border-radius: 0;
+  .el-dialog__header {
+    padding: 20px 20px 10px;
+  }
+  .el-dialog__body{
+    border-radius: 0;
+    padding: 30px 20px;
+  }
 }
 </style>

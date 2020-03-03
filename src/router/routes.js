@@ -59,6 +59,49 @@ const routerList = [
         component: () => import('@/page/order/details/index.vue'),
       },
     ]
+  },
+  // 权限模块
+  {
+    path:'/competence',
+    name: 'competence',
+    component: Layout,
+		redirect: '/competence/user',
+    icon:'icon-houtaiguanli',
+    meta:{title:'权限模块'},
+    children:[
+      {
+        path:'user',
+        title:'用户列表',
+        icon:'icon-duorenyonghu',
+        name:'competence/user',
+        meta:{title:'用户列表'},
+        component: () => import('@/page/competence/user/index.vue'),
+      },
+      {
+        path:'role',
+        title:'角色列表',
+        icon:'icon-kehudongcha',
+        name:'competence/role',
+        meta:{title:'角色列表'},
+        component: () => import('@/page/competence/role/index.vue'),
+      },
+      {
+        path:'menu',
+        title:'菜单列表',
+        icon:'icon-leimupinleifenleileibie2',
+        name:'competence/user',
+        meta:{title:'菜单列表'},
+        component: () => import('@/page/competence/menu/index.vue'),
+      },
+      {
+        path:'resource',
+        title:'资源列表',
+        icon:'icon-suo',
+        name:'competence/user',
+        meta:{title:'资源列表'},
+        component: () => import('@/page/competence/resource/index.vue'),
+      },
+    ]
   }
 ]
 

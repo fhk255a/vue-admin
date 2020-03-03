@@ -70,74 +70,78 @@ export default {
 </script>
 
 <style lang="scss">
-.el-menu-vertical:not(.el-menu--collapse) {
-  width: 240px;
-}
-.joler-menu{
-  border-right:0;
-}
-.joker-component-menu{
-  background: #070f14;
-  overflow-x: hidden;
-  height: 100%;
-  overflow-y: scroll;
-  .el-menu{
+  .joker-component-menu{
     background: #070f14;
-    border-right:0;
-  }    
-}
-.open{
-  color: #fff;
-}
-.title-icon{
-  vertical-align: middle;
-  margin-right: 2px;
-  width: 24px;
-  text-align: center;
-  font-size: 18px;
-  display: inline-block;
-}
-.not-icon{
-  width: 10px;
-}
-.logo{
-  text-align: center;
-  padding: 40px 20px;
-  font-weight: 600;
-  font-size: 36px;
-  color: #fff;
-}
-.el-submenu .el-menu-item ,.el-menu-item, .el-submenu__title{
-  height: 40px;
-  line-height: 40px;
-  font-weight: 600;
-  color: #a3a396;
-  a{
-    color: #a3a396;
-    text-decoration: none;
-  }
-}
-.el-menu-item-group__title{
-  padding: 0;
-}
-.el-menu .el-submenu .is-active{
-  color: #fff;
-  >a{
-    color: #fff;
-  }
-}
-.el-menu-item:focus, .el-menu-item:hover{
-  background: #26333c;
-}
-.el-submenu__title:hover{
-  background: #26333c;
-}
-.joker-component-menu {
-  .is-opened{
-    background-color: #26333c;
-  }
-  .is-opened>ul{
-    background: #26333c;
+    overflow-x: hidden;
+    height: 100%;
+    overflow-y: scroll;
+    .el-menu{
+      background: #070f14;
+      border-right:0;
+    }    
+    .el-menu-vertical:not(.el-menu--collapse) {
+      width: 240px;
+    }
+    .joler-menu{
+      border-right:0;
+    }
+    .title-icon{
+      vertical-align: middle;
+      margin-right: 2px;
+      width: 24px;
+      text-align: center;
+      font-size: 18px;
+      display: inline-block;
+      font-weight: lighter;
+    }
+    .not-icon{
+      width: 10px;
+    }
+    .logo{
+      text-align: center;
+      padding: 40px 20px;
+      font-weight: 600;
+      font-size: 36px;
+      color: #fff;
+    }
+    .el-submenu .el-menu-item ,.el-menu-item, .el-submenu__title{
+      height: 40px;
+      line-height: 40px;
+      font-weight: 600;
+      color: #a3a396;
+      a{
+        color: #a3a396;
+        text-decoration: none;
+      }
+    }
+    .el-menu-item-group__title{
+      padding: 0;
+    }
+    .el-menu .el-submenu .is-active{
+      color: #fff;
+      >a{
+        color: #fff;
+      }
+    }
+    .el-menu-item:focus, .el-menu-item:hover{
+      background: #26333c;
+    }
+    .el-submenu__title:hover{
+      background: #26333c;
+    }
+    .is-opened{
+      background-color: #26333c;
+    }
+    .is-opened>ul{
+      background: #26333c;
+    }
+    .joker-menu{
+    .el-submenu__title{
+      color:#909087;
+    }
+    .el-menu-item:focus, .el-menu-item:hover{
+      background: #ecf5ff4a;
+    }
   }
 }
 </style>

@@ -24,7 +24,7 @@ const staticRouteMap = [
     meta: {
       title: 'Home'
     },
-    component: () => import('@/page/home/index.vue')
+    component: Layout,
   },
   // 404
   {
