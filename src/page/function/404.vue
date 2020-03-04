@@ -7,7 +7,7 @@
           <p>页面不存在</p>
           <p>你似乎来到了一个不存在的领域</p>
           <p>
-            <a href="/#/home" class="color-blue set-text">回到首页</a>
+            <router-link to="/" class="color-blue set-text">回到首页</router-link>
           </p>
           <p class="joker-blog">
             <a href="http://fhk255.cn" class="color-default set-text">JOKER's BLOG</a>

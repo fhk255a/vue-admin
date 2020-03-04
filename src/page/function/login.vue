@@ -61,7 +61,8 @@ export default {
           this.$store.dispatch('changeUserInfo',res);
           this.$store.dispatch('changeUserMenu',MENU.menu);
           this.$store.dispatch('changeUserResource',MENU.resource);
-          window.location.reload();
+          this.$router.push('/');
+          // window.location.reload();
         }
       }else{
         this.$message.error('账户与密码错误');

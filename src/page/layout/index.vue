@@ -16,12 +16,7 @@
               <span class="iconfont icon-gerenyonghutouxiang2"></span>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <template v-if="!userInfo">
-                <el-dropdown-item command="login"> 
-                  <i class="iconfont icon-houtaiguanli"></i>请登录
-                </el-dropdown-item>
-              </template>
-              <template v-else>
+              <template v-if="userInfo && userInfo.id">
                 <el-dropdown-item command="info"> 
                   <i class="iconfont icon-houtaiguanli"></i>{{userInfo.nickName}}
                 </el-dropdown-item>
@@ -33,6 +28,11 @@
                 </el-dropdown-item>
                 <el-dropdown-item divided command="logout">
                   <i class="iconfont icon-dengchutuichuguanbi"></i>退出登录
+                </el-dropdown-item>
+              </template>
+              <template v-else>
+                <el-dropdown-item command="login"> 
+                  <i class="iconfont icon-houtaiguanli"></i>请登录
                 </el-dropdown-item>
               </template>
             </el-dropdown-menu>
