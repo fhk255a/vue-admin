@@ -22,15 +22,15 @@
         <!-- 状态 -->
         <template slot="status" slot-scope="row">
           <div>
-            <el-switch @change="changeStatus(row.scope)" v-model="row.scope.data.status"></el-switch>
+            <el-switch :disabled="!isPass('product::details::status')" @change="changeStatus(row.scope)" v-model="row.scope.data.status"></el-switch>
           </div>
         </template>
         <!-- 操作 -->
         <template slot="set" slot-scope="row">
           <div>
             <span class="icon-btn iconfont icon-bianjiqianbixieshuru" @click="view(row.scope.data)"></span>
-            <span class="icon-btn iconfont icon-shanchu" @click="remove(row.scope)"></span>
-            <span class="icon-btn iconfont icon-qushuchakanshuxing" @click="set(row.scope.data)"></span>
+            <span v-if="isPass('product::list::remove')" class="icon-btn iconfont icon-shanchu" @click="remove(row.scope)"></span>
+            <span v-if="isPass('product::list::add')" class="icon-btn iconfont icon-qushuchakanshuxing" @click="set(row.scope.data)"></span>
           </div>
         </template>
       </Table>
@@ -45,7 +45,9 @@ import Page from '@/components/Page';
 import Table from '@/components/Table';
 import Container from '@/components/Container';
 import SearchForm from '@/components/SearchForm';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   components:{
     SearchForm,
     Container,
@@ -53,6 +55,7 @@ export default {
     Page
   },
   mounted(){
+    console.log(this.isPass);
     this.getList();
   },
   methods:{

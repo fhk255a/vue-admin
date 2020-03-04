@@ -3,7 +3,7 @@
     <Search-form :config="searchConfig" :header="header"></Search-form>
     <div class="mb-20"/>
     <Container>
-      <el-button @click="add()">添加</el-button>
+      <el-button @click="add()" v-if="isPass('competence::user::add')" >添加</el-button>
       <Table :config="tableConfig" :tableList="tableList">
         <template slot="status" slot-scope="row">
           <el-switch v-model="row.scope.data.status" @change="changeStatus(row.scope.data.status,row.scope.index)"></el-switch>
@@ -15,8 +15,8 @@
           {{$store.state.competence.roleList.find(item=>item.id==row.scope.data.role)['name']}}
         </template>
         <template slot="set" slot-scope="row">
-          <span class="set-text color-blue" @click="edit(row.scope.data)">编辑</span>
-          <span class="set-text color-red" @click="remove(row.scope.index)">删除</span>
+          <span class="set-text color-blue" v-if="isPass('competence::user::edit')" @click="edit(row.scope.data)">编辑</span>
+          <span class="set-text color-red" v-if="isPass('competence::user::remove')" @click="remove(row.scope.index)">删除</span>
         </template>
       </Table>
       <Page :page="page" @changePage="changePage"/>
@@ -94,7 +94,9 @@ import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     changePage(page){
       this.page = page;

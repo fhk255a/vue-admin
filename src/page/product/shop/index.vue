@@ -4,7 +4,7 @@
     </SearchForm>
     <div class="mb-20"/>
     <Container>
-      <el-button @click="add()"><i class="iconfont icon-tianjia" style="margin-right:10px"></i>添加</el-button>
+      <el-button @click="add()" v-if="isPass('product::shop::add')"><i class="iconfont icon-tianjia" style="margin-right:10px"></i>添加</el-button>
       <Table :config="tableConfig" :tableList="tableList">
         <template slot-scope="row" slot="shopFrom">
           {{row.scope.data.shopFrom?form.find(item=>row.scope.data.shopFrom == item.value)['label']:''}}
@@ -18,8 +18,8 @@
           {{$timer(row.scope.data.createTime)}}
         </template>
         <template slot-scope="row" slot="set">
-          <span class="set-text icon-btn iconfont icon-qushuchakanshuxing" @click="view(row.scope.data,row.scope.index)"></span>
-          <span class="set-text color-red icon-btn iconfont icon-shanchu" @click="remove(row.scope.data)"></span>
+          <span v-if="isPass('product::shop::edit')" class="set-text icon-btn iconfont icon-qushuchakanshuxing" @click="view(row.scope.data,row.scope.index)"></span>
+          <span v-if="isPass('product::shop::remove')" class="set-text color-red icon-btn iconfont icon-shanchu" @click="remove(row.scope.data)"></span>
         </template>
       </Table>
     </Container>
@@ -82,7 +82,9 @@ import Card from '@/components/Card';
 import Table from '@/components/Table';
 import Container from '@/components/Container';
 import SearchForm from '@/components/SearchForm';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     search(from){
       this.header = from;

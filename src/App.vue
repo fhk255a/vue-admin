@@ -5,8 +5,10 @@
 </template>
 
 <script>
+import isPass from '@/lib/esss';
 export default {
-  name: 'App'
+  mixins:[isPass],
+  name: 'App',
 }
 </script>
 

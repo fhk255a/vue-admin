@@ -79,7 +79,9 @@
 import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Card from '@/components/Card';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   mounted(){
     this.getData(this.$route.params.id);
   },

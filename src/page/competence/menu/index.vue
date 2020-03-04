@@ -1,6 +1,6 @@
 <template>
   <div class="joker-page-menu">
-      <el-button @click="add()">添加</el-button>
+      <el-button @click="add()" v-if="isPass" >添加</el-button>
     <div class="mb-20"/>
     <Container>
       <el-tree
@@ -33,7 +33,9 @@
 <script>
 import Container from '@/components/Container';
 import Dialog from '@/components/Dialog';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     getData(){
       const MENU = [...this.$store.state.competence.menuList];

@@ -15,7 +15,9 @@ import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     getData(){
       const resource = this.$store.state.competence.resource;

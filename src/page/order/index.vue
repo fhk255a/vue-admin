@@ -21,7 +21,7 @@
           <span class="set-text" @click="viewOrder(row.scope.data)">
             查看订单
           </span>
-          <span class="set-text" v-if="row.scope.data.orderStatus != 'CANCEL'" @click="cancelOrder(row.scope.data)">
+          <span class="set-text" v-if="isPass('order::list::cancel') && row.scope.data.orderStatus != 'CANCEL'" @click="cancelOrder(row.scope.data)">
             取消订单
           </span>
         </template>
@@ -37,7 +37,9 @@ import SearchForm from '@/components/SearchForm';
 import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     changePage(page){
       this.page = page;

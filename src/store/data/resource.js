@@ -31,6 +31,28 @@ export default [
         ]
       },
       {
+        id:'product::shop::',
+        label:'商品列表',
+        value:'product::shop::',
+        children:[
+          {
+            id:'product::shop::edit',
+            label:'编辑',
+            value:'product::shop::edit'
+          },
+          {
+            id:'product::shop::remove',
+            label:'删除',
+            value:'product::shop::remove'
+          },
+          {
+            id:'product::shop::add',
+            label:'添加',
+            value:'product::shop::add'
+          },
+        ]
+      },
+      {
         id:'product::details::',
         label:'商品详情',
         value:'product::details::',

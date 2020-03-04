@@ -3,19 +3,19 @@
     <SearchForm @search="search" :config="searchConfig" :header="header"></SearchForm>
     <div class="mb-20"/>
     <Container>
-      <el-button @click="add()">添加</el-button>
+      <el-button @click="add()" v-if="isPass('competence::role::add')">添加</el-button>
       <Table :tableList="tableList" :config="tableConfig">
         <template slot-scope="row" slot="createTime">
           {{$timer(row.scope.data.createTime)}}
         </template>
         <template slot-scope="row" slot="set">
           <p>
-            <span class="color-blue set-text" @click="edit(row.scope.index)">编辑</span>
-            <span class="color-red set-text" @click="remove(row.scope.index)">删除</span>
+            <span class="color-blue set-text" v-if="isPass('competence::role::edit')" @click="edit(row.scope.index)">编辑</span>
+            <span class="color-red set-text" v-if="isPass('competence::role::remove')" @click="remove(row.scope.index)">删除</span>
           </p>
           <p>
-            <span class="color-green set-text" @click="menu(row.scope.index)">配置菜单</span>
-            <span class="color-yellow set-text" @click="resource(row.scope.index)">配置资源</span>
+            <span class="color-green set-text" v-if="isPass('competence::role::menu')" @click="menu(row.scope.index)">配置菜单</span>
+            <span class="color-yellow set-text" v-if="isPass('competence::role::resource')" @click="resource(row.scope.index)">配置资源</span>
           </p>
         </template>
       </Table>
@@ -58,6 +58,7 @@
             node-key="name"
             :default-checked-keys="defaultMenu"
             default-expand-all
+            :check-change="changeMenu"
             show-checkbox
             :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -101,7 +102,9 @@ import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     // 获取数据
     getData(){
@@ -234,11 +237,18 @@ export default {
     },
     // 保存菜单
     submitMenu(index){
-      const MENU = this.$refs['menu-tree'].getCheckedKeys();
-      this.currentData.menu = MENU;
+      const menu = this.$refs['menu-tree'].getCheckedKeys();
+      const RESULTMENU = menu.concat(this.$refs['menu-tree'].getHalfCheckedKeys());
+      this.currentData.menu = RESULTMENU;
       const INDEX = this.tableList.findIndex(item=>item.id == this.currentData.id);
       let res = this.$store.state.competence.roleList;
       res[INDEX] = {...this.currentData};
+      // 查看是不是当前角色匹配 这时候应该执行立即生效
+      let USERSELF = this.$store.state.userInfo.userInfo;
+      let menud = this.$store.state.userInfo.menu;
+      if(this.currentData.id*1 == USERSELF['role']*1){
+        this.$store.dispatch('changeUserMenu',this.currentData.menu);
+      }
       this.$store.dispatch('changeRoleList',res);
       this.notify('你配置了菜单');
       this.setting={
@@ -263,7 +273,11 @@ export default {
       })
     },
     saveResource(){
-      console.log(this.arr);
+      // 查看是不是当前角色匹配 这时候应该执行立即生效
+      let USERSELF = this.$store.state.userInfo.userInfo;
+      if(this.currentData.id*1 == USERSELF['role']*1){
+        this.$store.dispatch('changeUserResource',this.currentData.resource);
+      }
     },
     // 配置资源事件
     resource(index){
@@ -280,6 +294,10 @@ export default {
       })
       
     },
+    // 更改菜单
+    changeMenu(d,n,t){
+      console.log(d,n,t)
+    }
   },
   mounted(){
     this.getData();

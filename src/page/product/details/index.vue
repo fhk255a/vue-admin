@@ -119,7 +119,7 @@
           <el-table-column label="库存" prop="count" />
           <el-table-column label="状态">
             <template slot-scope="row">
-              <el-switch v-model="row.row.status"/>
+              <el-switch v-model="row.row.status" :disabled="!isPass('product::details::skuStatus')"/>
             </template>
           </el-table-column>
         </el-table>
@@ -128,7 +128,7 @@
 <!-- 商品简介 -->
     <div class="mb-20"/>
     <Card title="商品简介" class="j-product-shop">
-      <template slot="right">
+      <template v-if="isPass('product::details::editJianJie')" slot="right">
         <div class="iconfont icon-shezhishedingpeizhichilun" @click="editOther"></div>
       </template>
       <div>
@@ -145,7 +145,7 @@
 <!-- 商品详情 -->
     <div class="mb-20"/>
     <Card title="商品详情页" class="j-product-details">
-      <template slot="right">
+      <template slot="right" v-if="isPass('product::details::editDetails')" >
         <div class="iconfont icon-shezhishedingpeizhichilun" @click="editDetails"></div>
       </template>
       <div class="desc" v-html="productDetails.desc"></div>
@@ -200,7 +200,7 @@
       </Card>
     </el-dialog>
     <div class="footer-btns">
-      <el-button @click="saveProduct">保存</el-button>
+      <el-button @click="saveProduct" v-if="isPass(('product::details::save'))" >保存</el-button>
     </div>
   </div>
 </template>
@@ -209,7 +209,9 @@
 import Card from '@/components/Card';
 import Editor from '@/components/Editor';
 import productData from '@/store/data/product';
+import isPass from '@/lib/esss';
 export default {
+  mixins:[isPass],
   methods:{
     // 获取商品详情
     getData(id){

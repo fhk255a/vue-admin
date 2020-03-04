@@ -9,6 +9,35 @@
         <div class="joker-layout-header-item collapse-btn iconfont icon-biaodan2" @click="toggleCollapse"></div>
         <!-- 面包屑 -->
         <Breadcrumb class="joker-layout-header-item"/>
+        <!-- 用户信息 -->
+        <div class="joker-userinfo">
+          <el-dropdown trigger="click" @command="changeDownMenu">
+            <span class="el-dropdown-link">
+              <span class="iconfont icon-gerenyonghutouxiang2"></span>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <template v-if="!userInfo">
+                <el-dropdown-item command="login"> 
+                  <i class="iconfont icon-houtaiguanli"></i>请登录
+                </el-dropdown-item>
+              </template>
+              <template v-else>
+                <el-dropdown-item command="info"> 
+                  <i class="iconfont icon-houtaiguanli"></i>{{userInfo.nickName}}
+                </el-dropdown-item>
+                <el-dropdown-item command="role">
+                  <i class="iconfont icon-kehudongcha"></i>查看等级
+                </el-dropdown-item>
+                <el-dropdown-item disabled command="edit">
+                  <i class="iconfont icon-quanxianmiyao"></i>修改密码
+                </el-dropdown-item>
+                <el-dropdown-item divided command="logout">
+                  <i class="iconfont icon-dengchutuichuguanbi"></i>退出登录
+                </el-dropdown-item>
+              </template>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </div>
       <div class="joker-layout-main">
         <router-view/>
@@ -22,21 +51,165 @@
         <img class="img" :src="$store.state.dialog.bigImg.img" alt="">
       </div>
     </el-dialog>
+    <Dialog @close="close" :title="dialog.title" :show="dialog.dialog">
+      <template v-if="dialog.info">
+        <ul class="joker-form userinfo">
+          <li class="joker-form-item w100" >
+            <div class="joker-form-item-label">昵称:</div>
+            <div class="joker-form-item-content">{{userInfo.nickName}}</div>
+          </li>
+          <li class="joker-form-item w100" >
+            <div class="joker-form-item-label">等级:</div>
+            <div class="joker-form-item-content">
+              <span class="color-blue">{{roleInfo.name}}</span>
+            </div>
+          </li>
+          <li class="joker-form-item w100" >
+            <div class="joker-form-item-label">手机:</div>
+            <div class="joker-form-item-content">{{userInfo.phone}}</div>
+          </li>
+          <li class="joker-form-item w100" >
+            <div class="joker-form-item-label">QQ:</div>
+            <div class="joker-form-item-content">{{userInfo.qq}}</div>
+          </li>
+          <li class="joker-form-item w100" >
+            <div class="joker-form-item-label">邮箱:</div>
+            <div class="joker-form-item-content">{{userInfo.mail}}</div>
+          </li>
+          <li class="joker-form-item w100" >
+            <div class="joker-form-item-label">备注:</div>
+            <div class="joker-form-item-content">{{userInfo.remark}}</div>
+          </li>
+        </ul>
+      </template>
+      <template v-if="dialog.role">
+        <div class="role-tree">
+          <el-tree
+            ref="resource-tree"
+            :data="SOURCELIST"
+            node-key="value"
+            :default-checked-keys="defaultSouce"
+            default-expand-all
+            :expand-on-click-node="false">
+            <span class="custom-tree-node" style="min-width: 150px; max-width:150px" slot-scope="{ node, data }">
+              <span v-if="data.children && data.children.length>0">{{data.label}}</span>
+              <span v-else>
+                <span class="color-red">
+                  <span class="color-green" v-if="roleInfo && roleInfo.resource.findIndex(item=>item==data.value)!=-1">
+                    {{data.label}} <i class=" iconfont icon-queren2"></i>
+                  </span>
+                  <span v-else class="color-red">
+                    {{data.label}} <i class="iconfont icon-shanchu1"></i>
+                  </span>
+                </span>
+              </span>
+            </span>
+          </el-tree>
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
 <script>
 import Breadcrumb from './Breadcrumbs';
 import Menu from './Mennu';
+import Cookie from '@/lib/cookie';
+import Dialog from '@/components/Dialog';
 export default {
+  data(){
+    return{
+      dialog:{
+        dialog:false,
+        role:false,
+        info:false,
+        title:null,
+      },
+      defaultSouce:[], // 默认展开
+      SOURCELIST:this.$store.state.competence.resource, // 全部资源
+    }
+  },
   components:{
     Breadcrumb,
-    Menu
+    Menu,
+    Dialog
   },
   methods:{
+    close(){
+      this.dialog={
+        dialog:false,
+        role:false,
+        info:false,
+        title:null,
+      }
+    },
     // 切换菜单的状态
     toggleCollapse(){
       this.$store.dispatch('changeCollapse',!this.$store.state.func.collapse);
+    },
+    // 切换下拉
+    changeDownMenu(type){
+      switch(type){
+        case 'info':
+          this.dialog.dialog=true;
+          this.dialog.info=true;
+          this.dialog.role=false;
+          this.dialog.title='个人信息';
+          break;
+        case 'role':
+          this.role();
+          break;
+        case 'logout':
+          this.logout();
+          break;
+        case 'login':
+          this.$router.push('/login');
+          break;
+        default:
+          this.notify('你的操作被Joker取消了','warning','OH!',' ');
+          break;
+      }
+    },
+    role(){
+      this.dialog={
+        dialog:true,
+        info:false,
+        role:true,
+        title:'等级权限'
+      }
+      const KEYS = this.roleInfo.resource;
+      this.$nextTick(()=>{
+        this.$refs['resource-tree'].setCheckedKeys(KEYS);
+        this.defaultSouce = KEYS;
+      })
+    },
+    // 退出
+    logout(){
+      this.$confirm('是否退出?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        window.location.reload();
+        Cookie.remove('vue-admin-token');
+        Cookie.remove('vue-admin-userInfo');
+        Cookie.remove('vue-admin-menu');
+        Cookie.remove('vue-admin-resource');
+        this.$store.dispatch('changeToken',null);
+        this.$store.dispatch('changeUserInfo',null);
+        this.$store.dispatch('changeUserMenu',null);
+        this.$store.dispatch('changeUserResource',null);
+      }).catch(() => {
+        this.$message.info('您点了取消');          
+      });
+    }
+  },
+  computed:{
+    userInfo(){
+      return this.$store.state.userInfo.userInfo;
+    },
+    roleInfo(){
+      return this.$store.state.competence.roleList.find(item=>item.id*1==this.userInfo.role*1);
     }
   }
 }
@@ -71,7 +244,6 @@ export default {
       line-height: 20px;
       padding:10px 20px;
       top:0;
-      overflow: hidden;
       .joker-layout-header-item{
         float: left;
         margin-right: 20px;
@@ -85,6 +257,26 @@ export default {
       padding:20px;
       margin-top: 40px;
     }
+  }
+  .joker-userinfo{
+    position: relative;
+    float: right;
+    padding: 5px 8px;
+    top: -6px;
+    .icon-gerenyonghutouxiang2{
+      font-size: 24px
+    }
+  }
+  .userinfo{
+    .joker-form-item-label{
+      width: 100px;
+      padding-right: 20px;
+      text-align: right;
+    }
+  }
+  .role-tree{
+    max-height: 60vh;
+    overflow-y: scroll;
   }
 }
 

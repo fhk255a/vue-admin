@@ -13,37 +13,47 @@
        -->
        <!-- v-for="(item) in allroutes" 2020-2-28 初始化菜单 -->
        <!-- v-for="(item) in $store.state.competence.menuList" 2020-3-3 读取vuex菜单 -->
-      <el-submenu v-for="(item) in $store.state.competence.menuList" :key="item.path" :index="item.path">
-        <template slot="title">
-          <i :class="['title-icon iconfont',item.icon?item.icon:'not-icon']"></i>
-          <span slot="title">{{item.meta.title}}</span>
-        </template>
-        <template v-for="(ite) in item.children" >
-          <el-submenu v-if="ite.children.length>0" :key="ite.path" :index="ite.path">
-            <template slot="title">
-              <i :class="['title-icon iconfont',ite.icon?item.icon:'not-icon']"></i>
-              {{ite.meta.title}}
+      <template v-for="(item) in $store.state.competence.menuList" >
+        <el-submenu  
+          :key="item.path"
+          v-if="userMenu && userMenu.findIndex(menu=>menu==item.name)!=-1"
+          :index="item.path">
+          <template slot="title">
+            <i :class="['title-icon iconfont',item.icon?item.icon:'not-icon']"></i>
+            <span slot="title">{{item.meta.title}}</span>
+          </template>
+          <template v-for="(ite) in item.children" >
+            <template v-if="userMenu && userMenu.findIndex(menu=>ite.name==menu)!=-1">
+              <el-submenu v-if="ite.children.length>0" :key="ite.path" :index="ite.path">
+                <template slot="title">
+                  <i :class="['title-icon iconfont',ite.icon?item.icon:'not-icon']"></i>
+                  {{ite.meta.title}}
+                </template>
+                <router-link v-for="(it) in ite.children" :key="it.path" :to="it.path">
+                  <template v-if="userMenu && userMenu.findIndex(menu=>it.name==menu)!=-1">
+                    <el-menu-item :index="it.path" v-if="!it.isHide">
+                      <i :class="['title-icon iconfont',it.icon?it.icon:'not-icon']"></i>
+                      {{it.meta.title}}
+                    </el-menu-item>
+                  </template>
+                </router-link>
+              </el-submenu>
+              <router-link v-else :key="ite.path" :to="ite.path">
+                <el-menu-item :index="ite.path" v-if="!ite.isHide">
+                  <i :class="['title-icon iconfont',ite.icon?ite.icon:'not-icon']"></i>
+                  {{ite.meta.title}}
+                </el-menu-item>
+              </router-link>
             </template>
-            <router-link v-for="(it) in ite.children" :key="it.path" :to="it.path">
-              <el-menu-item :index="it.path" v-if="!it.isHide">
-                <i :class="['title-icon iconfont',it.icon?it.icon:'not-icon']"></i>
-                {{it.meta.title}}
-              </el-menu-item>
-            </router-link>
-          </el-submenu>
-          <router-link v-else :key="ite.path" :to="ite.path">
-            <el-menu-item :index="ite.path" v-if="!ite.isHide">
-              <i :class="['title-icon iconfont',ite.icon?ite.icon:'not-icon']"></i>
-              {{ite.meta.title}}
-            </el-menu-item>
-          </router-link>
-        </template>
-      </el-submenu>
+          </template>
+        </el-submenu>
+      </template>
     </el-menu>
   </div>
 </template>
 
 <script>
+import Cookie from '@/lib/cookie';
 import routes from '@/router/routes';
 export default {
   data(){
@@ -65,10 +75,11 @@ export default {
       })
     }
   },
-  mounted(){
-    // 2020-2-28 初始化的操作 获取菜单
-    // this.allroutes = this.initRoute(routes);
-  }
+  computed:{
+    userMenu(){
+      return this.$store.state.userInfo.menu;
+    }
+  },
 }
 </script>
 

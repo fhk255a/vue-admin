@@ -22,7 +22,7 @@ const competence = {
         id:'1',
         name:'普通用户',
         resource:[],
-        menu:["/product", "/product/list", "/product/details", "/product/shop"],
+        menu:["/product", "/product/list", "/product/details", "/product/shop","/order", "/order/list", "/order/details"],
         remark:'只可浏览不可操作',
         createTime:1582137230000,
         createUser:'Joker',
@@ -75,7 +75,7 @@ const competence = {
           'product::details::editDetails',
           'product::details::save',
         ],
-        menu: ["/product", "/product/list", "/product/details", "/product/shop", "/order", "/order/list", "/order/details", "/competence/user", "/competence/menu", "/competence/resource"],
+        menu: ["/product", "/product/list", "/product/details", "/product/shop", "/order", "/order/list", "/order/details","/competence", "/competence/user", "/competence/menu", "/competence/resource"],
         remark:'大部分可以操作',
         createTime:1582137663000,
         createUser:'Joker',
@@ -115,7 +115,8 @@ const competence = {
       },
     ],
     menuList:allRoutes,
-    resource:SOURCE
+    resource:SOURCE,
+    allResource:[],
   },
   mutations:{
     userList(state,userList){
@@ -130,6 +131,9 @@ const competence = {
     resourceList(state,resource){
       state.resource = resource;
     },
+    allResource(state,allResource){
+      state.allResource = allResource;
+    },
   },
   actions:{
     changeUserList(context,userList){
@@ -143,6 +147,9 @@ const competence = {
     },
     changeResourceList(context,resource){
       context.commit('resourceList',resource);
+    },
+    changeAllResource(context,allResource){
+      context.commit('allResource',allResource);
     },
   }
 }

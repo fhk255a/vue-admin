@@ -57,7 +57,7 @@ export default {
 		{
 			id:'10004',
 			username:'test1',
-			role:8888,
+			role:1,
 			createTime:1582180668000,
 			remark:'测试工具人',
 			password:123456,
