@@ -190,15 +190,15 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        window.location.reload();
-        Cookie.remove('vue-admin-token');
-        Cookie.remove('vue-admin-userInfo');
-        Cookie.remove('vue-admin-menu');
-        Cookie.remove('vue-admin-resource');
+        Cookie.set('vue-admin-token',null);
+        Cookie.set('vue-admin-userInfo',null);
+        Cookie.set('vue-admin-menu',null);
+        Cookie.set('vue-admin-resource',null);
         this.$store.dispatch('changeToken',null);
         this.$store.dispatch('changeUserInfo',null);
         this.$store.dispatch('changeUserMenu',null);
         this.$store.dispatch('changeUserResource',null);
+        window.location.reload();
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
