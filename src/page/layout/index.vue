@@ -3,8 +3,8 @@
     <div class="joker-layout-sidebar">
       <Menu/>
     </div>
-    <div class="joker-layout-container">
-      <div class="joker-layout-header" :style="{left:!$store.state.func.collapse?'240px':'64px'}">
+    <div :class="[$store.state.func.collapse?'header-collapse':'','joker-layout-container']">
+      <div class="joker-layout-header">
         <!-- 菜单缩放开关 -->
         <div class="joker-layout-header-item collapse-btn iconfont icon-biaodan2" @click="toggleCollapse"></div>
         <!-- 面包屑 -->
@@ -217,28 +217,36 @@ export default {
 
 <style lang="scss">
 .joker-layout{
-  display: flex;
     width: 100%;
     height: 100%;
   .joker-layout-sidebar {
     max-height: 100vh;
     overflow: hidden;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transition: width .28s;
   }
   
   .joker-layout-container {
-    flex:1;
     background-color: #fff; 
     color: #333;
+    margin-left: 240px;
     overflow-y: scroll;
     max-height: 100vh;
+    height: calc(100vh - 20px);
     position: relative;
+    transition :margin-left .28s;
     .joker-layout-header{
+      transition :width .28s;
       border-bottom: 1px solid #ddd;
       padding:10px;
       z-index: 99;
       position: fixed;
-      left: 0;
       right: 0;
+      width: calc(100% - 240px);
       background:#f3f3f3;
       height: 40px;
       line-height: 20px;
@@ -256,6 +264,7 @@ export default {
     .joker-layout-main{
       padding:20px;
       margin-top: 40px;
+      height: calc(100% - 40px);
     }
   }
   .joker-userinfo{
@@ -284,10 +293,11 @@ export default {
 body > .el-container {
   margin-bottom: 40px;
 }
-.joker-layout-container{
+#app .header-collapse{
   .joker-layout-header{
-    transition: left 0.3s;
+    width: calc(100% - 64px);
   }
+  margin-left: 64px;
 }
 #app .j-big-img-show .el-dialog{
   background: #fff;

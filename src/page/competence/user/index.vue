@@ -48,7 +48,7 @@
           <div class="joker-form-item-content">
             <el-select v-model="this.currentData.role">
               <el-option v-for="item in $store.state.competence.roleList" 
-                :value="item.id" :key="item.id" :label="item.name"></el-option>
+                :value="item.id*1" :key="item.id" :label="item.name"></el-option>
             </el-select>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default {
       this.currentData={
         id:null,
         username:'',
-        role:1,
+        role:"1",
         createTime:'',
         remark:'',
         password:123456,

@@ -73,9 +73,6 @@ const token = Cookie.has('vue-admin-token');
 const menu = Cookie.has('vue-admin-menu');
 const userInfo = Cookie.has('vue-admin-userInfo');
 const resource = Cookie.has('vue-admin-resource');
-console.log(Cookie.get()['vue-admin-menu']);
-console.log(menu);
-console.log(userInfo);
 router.beforeEach((to, from, next) => {
   if(token){
     if(menu){

@@ -1,0 +1,41 @@
+export default {
+  data(){
+    return{
+      currentComponentData:{},
+      config:[
+        {
+          id:'title',
+          title:'公告',
+          data:{
+            content:'默认文本',
+            color:'',
+            background:'',
+            textAilgn:'left',
+            fontWeight:'',
+            margin:'',
+          }
+        },
+        {
+          id:'banner',
+          title:'轮播图',
+          data:{
+            content:'轮播图',
+            color:'',
+            background:'',
+            textAilgn:'left',
+            fontWeight:'',
+            margin:'',
+          }
+        }
+      ] 
+    }
+  },
+  methods:{
+    changeMixCurrentComponent(item){
+      this.currentComponentData = item;
+    }
+  },
+  mounted(){
+    console.log('...')
+  }
+}

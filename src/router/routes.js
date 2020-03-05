@@ -102,6 +102,25 @@ const routerList = [
         component: () => import('@/page/competence/resource/index.vue'),
       },
     ]
+  },
+  // h5生成
+  {
+    path:'/h5',
+    name:'/h5',
+    component: Layout,
+		redirect: '/h5/list',
+    icon:'icon-houtaiguanli',
+    meta:{title:'H5生成器'},
+    children:[
+      {
+        path:'list',
+        name: '/h5/list',
+        title:'H5列表',
+        isHide:false,
+        component:() => import('@/page/page/index.vue'),
+        meta:{title:'H5列表'},
+      }
+    ]
   }
 ]
 

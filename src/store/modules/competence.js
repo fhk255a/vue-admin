@@ -107,7 +107,7 @@ const competence = {
           'competence::role::menu',
           'competence::role::resource',
         ],
-        menu:["/product", "/product/list", "/product/details", "/product/shop", "/order", "/order/list", "/order/details", "/competence", "/competence/user", "/competence/role", "/competence/menu", "/competence/resource"],
+        menu:["/h5","/h5/list","/product", "/product/list", "/product/details", "/product/shop", "/order", "/order/list", "/order/details", "/competence", "/competence/user", "/competence/role", "/competence/menu", "/competence/resource"],
         remark:'一看就很厉害',
         createTime:1582107045000,
         createUser:'Joker',
