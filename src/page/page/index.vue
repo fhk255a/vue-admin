@@ -3,10 +3,12 @@
     <!-- 组件栏 -->
     <div class="h5-components-menu">
       <div class="h5-menu-title">
-        组件库
+        组件库{{componentIndex}}
       </div>
       <ul class="h5-menu-ul" >
-        <li class="h5-menu-li" v-for="(item,index) in componentsList" :key="item.id" @click="addComponent(item,index)">
+        <li class="h5-menu-li" v-for="(item,index) in pageConfig" 
+          :key="item.type" 
+          @click="addComponent(item,index)">
           <span class="color-blue">{{item.title}}</span>
         </li>
       </ul>
@@ -19,8 +21,8 @@
             @click="changeCurrentComponent(item,index)" 
             :ref="'h5-item-'+index" 
             v-for="(item,index) in currentComponent" 
-            :key="index">
-            <div :is="componentsMenu[item.id]" :data="item"></div>
+            :key="item.id">
+            <component v-bind:is="componentsMenu[item.type]" :data="item"></component>
           </div>
         </div>
       </div>
@@ -28,8 +30,14 @@
     <!-- 工具 -->
     <div class="h5-tools">
       <div class="tools-container">
-        <div class="tools-item" 
-          :is="toolsMenu[currentTools.id]">
+        <div class="tools-item">
+          <keep-alive>
+            <component 
+              :class="currentTools.pid"
+              :component="currentTools"
+              v-bind:is="toolsMenu[currentTools.type]" 
+            ></component>
+          </keep-alive>
         </div>
       </div>
     </div>
@@ -41,21 +49,12 @@ import title from './components/title.vue';
 import titleTools from './tools/title.vue';
 import banner from './components/banner.vue';
 import bannerTools from './tools/banner.vue';
-import config from './minx';
+import { ID } from '@/lib/common';
+import { config , getData } from './minx';
 export default {
-  mixins:[config],
   data(){
     return{
-      componentsList:[
-        {
-          id:'title',
-          title:'公告',
-        },
-        {
-          id:'banner',
-          title:'轮播图',
-        },
-      ],
+      dialog:false,
       componentsMenu:{
         title,
         banner
@@ -64,24 +63,33 @@ export default {
         title:titleTools,
         banner:bannerTools,
       },
-      currentTools:{} // 当前编辑的区块
+      currentTools:{
+        id:null
+      },
+      currentComponent:[], // 当前采用的组件个数
+      pageConfig:config,
     }
   },
   methods:{
+    close(){
+      this.dialog = false;
+    },
     // 添加组件
     addComponent(row){
-      const components = {...this.config.find(item=>item.id==row.id)};
-      console.log(components);
-      let componentsArr = this.currentComponent;
-      if(components){
-        componentsArr.push(components);
+      let componentData = getData(row.type);
+      if(componentData){
+        componentData.id = ID();
+        this.currentComponent.push(componentData);
         this.$nextTick(()=>{
-          // 定位到指定位置
+        // 定位到指定位置
           const lastH5Item = this.$refs[`h5-item-${this.currentComponent.length-1}`];
           const H5DOM = this.$refs[`h5-phone-container`];
           H5DOM.scrollTo(0,lastH5Item[0].offsetTop);
-          this.$store.dispatch('changePageComponents',componentsArr);
           this.$store.dispatch('changeComponentIndex',this.currentComponent.length-1);
+        //   this.$store.dispatch('changePageComponents',this.currentComponent);
+          this.$store.dispatch('changeCompData',componentData);
+          this.currentTools = {...componentData};
+          console.log(componentData.pid);
         })
       }else{
         return;
@@ -89,24 +97,18 @@ export default {
     },
     // 切换编辑区
     changeCurrentComponent(item,index){
+      this.$store.dispatch('changeCompData',item);
       this.$store.dispatch('changeComponentIndex',index);
-      this.currentTools = {
-        ...this.currentComponent[this.componentIndex]
-      }
+      this.currentTools = {...item};
     }
   },
   computed:{
-    currentComponent(){
-      return this.$store.state.page.components;
-    },
     componentIndex(){
-      return this.$store.state.page.componentIndex;
+      return this.$store.state.page.componentIndex
     }
   },
   mounted(){
-    // 初次加载 获取当前页面的component ==> 假设去到了
-    // this.$store.state.page.components
-  }
+  },
 } 
 </script>
 
@@ -142,6 +144,8 @@ export default {
   width: 375px;
   margin-left: 350px;
   height: 700px;
+  background: #f5f5f5;
+  border-radius:50px;
   min-width: 375px;
   margin-right: 50px;
   .h5-phone-layout{
@@ -154,11 +158,11 @@ export default {
       max-height: 625px;
       overflow-y: scroll;
       .h5-phone-item{
-        margin-bottom: 20px;
+        margin-bottom: 8px;
         width: 100%;
         user-select: none;
         cursor: pointer;
-        padding: 4px;
+        padding: 3px;
         border: 1px solid transparent;
       }
       .active{
@@ -172,5 +176,8 @@ export default {
   flex:1;
   border: 1px solid #eee;
   border-right: 0;
+  .tools-container{
+    padding: 20px;
+  }
 }
 </style>

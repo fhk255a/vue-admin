@@ -3,6 +3,7 @@ const page = {
     config:{},
     componentIndex:null,
     components:[],
+    compData:{},
   },
   mutations: {
     pageConfig(state,config){
@@ -17,6 +18,9 @@ const page = {
     componentIndex(state,componentIndex){
       state.componentIndex = componentIndex;
     },
+    compData(state,compData){
+      state.compData = compData;
+    },
   },
   actions: {
     changePageConfig(context, config){
@@ -30,6 +34,9 @@ const page = {
     },
     changeComponentIndex(context, index){
       context.commit('componentIndex',index);
+    },
+    changeCompData(context, compData){
+      context.commit('compData',compData);
     },
   }
 }

@@ -1,6 +1,10 @@
 <template>
   <div class="h5-page-component-banner">
-    {{data.data.content}}
+    <el-carousel indicator-position="outside">
+     <el-carousel-item v-for="(item,index) in data.data" :key="index">
+       {{item.title}}
+     </el-carousel-item>
+    </el-carousel>
   </div>
 </template>
 

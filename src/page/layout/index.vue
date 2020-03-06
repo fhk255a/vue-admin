@@ -132,7 +132,7 @@ export default {
   components:{
     Breadcrumb,
     Menu,
-    Dialog
+    Dialog,
   },
   methods:{
     close(){
