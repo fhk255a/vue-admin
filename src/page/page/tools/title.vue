@@ -46,9 +46,19 @@
       </div>
       <div class="joker-form-item w100">
         <div class="joker-form-item-label">内边距</div>
-        <div class="joker-form-item-content" style="width:200px">
-          <el-slider v-model="component.data.paddingTopBottom"></el-slider>
-          <el-slider v-model="component.data.paddingLeftRight"></el-slider>
+        <div class="joker-form-item-content font">
+          <div class="joker-form-item">
+            <div class="joker-form-item-label">上下：</div>
+            <div class="joker-form-item-content" style="width:200px">
+              <el-slider v-model="component.data.paddingTopBottom"></el-slider>
+            </div>
+          </div>
+          <div class="joker-form-item">
+            <div class="joker-form-item-label">左右：</div>
+            <div class="joker-form-item-content" style="width:200px">
+              <el-slider v-model="component.data.paddingLeftRight"></el-slider>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -67,7 +77,6 @@ export default {
           color:'',
         },
       },
-      value1:0
       // currentComponent:this.$store.state.page.components[this.$store.state.page.componentIndex]
     }
   },
@@ -92,8 +101,15 @@ export default {
   .w100{
     .joker-form-item-label{
       width: 100px;
+      min-width: 100px;
       text-align: right;
       padding-right: 10px;
+    }
+  }
+  .font{
+    .joker-form-item-label{
+      width: 60px;
+      min-width: 50px;
     }
   }
 }

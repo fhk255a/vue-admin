@@ -1,8 +1,18 @@
 <template>
   <div class="h5-page-component-banner">
-    <el-carousel indicator-position="outside">
-     <el-carousel-item v-for="(item,index) in data.data" :key="index">
-       {{item.title}}
+    <div class="foor-title" v-if="data.title">{{data.title}}</div>
+    <el-carousel indicator-position="outside" :height="data.height+'px'">
+     <el-carousel-item v-for="(item,index) in data.data" :key="index" :style="{lineHeight:data.height+'px'}">
+       <div class="banner-item">
+         <img :src="item.image" alt="" >
+         <span class="banner-title" v-if="item.title!=''" 
+         :style="{
+           bottom:data.postion=='bottom'?0:'unset',
+           top:data.postion=='top'?0:'unset',
+           color:data.color,
+           background:data.background}"
+         >{{item.title}}</span>
+       </div>
      </el-carousel-item>
     </el-carousel>
   </div>
@@ -19,6 +29,28 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+.h5-page-component-banner{
+  .banner-item{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    .banner-title{
+      background: rgba(0, 0, 0, 0.13);
+      padding: 10px;
+      right: 0;
+      left: 0;
+      position: absolute;
+    }
+    img{
+      width: 100%;
+    }
+  }
+  .el-carousel__indicators {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    left: 0;
+  }
+}
 </style>

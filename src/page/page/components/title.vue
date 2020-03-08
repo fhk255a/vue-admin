@@ -1,15 +1,14 @@
 <template>
-  <div 
-    :style="{
+  <div class="h5-page-component-title">
+    <div class="foor-title" v-if="data.title">{{data.title}}</div>
+    <div :style="{
       background:data.data.background,
       color:data.data.color,
       textAlign:data.data.textAlign,
       fontSize:data.data.fontSize,
       fontWeight:data.data.fontWeight,
       padding:`${data.data.paddingTopBottom+'px'} ${data.data.paddingLeftRight+'px'}`
-    }"
-    class="h5-page-component-title">
-    <div>{{data.data.content}}</div>
+    }">{{data.data.content}}</div>
   </div>
 </template>
 
@@ -25,7 +24,4 @@ export default {
 </script>
 
 <style lang="scss">
-.h5-page-component-title{
-  padding: 10px;
-}
 </style>

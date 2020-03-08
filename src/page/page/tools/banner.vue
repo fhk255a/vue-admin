@@ -1,7 +1,64 @@
 <template>
   <div class="h5-page-tools-banner">
-    {{component}}
-    <i class="el-icon-plus" @click="openMedia"></i>
+    <div class="joker-form">
+      <div class="joker-form-item w100">
+        <div class="joker-form-item-label">图片高度：</div>
+        <div class="joker-form-item-content">
+          <el-input type="number" @change="changeBackground" v-model="component.height" >
+            <template slot="append">PX</template>
+          </el-Input>
+        </div>
+      </div>
+      <div class="joker-form-item w100">
+        <div class="joker-form-item-label">标题背景色：</div>
+        <div class="joker-form-item-content">
+          <el-color-picker @change="changeBackground" v-model="component.background" show-alpha></el-color-picker>
+        </div>
+      </div>
+      <div class="joker-form-item w100">
+        <div class="joker-form-item-label">标题文本颜色：</div>
+        <div class="joker-form-item-content">
+          <el-color-picker v-model="component.color" @change="changeColor"></el-color-picker>
+        </div>
+      </div>
+      <div class="joker-form-item w100">
+        <div class="joker-form-item-label">标题位置：</div>
+        <div class="joker-form-item-content">
+          <el-radio v-model="component.postion" @change="changePostion" label="top">顶部</el-radio>
+          <el-radio v-model="component.postion" @change="changePostion" label="bottom">底部</el-radio>
+        </div>
+      </div>
+    </div>
+    <div class="banner-container" v-if="component.data.length>0">
+      <div class="joker-form" style="background:#fff" v-for="(item,index) in component.data" :key="item.id">
+        <div class="joker-form-item w100">
+          <div class="joker-form-item-label">标题：</div>
+          <div class="joker-form-item-content">
+            <el-input v-model="item.title"/>
+          </div>
+        </div>
+        <div class="joker-form-item w100">
+          <div class="joker-form-item-label">图片路径：</div>
+          <div class="joker-form-item-content">
+            <el-input class="w100" v-model="item.image" />
+          </div>
+        </div>
+        <div class="joker-form-item w100">
+          <div class="joker-form-item-label">图片：</div>
+          <div class="joker-form-item-content" style="width:80px;">
+            <div v-if="item.image!=''" class="banner-img">
+              <img class="img" :src="item.image"/>
+              <span class="icon-shanchu1 iconfont" @click="item.image=''"></span>
+            </div>
+            <i class="el-icon-plus" @click="openMedia(index)" v-else></i>
+          </div>
+        </div>
+        <div class="mb-20" v-if="index!=component.data.length-1"></div>
+      </div>
+    </div>
+    <div>
+      <el-button class="add" @click="addBanner" >添加</el-button>
+    </div>
     <Dialog title="媒体库" :show="dialog" @close="close">
       <Media @getImage="getImage"/>
     </Dialog>
@@ -26,18 +83,26 @@ export default {
   data(){
     return {
       fileList:[],
-      dialog:false
+      dialog:false,
+      uploadIndex:0,
     }
   },
   methods:{
-    openMedia(){
+    changeBackground(){
+      this.$emit('update',this.component);
+    },
+    changeColor(){
+      this.$emit('update',this.component);},
+    changePostion(){
+      this.$emit('update',this.component);},
+    openMedia(index){
+      this.uploadIndex = index;
       this.dialog = true;
     },
     // 获取图片
     getImage(img){
-      this.component.data[0].image = img;
+      this.component.data[this.uploadIndex].image = img;
       this.close();
-      console.log(img);
     },
     handleRemove(file, fileList) {
       console.log(file, fileList);
@@ -48,6 +113,14 @@ export default {
     },
     close(){
       this.dialog = false;
+    },
+    // 添加banner
+    addBanner(){
+      this.component.data.push({
+        id:ID(),
+        title:'',
+        image:''
+      })
     }
   },
   computed:{
@@ -63,8 +136,35 @@ export default {
   .el-icon-plus{
     font-size: 24px;
     border:1px solid #eee;
-    padding: 40px;
+    background: #fff;
+    padding: 30px;
     border: 1px dashed #ccc;
+  }
+  .mb-20{
+    margin-bottom: 0;
+    padding-top: 20px;
+    height: 1px;
+    width: 100px;
+    border-bottom:1px #070f14 dashed;
+  }
+  .banner-container{
+    background: #fff;
+    padding:10px;
+    .banner-img{
+      position: relative;
+      .iconfont{
+        position: absolute;
+        right: 0;
+        color: #000;
+      }
+    }
+  }
+  .add{
+    margin-top: 10px;
+    cursor: pointer;
+    border: 0;
+    border-top: 1px solid #eee;
+    text-align: center;
   }
 }
 </style>
