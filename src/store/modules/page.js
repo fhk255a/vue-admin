@@ -1,9 +1,13 @@
+import list from '../data/pageList.js';
+import componentLib from '../data/componentLib.js';
 const page = {
   state:{
     config:{},
     componentIndex:null,
     components:[],
     compData:{},
+    list:list,
+    componentLib:componentLib,
   },
   mutations: {
     pageConfig(state,config){
@@ -21,6 +25,12 @@ const page = {
     compData(state,compData){
       state.compData = compData;
     },
+    componentLib(state,list){
+      state.componentLib.splice(list.index,1,list.data);
+    },
+    list(state,list){
+      state.list=list;
+    }
   },
   actions: {
     changePageConfig(context, config){
@@ -37,6 +47,12 @@ const page = {
     },
     changeCompData(context, compData){
       context.commit('compData',compData);
+    },
+    changeComponentLib(context, list){
+      context.commit('componentLib',list);
+    },
+    changePageList(context, list){
+      context.commit('list',list);
     },
   }
 }

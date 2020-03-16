@@ -445,14 +445,13 @@ export default {
   }
   .footer-btns{
     position: fixed;
-    right: 10px;
+    right: 80px;
     top: 4px;
     z-index: 100;
     .el-button{
       background: #070f14;
       color: #fff;
       padding: 8px 20px;
-
     }
   }
 }

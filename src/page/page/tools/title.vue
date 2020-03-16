@@ -1,71 +1,64 @@
 <template>
   <div class="h5-page-tools-title">
-    <div class="joker-form">
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">内容</div>
-        <div class="joker-form-item-content">
-          <el-input v-model="component.data.content" @change="changeInput"/>
+    <el-tabs type="border-card">
+      <el-tab-pane label="基本配置">
+        <div class="joker-form">
+          <Item title="当前组件ID：">{{currentData.id}}</Item>
+          <Item title="楼层标题：">
+            <el-input v-model="currentData.title" @change="changeInput()"/>
+          </Item>
+          <Item title="是否显示标题：">
+            <el-radio v-model="currentData.isShowTitle" :label="true" @change="update()">显示</el-radio>
+            <el-radio v-model="currentData.isShowTitle" :label="false" @change="update()">隐藏</el-radio>
+          </Item>
+          <Item title="文本颜色：">
+            <el-color-picker v-model="currentData.color" @change="changeInput()"></el-color-picker>
+          </Item>
         </div>
-      </div>
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">文本颜色</div>
-        <div class="joker-form-item-content">
-          <el-color-picker v-model="component.data.color"></el-color-picker>
+      </el-tab-pane>
+      <el-tab-pane label="内容配置">
+        <div class="joker-form">
+          <Item title="公告内容：">
+            <el-input v-model="component.data.content" @change="changeInput"/>
+          </Item>
+          <Item title="文本颜色：">
+            <el-color-picker v-model="component.data.color"></el-color-picker>
+          </Item>
+          <Item title="背景颜色：">
+            <el-color-picker v-model="component.data.background"></el-color-picker>
+          </Item>
+          <Item title="字体大小：">
+            <el-radio v-model="component.data.fontSize" label="14px">14px</el-radio>
+            <el-radio v-model="component.data.fontSize" label="16px">l6px</el-radio>
+            <el-radio v-model="component.data.fontSize" label="18px">18px</el-radio>
+            <el-radio v-model="component.data.fontSize" label="20px">20px</el-radio>
+          </Item>
+          <Item title="字体加粗：">
+            <el-radio v-model="component.data.fontWeight" label="normal">普通</el-radio>
+            <el-radio v-model="component.data.fontWeight" label="bold">加粗</el-radio>
+            <el-radio v-model="component.data.fontWeight" label="lighter">更细</el-radio>
+          </Item>
+          <Item title="文本布局：">
+            <el-radio v-model="component.data.textAlign" label="left">居左</el-radio>
+            <el-radio v-model="component.data.textAlign" label="center">居中</el-radio>
+            <el-radio v-model="component.data.textAlign" label="right">居右</el-radio>
+          </Item>
+          <Item title="内边距：">
+            <Item title="上下：">
+              <el-slider style="width:200px" v-model="component.data.paddingTopBottom"></el-slider>
+            </Item>
+            <Item title="左右：">
+              <el-slider style="width:200px" v-model="component.data.paddingLeftRight"></el-slider>
+            </Item>
+          </Item>
         </div>
-      </div>
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">背景颜色</div>
-        <div class="joker-form-item-content">
-          <el-color-picker v-model="component.data.background"></el-color-picker>
-        </div>
-      </div>
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">字体大小</div>
-        <div class="joker-form-item-content">
-          <el-radio v-model="component.data.fontSize" label="14px">14px</el-radio>
-          <el-radio v-model="component.data.fontSize" label="16px">l6px</el-radio>
-          <el-radio v-model="component.data.fontSize" label="18px">18px</el-radio>
-          <el-radio v-model="component.data.fontSize" label="20px">20px</el-radio>
-        </div>
-      </div>
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">字体加粗</div>
-        <div class="joker-form-item-content">
-          <el-radio v-model="component.data.fontWeight" label="normal">普通</el-radio>
-          <el-radio v-model="component.data.fontWeight" label="bold">加粗</el-radio>
-          <el-radio v-model="component.data.fontWeight" label="lighter">更细</el-radio>
-        </div>
-      </div>
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">文本布局</div>
-        <div class="joker-form-item-content">
-          <el-radio v-model="component.data.textAlign" label="left">居左</el-radio>
-          <el-radio v-model="component.data.textAlign" label="center">居中</el-radio>
-          <el-radio v-model="component.data.textAlign" label="right">居右</el-radio>
-        </div>
-      </div>
-      <div class="joker-form-item w100">
-        <div class="joker-form-item-label">内边距</div>
-        <div class="joker-form-item-content font">
-          <div class="joker-form-item">
-            <div class="joker-form-item-label">上下：</div>
-            <div class="joker-form-item-content" style="width:200px">
-              <el-slider v-model="component.data.paddingTopBottom"></el-slider>
-            </div>
-          </div>
-          <div class="joker-form-item">
-            <div class="joker-form-item-label">左右：</div>
-            <div class="joker-form-item-content" style="width:200px">
-              <el-slider v-model="component.data.paddingLeftRight"></el-slider>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
 <script>
+import Item from '@/components/Item';
 export default {
   props:['component'],
   data(){
@@ -90,8 +83,9 @@ export default {
   },
   mounted(){
     this.currentData = {...this.$store.state.page.compData};
-    console.log(this.$store.state.page.compData)
-    console.log(this.component)
+  },
+  components:{
+    Item
   }
 }
 </script>
@@ -100,8 +94,6 @@ export default {
 .h5-page-tools-title{
   .w100{
     .joker-form-item-label{
-      width: 100px;
-      min-width: 100px;
       text-align: right;
       padding-right: 10px;
     }

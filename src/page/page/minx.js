@@ -1,3 +1,4 @@
+import { ID } from '@/lib/common';
 export const config = [{
     type:'title',
     title:'公告',
@@ -11,13 +12,22 @@ export const config = [{
     title:'商品列表',
   },
 ];
-
+export const pageInit = {
+  name:'',
+  remark:'',
+  id:ID(),
+  status:false,
+  link:'',
+  createTime:new Date().getTime(),
+  updateTime:'',
+}
 export const getData =(type)=>{
   switch(type){
     case 'title':
       return {
         type:'title',
         title:'公告',
+        isShowTitle:true,
         data:{
           content:'默认文本',
           color:'#333333',
@@ -35,9 +45,10 @@ export const getData =(type)=>{
         type:'banner',
         title:'轮播图',
         color:'#333',
+        isShowTitle:true,
         background:'rgba(0,0,0,0.13)',
         postion:'bottom',
-        height:'300',
+        height:'200',
         data:[]
       }
     case 'product':
@@ -45,6 +56,7 @@ export const getData =(type)=>{
         type:'product',
         title:'商品列表',
         itemType:'50%',
+        isShowTitle:true,
         showBtn:'1',
         showRemark:'1',
         showPrice:'1',

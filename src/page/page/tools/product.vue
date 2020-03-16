@@ -3,75 +3,58 @@
     <el-tabs type="border-card">
       <el-tab-pane label="基本配置">
         <div class="joker-form">
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">楼层标题：</div>
-            <div class="joker-form-item-content">
-              <el-input v-model="currentData.title" @change="changeInput()"/>
-            </div>
-          </div>
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">文本颜色</div>
-            <div class="joker-form-item-content">
-              <el-color-picker v-model="currentData.color" @change="changeInput()"></el-color-picker>
-            </div>
-          </div>
+          <Item title="当前组件ID：">{{currentData.id}}</Item>
+          <Item title="楼层标题：">
+            <el-input v-model="currentData.title" @change="changeInput()"/>
+          </Item>
+          <Item title="是否显示标题：">
+            <el-radio v-model="currentData.isShowTitle" :label="true" @change="update()">显示</el-radio>
+            <el-radio v-model="currentData.isShowTitle" :label="false" @change="update()">隐藏</el-radio>
+          </Item>
+          <Item title="文本颜色：">
+            <el-color-picker v-model="currentData.color" @change="changeInput()"></el-color-picker>
+          </Item>
         </div>
       </el-tab-pane>
       <el-tab-pane label="内容配置">
         <div class="joker-form">
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">格局</div>
-            <div class="joker-form-item-content">
-              <el-radio v-model="currentData.itemType" @change="changeInput()" label="50%">一行2个</el-radio>
-              <el-radio v-model="currentData.itemType" @change="changeInput()" label="33.3%">一行3个</el-radio>
-            </div>
-          </div>
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">显示名称</div>
-            <div class="joker-form-item-content">
-              <el-radio v-model="currentData.showTitle" @change="changeInput()" label="1">是</el-radio>
-              <el-radio v-model="currentData.showTitle" @change="changeInput()" label="0">否</el-radio>
-            </div>
-          </div>
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">显示备注</div>
-            <div class="joker-form-item-content">
-              <el-radio v-model="currentData.showRemark" @change="changeInput()" label="1">是</el-radio>
-              <el-radio v-model="currentData.showRemark" @change="changeInput()" label="0">否</el-radio>
-            </div>
-          </div>
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">显示价格</div>
-            <div class="joker-form-item-content">
-              <el-radio v-model="currentData.showPrice" @change="changeInput()" label="1">是</el-radio>
-              <el-radio v-model="currentData.showPrice" @change="changeInput()" label="0">否</el-radio>
-            </div>
-          </div>
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">显示按钮</div>
-            <div class="joker-form-item-content">
-              <el-radio v-model="currentData.showBtn" @change="changeInput()" label="1">是</el-radio>
-              <el-radio v-model="currentData.showBtn" @change="changeInput()" label="0">否</el-radio>
-            </div>
-          </div>
-          <div class="joker-form-item w100">
-            <div class="joker-form-item-label">商品</div>
-            <div class="joker-form-item-content">
-              <ul class="product-list">
-                <li :key="index" class="product-list-item" v-for="(item,index) in currentData.data">
+          <Item title="商品布局：">
+            <el-radio v-model="currentData.itemType" @change="changeInput()" label="50%">一行2个</el-radio>
+            <el-radio v-model="currentData.itemType" @change="changeInput()" label="33.3%">一行3个</el-radio>
+          </Item>
+          <Item title="显示名称：">
+            <el-radio v-model="currentData.showTitle" @change="changeInput()" label="1">是</el-radio>
+            <el-radio v-model="currentData.showTitle" @change="changeInput()" label="0">否</el-radio>
+          </Item>
+          <Item title="显示备注：">
+            <el-radio v-model="currentData.showRemark" @change="changeInput()" label="1">是</el-radio>
+            <el-radio v-model="currentData.showRemark" @change="changeInput()" label="0">否</el-radio>
+          </Item>
+          <Item title="显示价格：">
+            <el-radio v-model="currentData.showPrice" @change="changeInput()" label="1">是</el-radio>
+            <el-radio v-model="currentData.showPrice" @change="changeInput()" label="0">否</el-radio>
+          </Item>
+          <Item title="显示按钮：">
+            <el-radio v-model="currentData.showBtn" @change="changeInput()" label="1">是</el-radio>
+            <el-radio v-model="currentData.showBtn" @change="changeInput()" label="0">否</el-radio>
+          </Item>
+          <Item title="商品：">
+            <ul class="product-list">
+              <li :key="index" class="product-list-item" v-for="(item,index) in currentData.data">
+                <div class="item-body">
                   <div>
                     <img width="80px" height="80px" :src="item.mainImage" alt="">
                   </div>
-                  {{item.remark}}
                   <el-input v-model="item.remark" @change="changeRemark()"/>
                   <span class="iconfont icon-shanchu1" @click="remove(index)"></span>
-                </li>
-                <li class="product-list-add" @click="dialog=true">
-                  <i class="el-icon-plus" />
-                </li>
-              </ul>
-            </div>
-          </div>
+                </div>
+                <p class="item-remark">备注：{{item.remark}}</p>
+              </li>
+              <li class="product-list-add" @click="dialog=true">
+                <i class="el-icon-plus" />
+              </li>
+            </ul>
+          </Item>
         </div>
       </el-tab-pane>
     </el-tabs>
@@ -109,20 +92,13 @@
 
 <script>
 import Dialog from '@/components/Dialog';
+import Item from '@/components/Item';
 export default {
   props:['component'],
   data(){
     return{
-      currentData:{
-        data:{
-          content:'',
-          background:'',
-          color:'',
-        },
-      },
       dialog:false,
       tableData:[]
-      // currentComponent:this.$store.state.page.components[this.$store.state.page.componentIndex]
     }
   },
   methods:{
@@ -140,28 +116,33 @@ export default {
     },
     close(){
       this.dialog = false;
+      this.$refs['productTable'].clearSelection();
     },
     // 添加商品
     add(){
       let res = this.$refs['productTable'].selection;
       res.forEach(item=>{
         if(this.component.data.findIndex(it=>it.id == item.id)==-1){
-          this.currentData.data.push(item);
+          this.currentData.data.push({...item});
         }
       });
       this.close();
     }
   },
+  computed:{
+    currentData(){
+      return this.$store.state.page.compData;
+    }
+  },
   mounted(){
-    this.currentData = {...this.$store.state.page.compData};
     this.tableData = this.$store.state.product.list.data.items.map(item=>{
-      item.remark = '这是默认商品备注';
       item.status = item.status == 1? true:false;
       return item;
     })
   },
   components:{
-    Dialog
+    Dialog,
+    Item
   }
 }
 </script>
@@ -170,8 +151,6 @@ export default {
 .h5-page-tools-title{
   .w100{
     .joker-form-item-label{
-      width: 100px;
-      min-width: 100px;
       text-align: right;
       padding-right: 10px;
     }
@@ -186,9 +165,15 @@ export default {
     flex-wrap: wrap;
     display: flex;
     .product-list-item{
+      width: 100%;
       margin-right: 8px;
-      display: flex;
-      align-items: center;
+      .item-body{
+        display: flex;
+        align-items: center;
+      }
+      .item-remark{
+        font-size: 12px;
+      } 
       padding: 10px;
       margin-bottom: 10px;
       border: 1px solid #eee;

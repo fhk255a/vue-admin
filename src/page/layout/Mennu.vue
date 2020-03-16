@@ -1,6 +1,6 @@
 <template>
   <div class="joker-component-menu">
-    <div class="logo" v-show="!$store.state.func.collapse">LOGO</div>
+    <div class="logo" v-show="!$store.state.func.collapse" @click="$router.push('/')">LOGO</div>
     <el-menu class="joker-menu el-menu-vertical" 
       :collapse="$store.state.func.collapse"
       :unique-opened="true"  
@@ -117,6 +117,7 @@ export default {
       font-weight: 600;
       font-size: 36px;
       color: #fff;
+      cursor: pointer;
     }
     .el-submenu .el-menu-item ,.el-menu-item, .el-submenu__title{
       height: 40px;

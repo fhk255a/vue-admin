@@ -1,6 +1,6 @@
 <template>
   <div class="h5-page-component-banner">
-    <div class="foor-title" v-if="data.title">{{data.title}}</div>
+    <div class="foor-title"  v-if="data.isShowTitle">{{data.title}}</div>
     <el-carousel indicator-position="outside" :height="data.height+'px'">
      <el-carousel-item v-for="(item,index) in data.data" :key="index" :style="{lineHeight:data.height+'px'}">
        <div class="banner-item">
