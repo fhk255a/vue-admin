@@ -20,55 +20,28 @@
         </div>
       </Card>
       <Card title="商品基础信息" class="j-product-base-info">
-        <ul class="joker-form">
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">标题</div>
-            <div class="joker-form-item-content">
-              <el-input v-model="productInfo.title_zh"/>
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">国际标题</div>
-            <div class="joker-form-item-content">
-              <el-input v-model="productInfo.title"/>
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">商品来源</div>
-            <div class="joker-form-item-content">
-              <el-input v-model="productInfo.from_url"/>
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">进货价</div>
-            <div class="joker-form-item-content">
-              <el-input v-model="productInfo.purchaseRange" disabled/>
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">销售价</div>
-            <div class="joker-form-item-content">
-              <el-input v-model="productInfo.priceRange"/>
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">分类</div>
-            <div class="joker-form-item-content">
-              {{productInfo.baseCategoryName}}
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">入库时间</div>
-            <div class="joker-form-item-content">
-              {{productInfo.create_time}}
-            </div>
-          </li>
-          <li class="joker-form-item">
-            <div class="joker-form-item-label">更新时间</div>
-            <div class="joker-form-item-content">
-              {{productInfo.update_time}}
-            </div>
-          </li>
+        <div class="joker-form">
+          <Item title="标题" width="80px">
+            <el-input style="width:500px" v-model="productInfo.title_zh"/>
+          </Item>
+          <Item title="国际标题" width="80px">
+            <el-input style="width:500px" v-model="productInfo.title"/>
+          </Item>
+          <Item title="进货价" width="80px">
+            <el-input v-model="productInfo.purchaseRange" disabled/>
+          </Item>
+          <Item title="销售价" width="80px">
+            <el-input v-model="productInfo.priceRange"/>
+          </Item>
+          <Item title="分类" width="80px">
+            {{productInfo.baseCategoryName}}
+          </Item>
+          <Item title="入库时间" width="80px">
+            {{productInfo.create_time}}
+          </Item>
+          <Item title="更新时间" width="80px">
+            {{productInfo.update_time}}
+          </Item>
           <li class="joker-form-item" v-for="(item,index) in attrList" :key="index">
             <div class="joker-form-item-label">{{item.attributeNameZH}}</div>
             <div class="joker-form-item-content attr-list">
@@ -82,7 +55,7 @@
               </div>
             </div>
           </li>
-        </ul>
+        </div>
       </Card>
     </div>
 <!-- SKU -->
@@ -132,14 +105,12 @@
         <div class="iconfont icon-shezhishedingpeizhichilun" @click="editOther"></div>
       </template>
       <div>
-        <ul class="joker-form">
-          <li class="joker-form-item" v-for="(item,index) in productDetails.propList" :key="index">
-            <div class="joker-form-item-label">{{item.propKeyZH}}：</div>
-            <div class="joker-form-item-content">
-              <span>{{item.propValue.propValueZH}}</span>
-            </div>
-          </li>
-        </ul>
+        <div class="joker-form">
+          <Item :title="item.propKeyZH" 
+            v-for="(item,index) in productDetails.propList" :key="index">
+            {{item.propValue.propValueZH}}
+          </Item>
+        </div>
       </div>
     </Card>
 <!-- 商品详情 -->
@@ -206,7 +177,9 @@
 </template>
 
 <script>
+import PRODUCT from '@/api/product';
 import Card from '@/components/Card';
+import Item from '@/components/Item';
 import Editor from '@/components/Editor';
 import productData from '@/store/data/product';
 import isPass from '@/lib/esss';
@@ -216,25 +189,28 @@ export default {
     // 获取商品详情
     getData(id){
       const info = productData.data.items.find(item=>item.id == id);
-      if(!info){
-        this.notify(`商品<span style="color:#409EFF">[ ${id} ]</span>不存在`);
-        return;
-      }
-      this.$store.dispatch('changeProductInfo',info);
-      const res = this.$store.state.product.details;
-      if(res.code == 200){
-        this.productInfo = info;
-        this.productDetails = res.data.details;
-        this.mainImage = this.productInfo.mainImage;
-        this.skuList = res.data.details.skuList.map(item=>{
-          item.status = item.status == 1 ? true : false;
-          return item;
-        });
-        this.attrList = res.data.details.attributes;
-        this.propList = res.data.details.propList;
-        this.htmlDesc = res.data.details.desc;
-        this.notify(`<span style="color:#409EFF">你已进入商品详情页，除了基础信息，其他均为假数据</span>`);
-      }
+      PRODUCT.details(id).then(res=>{
+        if(res.code == 200){
+          this.productInfo = res.data;
+          this.mainImage = res.data.mainImage;
+          // 假数据
+          const falseData = this.$store.state.product.details;
+          this.productDetails = falseData.data.details;
+          this.mainImage = this.productInfo.mainImage;
+          this.skuList = falseData.data.details.skuList.map(item=>{
+            item.status = item.status == 1 ? true : false;
+            return item;
+          });
+          this.attrList = falseData.data.details.attributes;
+          this.propList = falseData.data.details.propList;
+          this.htmlDesc = falseData.data.details.desc;
+          this.notify(`<span class="color-blue">你已进入商品详情页，除了基础信息，其他均为假数据</span>`,'提示','warning');
+        }else{
+          this.notify(`<span class="color-red">${res.msg}</span>`,'EMMMMM...','error');
+        }
+      }).catch(err=>{
+        
+      })
     },
     // 修改详情页
     editDetails(){
@@ -340,7 +316,8 @@ export default {
   },
   components:{
     Card,
-    Editor
+    Editor,
+    Item
   }
 }
 </script>

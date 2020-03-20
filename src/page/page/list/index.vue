@@ -55,14 +55,11 @@ export default {
         size:this.page.size
       }
       PRODUCT.list(params).then(res=>{
-        console.log(res);
       }).catch(err=>{
 
       })
-      console.log(res);
       this.tableList = res;
       this.page.total = res.length;
-      console.log(this.tableList);
     }
   },
   components:{

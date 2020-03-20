@@ -68,30 +68,24 @@ export default {
     // 获取商品列表
     getList(){
       // TODO 发请求 获取商品
-      const res = this.$store.state.product.list;
-      console.log(this.header);
       let params = {
         current:this.page.current,
         size:this.page.size,
         id:this.header.id,
         status:this.header.status,
-        title:this.header.title_zh
+        title_zh:this.header.title
       }
       PRODUCT.list(params).then(res=>{
         if(res.code == 200){
-          console.log(res.data)
-          this.tableList = res.data.data;
+          this.tableList = res.data.data.map(item=>{
+            item.status = item.status==1?true:false;
+            return item;
+          });
           this.page.total = res.data.total;
         }
       }).catch(err=>{
 
       });
-      // if(res.code == 200){
-      //   this.tableList = res.data.items.map(item=>{
-      //     item.status = item.status == 1 ? true : false;
-      //     return item;
-      //   });
-      // }
     },
     // 切换状态
     changeStatus(item){
@@ -100,14 +94,15 @@ export default {
     },
     search(from){
       this.header = from;
+      this.getList();
     },
     clear(data){
       this.header={
         id:'',
-        status:'1',
+        status:1,
         title:'',
       }
-      this.notify(`<span style="color:#070f14">重置了搜索条件</span>`);
+      this.notify(`<span class="color-green">重置了搜索条件</span>`);
     },
     getData(row){
       this.row = row;
@@ -145,7 +140,7 @@ export default {
       tableList:[],
       header:{
         id:'',
-        status:'1',
+        status:1,
         title:'',
       },
       table:[
@@ -167,6 +162,10 @@ export default {
         {
           label:'售价',
           value:'price_range_cn'
+        },
+        {
+          label:'分类',
+          value:'baseCategoryName'
         },
         {
           label:'状态',
@@ -201,12 +200,12 @@ export default {
           key:'status',
           data:[
             {
-              label:'男',
-              value:'1'
+              label:'上架',
+              value:1
             },
             {
-              label:'女',
-              value:'0',
+              label:'下架',
+              value:0,
             }
           ]
         }

@@ -1,5 +1,5 @@
 import request from '@/lib/axios';
-const URL = '/product';
+const URL = '/order';
 function http (request) {
   return new Promise((resolve, reject) => {
     request.then(res => {
@@ -13,7 +13,7 @@ function http (request) {
     })
   })
 }
-const PRODUCT = {
+const ORDER = {
   list(params){
     let promise = request({
       url: URL+'/list',
@@ -22,23 +22,5 @@ const PRODUCT = {
     });
     return http(promise);
   },
-  add(data){
-    let promise = request({
-      url: URL+'/add',
-      method: 'post',
-      data
-    });
-    return http(promise);
-  },
-  details(id){
-    let promise = request({
-      url: URL+'/details',
-      method: 'get',
-      params:{
-        id
-      }
-    });
-    return http(promise);
-  },
-}
-export default PRODUCT;
+};
+export default ORDER;

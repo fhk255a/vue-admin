@@ -77,10 +77,6 @@ export default {
     search(){
       let data = {};
       let li = ``;
-      // this.header.forEach(item=>{
-      //   data[item.key] = item.value;
-      //   li+=`<li>${item.key} : ${item.value}</li>`;
-      // })
       for (const key in this.header) {
         li+=`<li>${key} : ${this.header[key]}</li>`;
       }
@@ -90,18 +86,8 @@ export default {
     },
     // 清空内容
     clear(){
-      // 恢复默认表单数据
-      // this.currentForm.map(item=>{
-      //   for(let obj in this.initForm){
-      //     if(item.key == obj){
-      //       item.value = this.initForm[obj];
-      //       break;
-      //     }
-      //   }
-      //  return item;
-      // })
       this.$emit('search',this.currentForm);
-      this.notify(`<span style="color:#070f14">重置了搜索条件</span>`);
+      this.notify(`<span class="color-green>重置了搜索条件</span>`);
     }
   }
 }

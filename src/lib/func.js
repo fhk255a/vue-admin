@@ -1,17 +1,17 @@
 import Vue from 'vue';
 import {Notification}  from 'element-ui';
 // 通知提醒
-Vue.prototype.notify=(msg,type,title,subTitle=null)=>{
+Vue.prototype.notify=(msg,title="说明",type="info",subTitle=null)=>{
   Notification({
-		type:type?type:'info',
-    title: title?title:'操作提示',
+		type:type,
+    title: title,
     dangerouslyUseHTMLString: true,
     // duration:3,
     message: `<div>
-                ${!subTitle?`<p style="color:#ff9800">演示，不发任何请求。</p>
-                <p style="color:#666">只是告知你干了什么操作。</p>`:`<p style="color:#666"></p>${subTitle}</p>`}
+                ${subTitle?`<p style="color:#666"></p>${subTitle}</p>`:''}
                 <p class="notify-list">${msg}</p>
-              <div>`});
+							<div>`
+	});
 }
 
 // 格式化时间

@@ -6,7 +6,7 @@
       <Table :tableList="tableList" :config="tableConfig">
         <!-- 创建时间 -->
         <template slot-scope="row" slot="createTime">
-          {{$timer(row.scope.data.createTime)}}
+          {{$timer(row.scope.data.createTime*1)}}
         </template>
         <!-- 订单状态 -->
         <template slot-scope="row" slot="orderStatus">
@@ -38,11 +38,13 @@ import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
 import isPass from '@/lib/esss';
+import ORDER from '@/api/order';
 export default {
   mixins:[isPass],
   methods:{
     changePage(page){
       this.page = page;
+      this.getData();
     },
     // 冻结订单
     viewOrder(item){
@@ -71,10 +73,15 @@ export default {
     // 获取订单列表
     getData(){
       // TODO 订单列表请求
-      const res = this.$store.state.order.list;
-      if(res.code == 200){
-        this.tableList = res.data.records;
+      let params = {
+        current:this.page.current,
+        size:this.page.size,
+        ...this.header
       }
+      ORDER.list(params).then(res=>{
+        this.page.total = res.data.total;
+        this.tableList = res.data.data;
+      }).catch();
     }
   },
   components:{
@@ -91,9 +98,8 @@ export default {
         size:10
       },
       header:{
-        orderId:'',
+        id:'',
         userId:'',
-        time:'',
         orderStatus:'',
         payStatus:'',
       },
