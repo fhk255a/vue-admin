@@ -36,7 +36,7 @@
       </Table>
     </Container>
     <div class="mb-20" />
-    <Page @changePage="changePage" align="right"/>
+    <Page @changePage="changePage" :page="page" align="right"/>
   </div>
 </template>
 
@@ -46,6 +46,7 @@ import Table from '@/components/Table';
 import Container from '@/components/Container';
 import SearchForm from '@/components/SearchForm';
 import isPass from '@/lib/esss';
+import PRODUCT from '@/api/product';
 export default {
   mixins:[isPass],
   components:{
@@ -61,18 +62,36 @@ export default {
   methods:{
     // 切换分页
     changePage(page){
-      console.log(page);
+      this.page = page;
+      this.getList();
     },
     // 获取商品列表
     getList(){
       // TODO 发请求 获取商品
       const res = this.$store.state.product.list;
-      if(res.code == 200){
-        this.tableList = res.data.items.map(item=>{
-          item.status = item.status == 1 ? true : false;
-          return item;
-        });
+      console.log(this.header);
+      let params = {
+        current:this.page.current,
+        size:this.page.size,
+        id:this.header.id,
+        status:this.header.status,
+        title:this.header.title_zh
       }
+      PRODUCT.list(params).then(res=>{
+        if(res.code == 200){
+          console.log(res.data)
+          this.tableList = res.data.data;
+          this.page.total = res.data.total;
+        }
+      }).catch(err=>{
+
+      });
+      // if(res.code == 200){
+      //   this.tableList = res.data.items.map(item=>{
+      //     item.status = item.status == 1 ? true : false;
+      //     return item;
+      //   });
+      // }
     },
     // 切换状态
     changeStatus(item){
@@ -118,6 +137,11 @@ export default {
   },
   data(){
     return{
+      page:{
+        current:1,
+        size:10,
+        total:0
+      },
       tableList:[],
       header:{
         id:'',

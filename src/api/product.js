@@ -1,5 +1,5 @@
 import request from '@/lib/axios';
-const URL = '/h5';
+const URL = '/product';
 function requestHttp(request) {
   return new Promise((resolve, reject) => {
     request.then(res => {
@@ -13,7 +13,6 @@ function requestHttp(request) {
     })
   })
 }
-
 const PRODUCT = {
   list(params){
     let promise = request({
@@ -21,7 +20,15 @@ const PRODUCT = {
       method: 'get',
       params
     });
-    return requestHttp(promise);
-  }
+    return http(promise);
+  },
+  add(data){
+    let promise = request({
+      url: URL+'/add',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
 }
 export default PRODUCT;

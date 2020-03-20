@@ -3,7 +3,7 @@
     <el-pagination
       :class="align=='right'?'text-right':''"
       @size-change="changeSize"
-      @current-change="changeSize"
+      @current-change="changeCurrent"
       :current-page="page.current"
       :page-sizes="size"
       :page-size="page.size"
@@ -36,9 +36,14 @@ export default {
     }
   },
   methods:{
-    changeSize(){
+    changeCurrent(page){
+      this.page.current = page;
       this.$emit('changePage',this.page)
     },
+    changeSize(page){
+      this.page.size = page;
+      this.$emit('changePage',this.page)
+    }
   }
 }
 </script>
