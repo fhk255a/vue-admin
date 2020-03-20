@@ -49,8 +49,7 @@ export default {
     // 冻结订单
     viewOrder(item){
       this.$router.push({
-        path:`/order/details/${item.id}`,
-        query:item
+        path:`/order/details/${item.id}`
       })
     },
     // 取消订单
@@ -60,15 +59,21 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message.success('取消成功!');
-        const INDEX = this.tableList.findIndex(item=>item.id==row.id);
-        this.tableList[INDEX].orderStatus = 'CANCEL';
+        ORDER.cancel(row.id).then(res=>{
+          if(res.code == 200){
+            this.$message.success('取消成功!');
+            this.getData();
+          }else{
+            this.$message.error(res.msg);
+          }
+        })
       }).catch(() => {
         this.notify('您点了取消');          
       });
     },
     search(form){
       this.header = form;
+      this.getData();
     },
     // 获取订单列表
     getData(){
@@ -148,7 +153,7 @@ export default {
         {
           type:'input',
           label:'订单ID',
-          key:'orderId'
+          key:'id'
         },
         {
           type:'input',

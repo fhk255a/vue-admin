@@ -22,5 +22,27 @@ const ORDER = {
     });
     return http(promise);
   },
+  // 取消订单
+  cancel(id){
+    let promise = request({
+      url: URL+'/cancel',
+      method: 'post',
+      data:{
+        id
+      }
+    });
+    return http(promise);
+  },
+  // 查询订单
+  details(id){
+    let promise = request({
+      url: URL+'/details',
+      method: 'get',
+      params:{
+        id
+      }
+    });
+    return http(promise);
+  },
 };
 export default ORDER;
