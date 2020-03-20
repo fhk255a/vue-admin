@@ -6,7 +6,7 @@ import router from '@/router';
 
 // 创建axios
 const request = axios.create({
-  baseURL: baseUrl
+  baseURL: 'http://localhost:3000'
 });
 
 // 发送请求
@@ -33,16 +33,16 @@ request.interceptors.request.use(
 request.interceptors.response.use(
   response => {
     // 响应拦截: 成功
-    if (response.data.code == 401) {
-      MessageBox.confirm('你还没登录噢，是否去登录?', '验证失败', {
-        confirmButtonText: '是',
-        cancelButtonText: '否',
-        type: 'error'
-      }).then(() => {
-        removeToken();
-        router.push('/login');
-      })
-    }
+    // if (response.data.code == 401) {
+    //   MessageBox.confirm('你还没登录噢，是否去登录?', '验证失败', {
+    //     confirmButtonText: '是',
+    //     cancelButtonText: '否',
+    //     type: 'error'
+    //   }).then(() => {
+    //     removeToken();
+    //     router.push('/login');
+    //   })
+    // }
     return response;
   },
   error => {

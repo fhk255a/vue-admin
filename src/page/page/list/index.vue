@@ -22,6 +22,7 @@ import SearchForm from '@/components/SearchForm';
 import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
+import PRODUCT from '@/api/product';
 export default {
   mounted(){
     this.getData();
@@ -29,6 +30,7 @@ export default {
   methods:{
     search(form){
       this.header = form;
+      this.getData();
     },
     changePage(page){
       this.page = page;
@@ -47,6 +49,16 @@ export default {
     // 获取列表页数据
     getData(){
       const res = this.$store.state.page.list;
+      let params = {
+        ...this.header,
+        current:this.page.current,
+        size:this.page.size
+      }
+      PRODUCT.list(params).then(res=>{
+        console.log(res);
+      }).catch(err=>{
+
+      })
       console.log(res);
       this.tableList = res;
       this.page.total = res.length;
