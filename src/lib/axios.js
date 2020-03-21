@@ -6,7 +6,7 @@ import router from '@/router';
 
 // 创建axios
 const request = axios.create({
-  baseURL: 'http://localhost:3000'
+  baseURL: 'http://127.0.0.1:3000'
 });
 
 // 发送请求
@@ -15,6 +15,7 @@ request.interceptors.request.use(
     if (getToken()) {
       config.headers['Authorization'] = getToken();
     }
+    // config.headers['Authorization'] = '11111';
     // 请求拦截: 成功
     if (config.method === 'post') {
       // 解析请求的json

@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import USER from '@/api/user';
 import Cookie from '@/lib/cookie';
 export default {
   data(){
@@ -44,9 +45,22 @@ export default {
   },
   methods:{
     login(){
-      const res = this.ALLUSERS.find(item=>item.username == this.username && item.password == this.password);
+      const adata = this.ALLUSERS.find(item=>item.username == this.username && item.password == this.password);
       const role = this.$store.state.competence.roleList;
       let timer = null;
+      USER.login(this.username,this.password).then(res=>{
+        const MENU = role.find(item=>item.id*1 == adata.role*1);
+        Cookie.set('vue-admin-token',res.data.token)
+        Cookie.set('vue-admin-userInfo',JSON.stringify(res));
+        Cookie.set('vue-admin-menu',MENU.menu)
+        Cookie.set('vue-admin-resource',MENU.resource)
+        this.$store.dispatch('changeToken',res.data.token);
+        this.$store.dispatch('changeUserInfo',adata);
+        this.$store.dispatch('changeUserMenu',MENU.menu);
+        this.$store.dispatch('changeUserResource',MENU.resource);
+        window.location.reload();
+      });
+      return;
       if(res){
         // 假装有token 
         res.token = 'sdAOSsdgFJDOASFJdfLLFajshdGLKSFSadfPODsdgFAHSDsfdgsASDIWHSjgLDFJ';

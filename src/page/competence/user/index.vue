@@ -1,6 +1,6 @@
 <template>
   <div class="joker-page-user">
-    <Search-form :config="searchConfig" :header="header"></Search-form>
+    <Search-form :config="searchConfig" :header="header" @search="search"></Search-form>
     <div class="mb-20"/>
     <Container>
       <el-button @click="add()" v-if="isPass('competence::user::add')" >添加</el-button>
@@ -95,16 +95,35 @@ import Table from '@/components/Table';
 import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
 import isPass from '@/lib/esss';
+import USER from '@/api/user';
 export default {
   mixins:[isPass],
   methods:{
     changePage(page){
       this.page = page;
+      this.getData();
+    },
+    search(form){
+      this.header = form;
+      this.getData();
     },
     getData(){
-      const RES = this.$store.state.competence.userList;
-      this.tableList = RES;
-      this.page.total = RES.length;
+      // const RES = this.$store.state.competence.userList;
+      // this.tableList = RES;
+      // this.page.total = RES.length;
+      const params = {
+        current:this.page.current,
+        size:this.page.size,
+        ...this.header
+      }
+      USER.userList(params).then(res=>{
+        if(res.code == 200){
+          this.page.total = res.data.total;
+          this.tableList = res.data.data;
+        }
+      }).catch(err=>{
+
+      })
     },
     // 编辑用户
     edit(item){
@@ -160,32 +179,38 @@ export default {
           this.$message.error('用户名不能为空');
           return;
         }
-        const INDEX = res.findIndex(item=>item.username == this.currentData.username);
-        if(INDEX!=-1){
-          this.$refs['reg-username'].focus();
-          this.$message.error('用户名已经存在');
-          return;
-        }
-        res.push({
-          id:res[res.length-1].id*1+1,
-          username:this.currentData.username,
-          nickName:this.currentData.nickName,
-          role:this.currentData.role,
-          qq:this.currentData.qq,
-          createTime:new Date().getTime(),
-          status:true,
-          phone:this.currentData.phone,
-          password:123456,
-          remark:this.currentData.remark,
+        USER.register(this.currentData).then(res=>{
+          if(res.code == 200){
+            this.notify('你添加了一个新用户','success','老铁',' ');
+            this.dialog = {
+              dialog:false,
+              edit:false,
+              add:false
+            }
+            this.getData();
+          }
         })
-        this.$store.dispatch('changeUserList',res);
-        this.notify('你添加了一个新用户','success','老铁',' ');
-        this.dialog = {
-          dialog:false,
-          edit:false,
-          add:false
-        }
-        this.getData();
+        // const INDEX = res.findIndex(item=>item.username == this.currentData.username);
+        // if(INDEX!=-1){
+        //   this.$refs['reg-username'].focus();
+        //   this.$message.error('用户名已经存在');
+        //   return;
+        // }
+        // res.push({
+        //   id:res[res.length-1].id*1+1,
+        //   username:this.currentData.username,
+        //   nickName:this.currentData.nickName,
+        //   role:this.currentData.role,
+        //   qq:this.currentData.qq,
+        //   createTime:new Date().getTime(),
+        //   status:true,
+        //   phone:this.currentData.phone,
+        //   password:123456,
+        //   remark:this.currentData.remark,
+        // })
+        // this.$store.dispatch('changeUserList',res);
+        
+        // this.getData();
       }
     },
     // 删除用户
@@ -294,7 +319,7 @@ export default {
         },
         {
           label:'昵称',
-          key:'nickname',
+          key:'nickName',
           type:'input'
         },
         {

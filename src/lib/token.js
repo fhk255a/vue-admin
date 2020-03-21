@@ -1,6 +1,6 @@
 import Cookie from './cookie';
 
-const tokenKey = 'token';
+const tokenKey = 'vue-admin-token';
 
 export function setToken(token){
     Cookie.set(tokenKey, token, {path: '/'});
