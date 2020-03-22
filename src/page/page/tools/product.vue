@@ -123,7 +123,13 @@ export default {
       let res = this.$refs['productTable'].selection;
       res.forEach(item=>{
         if(this.component.data.findIndex(it=>it.id == item.id)==-1){
-          this.currentData.data.push({...item});
+          this.currentData.data.push({
+            mainImage:item.mainImage,
+            title_zh:item.title_zh,
+            id:item.id,
+            remark:item.remark,
+            priceRange:item.priceRange
+          });
         }
       });
       this.close();

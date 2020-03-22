@@ -11,7 +11,7 @@
         <template slot-scope="row" slot="set">
           <p>
             <span class="color-blue set-text" v-if="isPass('competence::role::edit')" @click="edit(row.scope.index)">编辑</span>
-            <span class="color-red set-text" v-if="isPass('competence::role::remove')" @click="remove(row.scope.index)">删除</span>
+            <span class="color-red set-text" v-if="isPass('competence::role::remove')" @click="remove(row.scope.data)">删除</span>
           </p>
           <p>
             <span class="color-green set-text" v-if="isPass('competence::role::menu')" @click="menu(row.scope.index)">配置菜单</span>
@@ -23,28 +23,16 @@
     </Container>
     <Dialog :title="dialog.edit?'编辑':'添加'" :show="dialog.dialog" @close="close">
       <div class="joker-form">
-        <div class="joker-form-item w100" v-if="dialog.add">
-          <div class="joker-form-item-label" style="width:100px;padding-right:20px;text-align:right">编号</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入编号..." ref="roleIdInput" v-model="currentData.id" type="number"/>
-            <span class="color-red">编号不可重复</span>
-          </div>
-        </div>
-        <div class="joker-form-item w100">
-          <div class="joker-form-item-label" style="width:100px;padding-right:20px;text-align:right">名称</div>
-          <div class="joker-form-item-content">
-            <el-input ref="roleNameInput" placeholder="名称..." v-model="currentData.name"/>
-          </div>
-        </div>
-        <div class="joker-form-item w100">
-          <div class="joker-form-item-label" style="width:100px;padding-right:20px;text-align:right">说明</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入备注..." v-model="currentData.remark"/>
-          </div>
-        </div>
-        <div class="joker-form-item w100" style="border-top: 1px solid #eee;padding-top:10px;justify-content: center;">
+        <Item title="名称" className="w100" width="100px">
+          <el-input ref="roleNameInput" placeholder="名称..." v-model="currentData.name"/>
+          <span style="display: block;text-align: left;" class="color-red">编号不可重复</span>
+        </Item>
+        <Item title="说明" className="w100" width="100px">
+          <el-input placeholder="请输入备注..." v-model="currentData.remark"/>
+        </Item>
+        <Item className="w100" style="border-top: 1px solid #eee;padding-top:20px;margin-top:20px;justify-content: center;">
           <el-button @click="submit()">保存</el-button>
-        </div>
+        </Item>
       </div>
     </Dialog>
     <Dialog :title="setting.menu?'设置菜单':'设置资源'" 
@@ -100,32 +88,37 @@
 import SearchForm from '@/components/SearchForm';
 import Container from '@/components/Container';
 import Table from '@/components/Table';
+import Item from '@/components/Item';
 import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
 import isPass from '@/lib/esss';
+import {ROLE} from '@/api/user';
 export default {
   mixins:[isPass],
   methods:{
     // 获取数据
     getData(){
-      this.searchConfig[0].data = [];
-      const ROLES = [...this.$store.state.competence.roleList];
-      for(let item in ROLES){
-        this.searchConfig[0].data.push({
-          label:ROLES[item].name,
-          value:ROLES[item].id,
-        })
+      const params = {
+        current:this.page.current,
+        size:this.page.size,
+        ...this.header,
       }
-      this.tableList = [...ROLES];
-      this.page.total = ROLES.length;
+      ROLE.list(params).then(res=>{
+        if(res.code == 200){
+          this.tableList = res.data.data;
+          this.page.total = res.data.total;
+        }
+      })
     },
     // 分页
     changePage(page){
       this.page = page;
+      this.getData();
     },
     // 搜索结果
     search(form){
       this.header = form;
+      this.getData();
     },
     // 编辑事件
     edit(index){
@@ -137,18 +130,20 @@ export default {
       };
     },
     // 删除事件
-    remove(index){
-      let res = [...this.$store.state.competence.roleList];
-      const ID = res[index].name;
-      this.$confirm('是否删除该角色?', '提示', {
+    remove(item){
+      this.$confirm('是否删除该角色?删除后该角色下的所有用户都会变为普通用户哦', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        res.splice(index,1);
-        this.$store.dispatch('changeRoleList',res);
-        this.getData();
-        this.notify(`您手滑删掉了<span class="color-red"> [ ${ID} ] </span>`,'error','我的天！',' ');
+        ROLE.delete(item.id).then(res=>{
+          if(res.code == 200){
+            this.notify(`您手滑删掉了<span class="color-red"> [ ${item.name} ] </span>`,'EMMMMM~~~~~','warning');
+            this.getData();
+          }else{
+            this.notify(res.msg);
+          }
+        })
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
@@ -173,50 +168,44 @@ export default {
     },
     // 提交编辑与添加操作
     submit(){
+      const data = {
+        name:this.currentData.name,
+        remark:this.currentData.remark
+      }
+      if(data.name==''){
+        this.$message.error('名称不能为空');
+        this.$refs['roleNameInput'].focus();
+        return;
+      }
       // 编辑
       if(this.dialog.edit){
-        if(this.currentData.name==''){
-          this.$message.error('名称不能为空');
-          this.$refs['roleNameInput'].focus();
-          return;
-        }
-        let res = [...this.$store.state.competence.roleList];
-        const INDEX = res.findIndex(item=>item.id==this.currentData.id);
-        res[INDEX] = this.currentData;
-        this.$store.dispatch('changeRoleList',res);
-        this.notify('修改成功','success','OHHH',' ');
-        this.close(false);
-        this.getData();
+        data.id = this.currentData.id;
+        ROLE.update(data).then(res=>{
+          if(res.code == 200){
+            this.notify('修改成功','OHHH!!!','success');
+            this.getData();
+            this.close(false);
+          }else{
+            this.notify(res.msg,'EMMMMM~','error');
+          }
+        })
       }
       // 添加
       else{
-        if(this.currentData.id==''){
-          this.$message.error('编号不能为空');
-          this.$refs['roleIdInput'].focus();
-          return;
-        }
-        if(this.currentData.name==''){
-          this.$message.error('名称不能为空');
-          this.$refs['roleNameInput'].focus();
-          return;
-        }
-        let res = [...this.$store.state.competence.roleList];
-        const INDEX = res.findIndex(item=>item.id==this.currentData.id);
-        if(INDEX!=-1){
-          this.$message.error('该编号已存在');
-          this.$refs['roleIdInput'].focus();
-          return;
-          res.push({
-            ...this.currentData,
-            createTime:new Date().getTime(),
-            createUser:'Joker' ,// 后面改创建人
-            createUserId:'10000' ,// 后面改创建人
-          })
-          this.close(false);
-          this.$store.dispatch('changeRoleList',res);
-          this.notify('保存成功','success','OHHH',' ');
-          this.getData();
-        }
+        ROLE.create(data).then(res=>{
+          if(res.code == 200){
+            this.notify('添加成功','OHHH!!!','success');
+            this.getData();
+            this.close(false);
+          }else{
+            if(res.code == 202){
+              this.$refs['roleNameInput'].focus();
+              this.notify('该名称已存在','EMMMMM~','error');
+            }else{
+              this.notify(res.msg,'EMMMMM~','error');
+            }
+          }
+        })
       }
     },
     // 关闭弹框
@@ -342,15 +331,15 @@ export default {
       // 搜索配置
       searchConfig:[
         {
-          label:'等级',
-          key:'id',
-          type:'select',
+          label:'名称',
+          key:'name',
+          type:'input',
           data:[]
         }
       ],
       // 搜索内容
       header:{
-        id:''
+        name:''
       },
       // 默认打开
       defaultMenu:[],
@@ -391,6 +380,7 @@ export default {
     SearchForm,
     Container,
     Page,
+    Item,
     Table,
     Dialog
   }

@@ -6,7 +6,8 @@ import router from '@/router';
 
 // 创建axios
 const request = axios.create({
-  baseURL: 'http://127.0.0.1:3000'
+  baseURL: 'http://127.0.0.1:3000',
+  withCredentials: true
 });
 
 // 发送请求
@@ -15,7 +16,7 @@ request.interceptors.request.use(
     if (getToken()) {
       config.headers['Authorization'] = getToken();
     }
-    // config.headers['Authorization'] = '11111';
+    // config.headers['Authorization'] = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwidGltZSI6MTU4NDg3NDY5NzI4MSwidGltZW91dCI6NjA0ODAwMDAwLCJpYXQiOjE1ODQ4NzQ2OTd9.NSfTk3yFXc2k9tF3_c-UfOr9rQ5zZca9AqRXhhN8dAk';
     // 请求拦截: 成功
     if (config.method === 'post') {
       // 解析请求的json

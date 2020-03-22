@@ -12,7 +12,7 @@
           {{$timer(row.scope.data.createTime)}}
         </template>
         <template slot="role" slot-scope="row">
-          {{$store.state.competence.roleList.find(item=>item.id==row.scope.data.role)['name']}}
+          {{roleList.find(item=>item.value==row.scope.data.role)&&roleList.find(item=>item.value==row.scope.data.role)['label']}}
         </template>
         <template slot="set" slot-scope="row">
           <span class="set-text color-blue" v-if="isPass('competence::user::edit')" @click="edit(row.scope.data)">编辑</span>
@@ -23,63 +23,38 @@
     </Container>
     <Dialog :title="dialog.edit?'编辑用户':'添加用户'" @close="close" :show="dialog.dialog" width="600px">
       <div class="setting-user joker-form">
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">ID</div>
-          <div class="joker-form-item-content">
-            <span v-if="dialog.edit">{{currentData.id}}</span>
-            <span v-else>系统生成</span>
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">用户名</div>
-          <div class="joker-form-item-content">
-            <el-input v-if="dialog.add" placeholder="请输入用户名..." ref="reg-username" v-model="currentData.username"/>
-            <span v-else>{{currentData.username}}</span>
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">昵称</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入昵称..." v-model="currentData.nickName" />
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">等级</div>
-          <div class="joker-form-item-content">
-            <el-select v-model="this.currentData.role">
-              <el-option v-for="item in $store.state.competence.roleList" 
-                :value="item.id*1" :key="item.id" :label="item.name"></el-option>
-            </el-select>
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">手机</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入手机..." v-model="currentData.phone" />
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">邮箱</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入邮箱..." v-model="currentData.mail" />
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">QQ</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入qq..." v-model="currentData.qq" />
-          </div>
-        </div>
-        <div class="joker-form-item">
-          <div class="joker-form-item-label">备注</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入备注..." v-model="currentData.remark" />
-          </div>
-        </div>
-        <div class="joker-form-item" v-if="currentData.createTime">
-          <div class="joker-form-item-label">创建时间</div>
-          <div class="joker-form-item-content">{{$timer(currentData.createTime)}}</div>
-        </div>
+        <Item title="ID">
+          <span v-if="dialog.edit">{{currentData.id}}</span>
+          <span v-else>系统生成</span>
+        </Item>
+        <Item title="用户名">
+          <el-input v-if="dialog.add" placeholder="请输入用户名..." ref="reg-username" v-model="currentData.username"/>
+          <span v-else>{{currentData.username}}</span>
+        </Item>
+        <Item title="昵称">
+          <el-input placeholder="请输入昵称..." v-model="currentData.nickName" />
+        </Item>
+        <Item title="等级">
+          <el-select v-model="this.currentData.role">
+            <el-option v-for="item in roleList" 
+              :value="item.value+''" :key="item.value" :label="item.label"></el-option>
+          </el-select>
+        </Item>
+        <Item title="手机">
+          <el-input placeholder="请输入手机..." v-model="currentData.phone" />
+        </Item>
+        <Item title="邮箱">
+          <el-input placeholder="请输入手机..." v-model="currentData.mail" />
+        </Item>
+        <Item title="QQ">
+          <el-input placeholder="请输入手机..." v-model="currentData.qq" />
+        </Item>
+        <Item title="备注">
+          <el-input placeholder="请输入手机..." v-model="currentData.remark" />
+        </Item>
+        <Item title="创建时间" v-if="currentData.createTime">
+          {{$timer(currentData.createTime)}}
+        </Item>
         <div clsas="joker-form-item" style="text-align: center;border-top: 1px solid #eee;padding-top: 10px;">
           <el-button @click="submit()">保存</el-button>
         </div>
@@ -93,9 +68,10 @@ import SearchForm from '@/components/SearchForm';
 import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
+import Item from '@/components/Item';
 import Dialog from '@/components/Dialog';
 import isPass from '@/lib/esss';
-import USER from '@/api/user';
+import USER,{ROLE} from '@/api/user';
 export default {
   mixins:[isPass],
   methods:{
@@ -143,7 +119,7 @@ export default {
       this.currentData={
         id:null,
         username:'',
-        role:"1",
+        role:'10000',
         createTime:'',
         remark:'',
         password:123456,
@@ -188,29 +164,11 @@ export default {
               add:false
             }
             this.getData();
+          }else{
+            this.notify(res.msg,'错误提示','error');
+            this.$refs['reg-username'].focus();
           }
         })
-        // const INDEX = res.findIndex(item=>item.username == this.currentData.username);
-        // if(INDEX!=-1){
-        //   this.$refs['reg-username'].focus();
-        //   this.$message.error('用户名已经存在');
-        //   return;
-        // }
-        // res.push({
-        //   id:res[res.length-1].id*1+1,
-        //   username:this.currentData.username,
-        //   nickName:this.currentData.nickName,
-        //   role:this.currentData.role,
-        //   qq:this.currentData.qq,
-        //   createTime:new Date().getTime(),
-        //   status:true,
-        //   phone:this.currentData.phone,
-        //   password:123456,
-        //   remark:this.currentData.remark,
-        // })
-        // this.$store.dispatch('changeUserList',res);
-        
-        // this.getData();
       }
     },
     // 删除用户
@@ -240,17 +198,21 @@ export default {
     }
   },
   mounted(){
-    const ROLES = this.$store.state.competence.roleList;
-    for(let item in ROLES){
-      this.searchConfig[3].data.push({
-        label:ROLES[item].name,
-        value:ROLES[item].id,
+    ROLE.list().then(res=>{
+      this.roleList = res.data.map(item=>{
+        return {
+          label:item.name,
+          value:item.id*1,
+        }
       })
-    }
+      this.searchConfig[3].data = this.roleList;
+    })
     this.getData();
   },
   data(){
     return{
+      // 角色列表
+      roleList:[],
       // 分页
       page:{
         total:0,
@@ -333,7 +295,7 @@ export default {
       currentData:{
         id:null,
         username:'',
-        role:1,
+        role:1000,
         createTime:'',
         remark:'',
         password:123456,
@@ -356,6 +318,7 @@ export default {
     Container,
     Page,
     Table,
+    Item,
     Dialog
   }
 }

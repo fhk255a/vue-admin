@@ -80,6 +80,7 @@ import product from './components/product.vue';
 import productTools from './tools/product.vue';
 import { ID } from '@/lib/common';
 import Card from '@/components/Card';
+import H5 from '@/api/h5'
 import Item from '@/components/Item';
 import { config , getData , pageInit } from './minx';
 import {getComponent} from '@/store/data/componentLib';
@@ -144,16 +145,21 @@ export default {
     update(data){
       const oData = this.currentComponent.findIndex(item=>item.id==data.id);
       if(oData!=-1){
-      this.$set(this.currentComponent, oData, data)
+        this.$set(this.currentComponent, oData, data)
       }
     },
     // 最终保存
     save(){
       console.log('当前数据');
       let result = {
-        info:this.pageInfo,
-        components:this.currentComponent
+        ...this.pageInfo,
+        content:JSON.stringify(this.currentComponent)
       }
+      H5.save(result).then(res=>{
+        if(res.code == 200){
+          
+        }
+      })
       console.log(JSON.stringify(result));
     },
     // 初始化
@@ -161,16 +167,18 @@ export default {
       const ID = this.$route.params.id;
       // 编辑
       if(ID!='add'){ 
-        const list = this.$store.state.page.list;
-        const componentLib = this.$store.state.page.componentLib;
-        const page = componentLib.find(item=>ID == item.info.id);// 查看是否存在该页面组件信息
-        if(page){
-          this.pageInfo = page.info; 
-          this.currentComponent = page.components?page.components:[];
-        }else{
-          this.pageInfo = pageInit;
-          this.currentComponent = [];
-        }
+        H5.details(ID).then(res=>{
+          if(res.code == 200){
+            this.pageInfo = {
+              name: res.data.name,
+              id:res.data.pid,
+              status:res.data.status,
+              link:res.data.link,
+              remark:res.data.remark,
+            }
+            this.currentComponent = JSON.parse(res.data.content);
+          }
+        })
       }
       // 创建页面
       else{

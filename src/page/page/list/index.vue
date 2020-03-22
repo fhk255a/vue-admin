@@ -22,6 +22,7 @@ import SearchForm from '@/components/SearchForm';
 import Container from '@/components/Container';
 import Table from '@/components/Table';
 import Page from '@/components/Page';
+import H5 from '@/api/h5';
 import PRODUCT from '@/api/product';
 export default {
   mounted(){
@@ -39,7 +40,7 @@ export default {
     // 编辑
     edit(item){
       this.$router.push({
-        path:'/h5/details/'+item.data.id
+        path:'/h5/details/'+item.data.pid
       })
     },
     // 查看
@@ -48,18 +49,17 @@ export default {
     },
     // 获取列表页数据
     getData(){
-      const res = this.$store.state.page.list;
       let params = {
         ...this.header,
         current:this.page.current,
         size:this.page.size
       }
-      PRODUCT.list(params).then(res=>{
-      }).catch(err=>{
-
+      H5.list(params).then(res=>{
+        if(res.code == 200){
+          this.tableList = res.data.data;
+          this.page.total = res.data.total;
+        }
       })
-      this.tableList = res;
-      this.page.total = res.length;
     }
   },
   components:{
@@ -79,7 +79,7 @@ export default {
       tableConfig:[
         {
           label:'ID',
-          value:'id',
+          value:'pid',
         },
         {
           label:'页面名称',
@@ -112,7 +112,7 @@ export default {
         {
           type:'input',
           label:'页面ID',
-          key:'id',
+          key:'pid',
         },
         {
           type:'input',
@@ -131,7 +131,7 @@ export default {
         }
       ],
       header:{
-        id:'',
+        pid:'',
         name:'',
         status:'',
         remark:'',
