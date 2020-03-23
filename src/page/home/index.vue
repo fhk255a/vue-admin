@@ -1,10 +1,10 @@
 <template>
   <div class="joker-page-home">
     <div class="home-container">
-      <Card :title="userInfo && userInfo.nickName?`${userInfo.nickName}  ${msg}`:'游客，'+msg">
+      <Card :title="userInfo && userInfo.userInfo.nickName?`${userInfo.userInfo.nickName}  ${msg}`:'游客，'+msg">
         <div>
           <span class="title">{{goodsMsg}}</span>
-          <span class="color-red" v-if="userInfo && !userInfo.id">你还未登录噢？去 <router-link to="/login" class="set-text color-blue">登录</router-link></span>
+          <span class="color-red" v-if="userInfo && !userInfo.token">你还未登录噢？去 <router-link to="/login" class="set-text color-blue">登录</router-link></span>
         </div>
         <div class="home-container-body">
           <p>今天是 <span class="color-red">{{day[timer.day]}}</span></p>
@@ -31,7 +31,7 @@ export default {
   },
   computed:{
     userInfo(){
-      return this.$store.state.userInfo.userInfo; 
+      return this.$store.state.userInfo; 
     },
     goodsMsg(){
       return this.TIME.getHours()>18?'晚上好！':this.TIME.getHours()<12?'早上好！':'下午好！';

@@ -70,36 +70,23 @@ const router = new Router({
 });
 // 检验token
 const token = Cookie.has('vue-admin-token');
-const menu = Cookie.has('vue-admin-menu');
-const userInfo = Cookie.has('vue-admin-userInfo');
-const resource = Cookie.has('vue-admin-resource');
+let menu = Cookie.has('vue-admin-menu');
 router.beforeEach((to, from, next) => {
-  if(token){
-    if(menu){
-      STORE.dispatch('changeUserMenu',menu.split(','));
-    }else{
-      Cookie.set('vue-admin-menu',menu);
-    }
-    if(userInfo){
-      STORE.dispatch('changeUserInfo',JSON.parse(userInfo));
-    }else{
-      Cookie.set('vue-admin-userInfo',userInfo);
-    }
-    if(resource){
-      STORE.dispatch('changeUserResource',resource.split(','));
-    }else{
-      Cookie.set('vue-admin-resource',resource);
-    }
-    if(token){
+  if(token && token!='null'){
+    if(!STORE.state.userInfo.token){
       STORE.dispatch('changeToken',token);
+    }
+    if(STORE.state.userInfo.menu.length>0){
+      menu = STORE.state.userInfo.menu;
+      Cookie.set('vue-admin-menu',STORE.state.userInfo.menu)
     }else{
-      Cookie.set('vue-admin-token',token);
+      STORE.dispatch('changeUserMenu',menu.split?menu.split(','):menu);
     }
     if (to.path === '/login') {
       next({path: '/'});
     } else{
       // 获取有权限的页面
-      let passRoute = ['/','/login', '/404', '/home','/dev'].concat(menu.split(','));
+      let passRoute = ['/','/login', '/404', '/home','/dev'].concat(menu.split?menu.split(','):menu);
       let isPass = passRoute.findIndex(item =>item==to.name);
       // 有无权限进入该页面
       if (isPass!=-1) {

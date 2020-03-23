@@ -14,6 +14,13 @@ function http (request) {
   })
 }
 const USER = {
+  getInfo(){
+    let promise = request({
+      url: URL+'/userinfo',
+      method: 'post',
+    });
+    return http(promise);
+  },
   login(username,password){
     let promise = request({
       url: URL+'/login',
@@ -79,6 +86,35 @@ export const ROLE = {
       method: 'post',
       data:{
         id
+      }
+    });
+    return http(promise);
+  },
+}
+const URL2 = 'menu';
+export const MENU = {
+  list(){
+    let promise = request({
+      url: URL2+'/list',
+      method: 'get',
+    });
+    return http(promise);
+  },
+  save(data){
+    let promise = request({
+      url: URL2+'/save',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  changeStatus(id,isHide){
+    let promise = request({
+      url: URL2+'/changeStatus',
+      method: 'post',
+      data:{
+        id,
+        isHide
       }
     });
     return http(promise);

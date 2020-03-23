@@ -45,43 +45,16 @@ export default {
   },
   methods:{
     login(){
-      const adata = this.ALLUSERS.find(item=>item.username == this.username && item.password == this.password);
-      const role = this.$store.state.competence.roleList;
-      let timer = null;
       USER.login(this.username,this.password).then(res=>{
-        const MENU = role.find(item=>item.id*1 == adata.role*1);
-        Cookie.set('vue-admin-token',res.data.token)
-        Cookie.set('vue-admin-userInfo',JSON.stringify(res));
-        Cookie.set('vue-admin-menu',MENU.menu)
-        Cookie.set('vue-admin-resource',MENU.resource)
-        this.$store.dispatch('changeToken',res.data.token);
-        this.$store.dispatch('changeUserInfo',adata);
-        this.$store.dispatch('changeUserMenu',MENU.menu);
-        this.$store.dispatch('changeUserResource',MENU.resource);
-        window.location.reload();
-      });
-      return;
-      if(res){
-        // 假装有token 
-        res.token = 'sdAOSsdgFJDOASFJdfLLFajshdGLKSFSadfPODsdgFAHSDsfdgsASDIWHSjgLDFJ';
-        const MENU = role.find(item=>item.id*1 == res.role*1);
-        if(MENU){
-          this.notify(`尊敬的 <span class="color-blue">[ ${res.nickName} ]</span>`,'success',`登陆成功`,' ');
-          Cookie.set('vue-admin-token',res.token)
-          Cookie.set('vue-admin-userInfo',JSON.stringify(res));
-          Cookie.set('vue-admin-menu',MENU.menu)
-          Cookie.set('vue-admin-resource',MENU.resource)
-          this.$store.dispatch('changeToken',res.token);
-          this.$store.dispatch('changeUserInfo',res);
-          this.$store.dispatch('changeUserMenu',MENU.menu);
-          this.$store.dispatch('changeUserResource',MENU.resource);
-          // this.$router.push('/');
+        if(res.code == 200){
+          Cookie.set('vue-admin-token',res.data.token)
+          Cookie.set('vue-admin-menu',res.data.menu)
+          this.$store.dispatch('changeToken',res.data.token);
           window.location.reload();
+        }else{
+          this.notify(res.msg);
         }
-      }else{
-        this.$message.error('账户与密码错误');
-        return;
-      }
+      });
     }
   }
 }

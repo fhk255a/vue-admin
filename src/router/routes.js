@@ -1,5 +1,6 @@
 import Layout from '@/page/layout';
 const routerList = [
+  // 商品模块
   {
     path: '/product',
     name: '/product',
@@ -34,6 +35,7 @@ const routerList = [
       },
     ]
   },
+  // 订单模块
   {
     path: '/order',
     name: '/order',

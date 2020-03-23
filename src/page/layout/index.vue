@@ -16,9 +16,9 @@
               <span class="iconfont icon-gerenyonghutouxiang2"></span>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <template v-if="userInfo && userInfo.id">
+              <template v-if="userInfo && userInfo.token">
                 <el-dropdown-item command="info"> 
-                  <i class="iconfont icon-houtaiguanli"></i>{{userInfo.nickName}}
+                  <i class="iconfont icon-houtaiguanli"></i>{{userInfo.userInfo.nickName}}
                 </el-dropdown-item>
                 <el-dropdown-item command="role">
                   <i class="iconfont icon-kehudongcha"></i>查看等级
@@ -56,29 +56,29 @@
         <ul class="joker-form userinfo">
           <li class="joker-form-item w100" >
             <div class="joker-form-item-label">昵称:</div>
-            <div class="joker-form-item-content">{{userInfo.nickName}}</div>
+            <div class="joker-form-item-content">{{userInfo.userInfo.nickName}}</div>
           </li>
           <li class="joker-form-item w100" >
             <div class="joker-form-item-label">等级:</div>
             <div class="joker-form-item-content">
-              <span class="color-blue">{{roleInfo.name}}</span>
+              <span class="color-blue">{{userInfo.userInfo.role}}</span>
             </div>
           </li>
           <li class="joker-form-item w100" >
             <div class="joker-form-item-label">手机:</div>
-            <div class="joker-form-item-content">{{userInfo.phone}}</div>
+            <div class="joker-form-item-content">{{userInfo.userInfo.phone}}</div>
           </li>
           <li class="joker-form-item w100" >
             <div class="joker-form-item-label">QQ:</div>
-            <div class="joker-form-item-content">{{userInfo.qq}}</div>
+            <div class="joker-form-item-content">{{userInfo.userInfo.qq}}</div>
           </li>
           <li class="joker-form-item w100" >
             <div class="joker-form-item-label">邮箱:</div>
-            <div class="joker-form-item-content">{{userInfo.mail}}</div>
+            <div class="joker-form-item-content">{{userInfo.userInfo.mail}}</div>
           </li>
           <li class="joker-form-item w100" >
             <div class="joker-form-item-label">备注:</div>
-            <div class="joker-form-item-content">{{userInfo.remark}}</div>
+            <div class="joker-form-item-content">{{userInfo.userInfo.remark}}</div>
           </li>
         </ul>
       </template>
@@ -133,6 +133,9 @@ export default {
     Breadcrumb,
     Menu,
     Dialog,
+  },
+  mounted(){
+    console.log(this.userInfo);
   },
   methods:{
     close(){
@@ -206,11 +209,8 @@ export default {
   },
   computed:{
     userInfo(){
-      return this.$store.state.userInfo.userInfo;
+      return this.$store.state.userInfo;
     },
-    roleInfo(){
-      return this.$store.state.competence.roleList.find(item=>item.id*1==this.userInfo.role*1);
-    }
   }
 }
 </script>

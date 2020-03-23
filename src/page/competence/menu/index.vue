@@ -3,28 +3,69 @@
       <el-button @click="add()" v-if="isPass" >添加</el-button>
     <div class="mb-20"/>
     <Container>
-      <el-tree
+      <el-table
         :data="tableList"
-        node-key="path"
+        style="width: 100%;margin-bottom: 20px;"
+        row-key="id"
+        border
         default-expand-all
-        :expand-on-click-node="false">
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-          <span>{{ data.meta.title }}</span>
-        </span>
-      </el-tree>
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
+        <el-table-column prop="title" label="页面标题" />
+        <el-table-column prop="path" label="页面路径" />
+        <el-table-column prop="icon" label="页面图标" width="100px">
+          <template slot-scope="row">
+            <span :class="['iconfont',row.row.icon]"></span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="isHide" label="隐藏菜单" width="100px">
+          <template slot-scope="row">
+            <el-switch v-model="row.row.isHide" @change="changeStatus(row.row)"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="createTime" label="创建时间">
+          <template slot-scope="row">
+            {{$timer(row.row.createTime)}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="updateTime" label="修改时间">
+          <template slot-scope="row">
+            {{$timer(row.row.updateTime)}}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="row">
+            <span class="set-text color-blue" @click="edit(row.row)">Edit</span>
+            <span class="set-text color-red" @click="remove(row.row)">Delete</span>
+          </template>
+        </el-table-column>
+      </el-table>
     </Container>
     <Dialog :title="dialog.edit?'编辑':'添加'" :show="dialog.dialog" @close="close">
-      <div class="joker-form">
-        <div class="joker-form-item w100" v-if="dialog.add">
-          <div class="joker-form-item-label" style="width:100px;padding-right:20px;text-align:right">编号</div>
-          <div class="joker-form-item-content">
-            <el-input placeholder="请输入编号..." ref="roleIdInput" v-model="currentData.id" type="number"/>
-            <span class="color-red">编号不可重复</span>
-          </div>
-        </div>
-        <div class="joker-form-item w100" style="border-top: 1px solid #eee;padding-top:10px;justify-content: center;">
-          <el-button @click="submit()">保存</el-button>
-        </div>
+      <div class="menu-form joker-form">
+        <Item title="页面父级">
+          <el-cascader
+            placeholder="根目录"
+            :props="{children:'children',label:'title',value:'id',checkStrictly: true}"
+            v-model="currentData.parentId"
+            :options="tableList"
+            clearable
+          ></el-cascader>
+        </Item>
+        <Item title="页面标题">
+          <el-input v-model="currentData.title" ref="menu-title"/>
+        </Item>
+        <Item title="页面路径">
+          <el-input v-model="currentData.path" ref="menu-path"/>
+        </Item>
+        <Item title="页面图标">
+          <el-input v-model="currentData.icon"/>
+        </Item>
+        <Item title="菜单隐藏">
+          <el-switch v-model="currentData.isHide" />
+        </Item>
+        <Item >
+          <el-button @click="submit">保存</el-button>
+        </Item>
       </div>
     </Dialog>
   </div>
@@ -33,20 +74,24 @@
 <script>
 import Container from '@/components/Container';
 import Dialog from '@/components/Dialog';
+import Item from '@/components/Item';
 import isPass from '@/lib/esss';
+import { MENU } from '@/api/user'; 
 export default {
   mixins:[isPass],
   methods:{
     getData(){
-      const MENU = [...this.$store.state.competence.menuList];
-      this.tableList = [...MENU];
-      this.page.total = MENU.length;
+      MENU.list().then(res=>{
+        if(res.code== 200){
+          this.tableList = res.data;
+        }else{
+          this.notify(res.msg,'淦','error');
+        }
+      })
     },
     // 编辑
-    edit(index){
-      this.notify('你的操作被某种神秘力量销毁了','error','淦',' ');
-      return;
-      this.currentData={...this.tableList[index]};
+    edit(item){
+      this.currentData={...item};
       this.dialog={
         dialog:true,
         edit:true,
@@ -54,75 +99,77 @@ export default {
       };
     },
     // 删除
-    remove(index){
-      this.notify('你的操作被某种神秘力量销毁了','error','淦',' ');
-      return;
-      let res = [...this.$store.state.competence.roleList];
-      const ID = res[index].name;
+    remove(item){
       this.$confirm('是否删除该角色?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        res.splice(index,1);
         this.$store.dispatch('changeRoleList',res);
         this.getData();
-        this.notify(`您手滑删掉了<span class="color-red"> [ ${ID} ] </span>`,'error','我的天！',' ');
+        this.notify(`您手滑删掉了<span class="color-red"> [ ${ID} ] </span>`,'我的天！','error');
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
     },
+    changeStatus(item){
+      MENU.changeStatus(item.id,item.isHide?1:0).then(res=>{
+        if(res.code== 200){
+          this.getData();
+          this.notify('修改成功','提示','success');
+        }else{
+          this.notify(res.msg,'淦','error');
+        }
+      })
+    },
     // 添加
     add(){
-      this.notify('你的操作被某种神秘力量销毁了','error','淦',' ');
+      this.dialog={
+        dialog:true,
+        edit:false,
+        add:true,
+      };
+      this.currentData={
+        name:'',
+        path:'',
+        icon:'',
+        title:'',
+        isHide:false,
+        parentId:''
+      }
     },
     // 提交
     submit(){
       // 编辑
-      if(this.dialog.edit){
-        if(this.currentData.name==''){
-          this.$message.error('名称不能为空');
-          this.$refs['roleNameInput'].focus();
-          return;
-        }
-        let res = [...this.$store.state.competence.roleList];
-        const INDEX = res.findIndex(item=>item.id==this.currentData.id);
-        res[INDEX] = this.currentData;
-        this.$store.dispatch('changeRoleList',res);
-        this.notify('修改成功','success','OHHH',' ');
-        this.close(false);
-        this.getData();
+      if(this.currentData.title.trim()==''){
+        this.$message.error('名称不能为空');
+        this.$refs['menu-title'].focus();
+        return;
       }
-      // 添加
-      else{
-        if(this.currentData.id==''){
-          this.$message.error('编号不能为空');
-          this.$refs['roleIdInput'].focus();
-          return;
-        }
-        if(this.currentData.name==''){
-          this.$message.error('名称不能为空');
-          this.$refs['roleNameInput'].focus();
-          return;
-        }
-        let res = [...this.$store.state.competence.roleList];
-        const INDEX = res.findIndex(item=>item.id==this.currentData.id);
-        if(INDEX!=-1){
-          this.$message.error('该编号已存在');
-          this.$refs['roleIdInput'].focus();
-          return;
-          res.push({
-            ...this.currentData,
-            createTime:new Date().getTime(),
-            createUser:'Joker' ,// 后面改创建人
-            createUserId:'10000' ,// 后面改创建人
-          })
+      if(this.currentData.path.trim()==''){
+        this.$message.error('路径不能为空');
+        this.$refs['menu-path'].focus();
+        return;
+      }
+      let data = {
+        title:this.currentData.title,
+        path:this.currentData.path,
+        icon:this.currentData.icon,
+        isHide:this.currentData.isHide?1:0,
+        parentId:this.currentData.parentId.length==0?0:this.currentData.parentId[this.currentData.parentId.length-1],
+      }
+      if(this.currentData.id){
+        data.id = this.currentData.id;
+      }
+      MENU.save(data).then(res=>{
+        if(res.code == 200){
+          this.notify(res.msg,'OHHH','success');
           this.close(false);
-          this.$store.dispatch('changeRoleList',res);
-          this.notify('保存成功','success','OHHH',' ');
           this.getData();
+        }else{
+          this.notify(res.msg,'EMMMMM','error');
         }
-      }
+      })
     },
     // 关闭弹框
     close(status){
@@ -144,14 +191,12 @@ export default {
         current:1,
       },
       currentData:{
-        id:null,
         name:'',
-        resource:[],
-        menu:[],
-        remark:'',
-        createTime:null,
-        createUser:'',
-        createUserId:'',
+        path:'',
+        icon:'',
+        title:'',
+        isHide:false,
+        parentId:''
       },
       dialog:{
         dialog:false,
@@ -163,18 +208,17 @@ export default {
   },
   components:{
     Container,
-    Dialog
+    Dialog,
+    Item
   }
 }
 </script>
 
 <style lang="scss">
 .joker-page-menu{
-  .el-tree{
-    .el-tree-node__content{
-      height: 36px;
-      line-height: 36px;
-      border-bottom:1px solid #eee;
+  .menu-form{
+    .joker-form-item{
+      width: 100%;
     }
   }
 }
