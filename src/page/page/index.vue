@@ -150,17 +150,39 @@ export default {
     },
     // 最终保存
     save(){
-      console.log('当前数据');
+      for(let i in this.currentComponent){
+        const item = this.currentComponent[i];
+        if(item.type == 'title' && item.content==''){
+          this.$message.warning('内容配置不能为空');
+          this.$store.dispatch('changeComponentIndex',i);
+          this.$store.dispatch('changeCompData',item);
+          this.currentTools = {...item};
+          this.$refs['h5-item-'+i][0].style.borderColor="#F56C6C";
+          return;
+        }else{
+          if(item.data.length<1){
+            this.$refs['h5-item-'+i][0].style.borderColor="#F56C6C";
+            this.$message.warning('组件内容配置不能为空');
+            this.$store.dispatch('changeComponentIndex',i);
+            this.$store.dispatch('changeComponentIndex',i);
+            this.$store.dispatch('changeCompData',item);
+            this.currentTools = {...item};
+            return;
+          }
+        }
+      }
       let result = {
         ...this.pageInfo,
         content:JSON.stringify(this.currentComponent)
       }
       H5.save(result).then(res=>{
         if(res.code == 200){
-          
+          console.warn('当前数据');
+          console.warn({...this.pageInfo,components:[...this.currentComponent]});
+          this.notify('当前数据已保存，可以查看F12');
+          this.$router.push(`/h5/details/${res.data}`)
         }
       })
-      console.log(JSON.stringify(result));
     },
     // 初始化
     init(){
@@ -193,7 +215,11 @@ export default {
   beforeCreate(){
     //点击空白处展示页面信息
     document.addEventListener('mousedown',(ev)=>{
-      this.$store.dispatch('changeComponentIndex',null);
+      if(ev.target.className == 'el-color-dropdown__btns' || ev.target.className== '' || ev.target.className == 'el-color-svpanel__black'){
+        return;
+      }else{
+        this.$store.dispatch('changeComponentIndex',null);
+      }
     })
   },
   computed:{

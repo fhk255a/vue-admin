@@ -34,8 +34,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="row">
-            <span class="set-text color-blue" @click="edit(row.row)">Edit</span>
-            <span class="set-text color-red" @click="remove(row.row)">Delete</span>
+            <span class="color-blue icon-btn iconfont icon-bianjiqianbixieshuru" @click="edit(row.row)"></span>
+            <span class="color-red icon-btn iconfont icon-shanchu" @click="remove(row.row)"></span>
           </template>
         </el-table-column>
       </el-table>
@@ -77,6 +77,7 @@ import Dialog from '@/components/Dialog';
 import Item from '@/components/Item';
 import isPass from '@/lib/esss';
 import { MENU } from '@/api/user'; 
+import STORE from 'store';
 export default {
   mixins:[isPass],
   methods:{
@@ -84,6 +85,7 @@ export default {
       MENU.list().then(res=>{
         if(res.code== 200){
           this.tableList = res.data;
+          console.log(STORE.get('vue-admin-resource'))
         }else{
           this.notify(res.msg,'淦','error');
         }
@@ -100,14 +102,19 @@ export default {
     },
     // 删除
     remove(item){
-      this.$confirm('是否删除该角色?', '提示', {
+      this.$confirm('是否删除该菜单?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.dispatch('changeRoleList',res);
-        this.getData();
-        this.notify(`您手滑删掉了<span class="color-red"> [ ${ID} ] </span>`,'我的天！','error');
+        MENU.delete(item.id).then(res=>{
+          if(res.code == 200){
+            this.notify(`您手滑删掉了<span class="color-red"> [ ${item.title} ] </span>`,'我的天！','error');
+            this.getData();
+          }
+        }).catch(err=>{
+
+        })
       }).catch(() => {
         this.$message.info('您点了取消');          
       });

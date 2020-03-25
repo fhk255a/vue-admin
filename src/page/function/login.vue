@@ -31,6 +31,7 @@
 <script>
 import USER from '@/api/user';
 import Cookie from '@/lib/cookie';
+import STORE from '@/lib/store';
 export default {
   data(){
     return{
@@ -48,8 +49,12 @@ export default {
       USER.login(this.username,this.password).then(res=>{
         if(res.code == 200){
           Cookie.set('vue-admin-token',res.data.token)
-          Cookie.set('vue-admin-menu',res.data.menu)
+          STORE.set('vue-admin-userinfo',res.data)
+          STORE.set('vue-admin-menu',res.data.menu)
+          this.$store.dispatch('changeUserMenu',res.data.menu);
+          this.$store.dispatch('changeUserInfo',res.data.userInfo);
           this.$store.dispatch('changeToken',res.data.token);
+          this.$store.dispatch('changeUserResource',res.data.resource);
           window.location.reload();
         }else{
           this.notify(res.msg);

@@ -87,7 +87,7 @@ export default {
     // 清空内容
     clear(){
       this.$emit('search',this.currentForm);
-      this.notify(`<span class="color-green>重置了搜索条件</span>`);
+      this.notify(`重置了搜索条件`);
     }
   }
 }

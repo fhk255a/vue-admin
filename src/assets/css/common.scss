@@ -46,7 +46,7 @@
       display: flex;
       align-items: center;  
       margin: 5px;
-      min-height: 30px;
+      // min-height: 30px;
       .joker-form-item-label{
         margin-right: 10px;
         color:#666;
@@ -57,6 +57,11 @@
     }
     .w100{
       width: 100%;
+    }
+    .btns{
+      border-top:1px solid #eee;
+      padding-top: 20px;
+      margin-top: 20px;
     }
   }
 }

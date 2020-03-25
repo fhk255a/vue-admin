@@ -16,7 +16,7 @@
               <span class="iconfont icon-gerenyonghutouxiang2"></span>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <template v-if="userInfo && userInfo.token">
+              <template v-if="userInfo.userInfo && userInfo.token">
                 <el-dropdown-item command="info"> 
                   <i class="iconfont icon-houtaiguanli"></i>{{userInfo.userInfo.nickName}}
                 </el-dropdown-item>
@@ -116,6 +116,7 @@ import Breadcrumb from './Breadcrumbs';
 import Menu from './Mennu';
 import Cookie from '@/lib/cookie';
 import Dialog from '@/components/Dialog';
+import STORE from '@/lib/store';
 export default {
   data(){
     return{
@@ -133,9 +134,6 @@ export default {
     Breadcrumb,
     Menu,
     Dialog,
-  },
-  mounted(){
-    console.log(this.userInfo);
   },
   methods:{
     close(){
@@ -194,9 +192,9 @@ export default {
         type: 'warning'
       }).then(() => {
         Cookie.set('vue-admin-token',null);
-        Cookie.set('vue-admin-userInfo',null);
-        Cookie.set('vue-admin-menu',null);
-        Cookie.set('vue-admin-resource',null);
+        STORE.delete('vue-admin-resource');
+        STORE.delete('vue-admin-userinfo')
+        STORE.delete('vue-admin-menu')
         this.$store.dispatch('changeToken',null);
         this.$store.dispatch('changeUserInfo',null);
         this.$store.dispatch('changeUserMenu',null);

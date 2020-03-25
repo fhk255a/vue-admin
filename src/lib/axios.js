@@ -6,7 +6,8 @@ import router from '@/router';
 
 // 创建axios
 const request = axios.create({
-  baseURL: 'http://127.0.0.1:3000',
+  // baseURL: 'http://localhost:3000',
+  baseURL: 'http://project.fhk255.cn',
   withCredentials: true
 });
 
@@ -52,5 +53,4 @@ request.interceptors.response.use(
     return error;
   }
 );
-
 export default request;

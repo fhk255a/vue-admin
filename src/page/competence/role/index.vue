@@ -10,12 +10,12 @@
         </template>
         <template slot-scope="row" slot="set">
           <p>
-            <span class="color-blue set-text" v-if="isPass('competence::role::edit')" @click="edit(row.scope.index)">编辑</span>
+            <span class="color-blue set-text" v-if="isPass('competence::role::edit')" @click="edit(row.scope.data)">编辑</span>
             <span class="color-red set-text" v-if="isPass('competence::role::remove')" @click="remove(row.scope.data)">删除</span>
           </p>
           <p>
-            <span class="color-green set-text" v-if="isPass('competence::role::menu')" @click="menu(row.scope.index)">配置菜单</span>
-            <span class="color-yellow set-text" v-if="isPass('competence::role::resource')" @click="resource(row.scope.index)">配置资源</span>
+            <span class="color-green set-text" v-if="isPass('competence::role::menu')" @click="menu(row.scope.data)">配置菜单</span>
+            <span class="color-yellow set-text" v-if="isPass('competence::role::resource')" @click="resource(row.scope.data)">配置资源</span>
           </p>
         </template>
       </Table>
@@ -43,14 +43,14 @@
           <el-tree
             ref="menu-tree"
             :data="MENULIST"
-            node-key="name"
+            node-key="id"
             :default-checked-keys="defaultMenu"
             default-expand-all
             :check-change="changeMenu"
             show-checkbox
             :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ data.meta.title }}</span>
+              <span>{{ data.title }}</span>
             </span>
           </el-tree>
         </div>
@@ -63,7 +63,7 @@
           <el-tree
             ref="resource-tree"
             :data="SOURCELIST"
-            node-key="value"
+            node-key="id"
             :default-checked-keys="defaultSouce"
             default-expand-all
             show-checkbox
@@ -92,7 +92,7 @@ import Item from '@/components/Item';
 import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
 import isPass from '@/lib/esss';
-import {ROLE} from '@/api/user';
+import {ROLE,RESOURCE,MENU} from '@/api/user';
 export default {
   mixins:[isPass],
   methods:{
@@ -121,8 +121,8 @@ export default {
       this.getData();
     },
     // 编辑事件
-    edit(index){
-      this.currentData={...this.tableList[index]};
+    edit(item){
+      this.currentData={...item};
       this.dialog={
         dialog:true,
         edit:true,
@@ -227,34 +227,31 @@ export default {
     // 保存菜单
     submitMenu(index){
       const menu = this.$refs['menu-tree'].getCheckedKeys();
-      const RESULTMENU = menu.concat(this.$refs['menu-tree'].getHalfCheckedKeys());
-      this.currentData.menu = RESULTMENU;
-      const INDEX = this.tableList.findIndex(item=>item.id == this.currentData.id);
-      let res = this.$store.state.competence.roleList;
-      res[INDEX] = {...this.currentData};
-      // 查看是不是当前角色匹配 这时候应该执行立即生效
-      let USERSELF = this.$store.state.userInfo.userInfo;
-      let menud = this.$store.state.userInfo.menu;
-      if(this.currentData.id*1 == USERSELF['role']*1){
-        this.$store.dispatch('changeUserMenu',this.currentData.menu);
-      }
-      this.$store.dispatch('changeRoleList',res);
-      this.notify('你配置了菜单');
-      this.setting={
-        dialog:false,
-        resource:false,
-        menu:false,
-      }
-      this.getData();
+      const MENU = menu.concat(this.$refs['menu-tree'].getHalfCheckedKeys());
+      ROLE.setMenu(this.currentData.id,MENU.join(',')).then(res=>{
+        if(res.code == 200){
+          this.notify(res.msg,'OH','success');
+          this.setting={
+            dialog:false,
+            resource:false,
+            menu:false,
+          }
+          this.getData();
+        }else{
+          this.notify(res.msg,'EMMMMMM~','error');
+        }
+      }).catch(err=>{
+
+      })
     },
     // 配置菜单事件
-    menu(index){
+    menu(item){
       this.setting={
         dialog:true,
         menu:true,
         resource:false
       }
-      this.currentData = {...this.tableList[index]};
+      this.currentData = {...item};
       const KEYS = this.currentData.menu;
       this.$nextTick(()=>{
         this.$refs['menu-tree'].setCheckedKeys(KEYS);
@@ -262,26 +259,37 @@ export default {
       })
     },
     saveResource(){
-      // 查看是不是当前角色匹配 这时候应该执行立即生效
-      let USERSELF = this.$store.state.userInfo.userInfo;
-      if(this.currentData.id*1 == USERSELF['role']*1){
-        this.$store.dispatch('changeUserResource',this.currentData.resource);
-      }
+      const resource = this.$refs['resource-tree'].getCheckedKeys();
+      const RESOURCE = resource.concat(this.$refs['resource-tree'].getHalfCheckedKeys());
+      ROLE.setResource(this.currentData.id,RESOURCE.join(',')).then(res=>{
+        if(res.code == 200){
+          this.notify(res.msg,'OH','success');
+          this.setting={
+            dialog:false,
+            resource:false,
+            menu:false,
+          }
+          this.getData();
+        }else{
+          this.notify(res.msg,'EMMMMMM~','error');
+        }
+      }).catch(err=>{
+        
+      })
     },
     // 配置资源事件
-    resource(index){
+    resource(item){
       this.setting={
         dialog:true,
         menu:false,
         resource:true
       }
-      this.currentData = {...this.tableList[index]};
+      this.currentData = {...item};
       const KEYS = this.currentData.resource;
       this.$nextTick(()=>{
         this.$refs['resource-tree'].setCheckedKeys(KEYS);
         this.defaultSouce = KEYS;
       })
-      
     },
     // 更改菜单
     changeMenu(d,n,t){
@@ -290,9 +298,16 @@ export default {
   },
   mounted(){
     this.getData();
-    this.SOURCELIST = this.$store.state.competence.resource;
-    this.MENULIST = this.$store.state.competence.menuList;
-    
+    RESOURCE.list().then(res=>{
+      if(res.code == 200){
+        this.SOURCELIST = res.data;
+      }
+    })
+    MENU.list().then(res=>{
+      if(res.code == 200){
+        this.MENULIST = res.data;
+      }
+    })
   },
   data(){
     return{

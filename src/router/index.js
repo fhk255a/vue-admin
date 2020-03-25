@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import routeList from './routes';
 import Layout from '@/page/layout';
 import Cookie from '@/lib/cookie';
-import STORE from '@/store';
+import VUEX from '@/store';
+import STORE from '@/lib/store';
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, onResolve, onReject) {
@@ -70,23 +71,30 @@ const router = new Router({
 });
 // 检验token
 const token = Cookie.has('vue-admin-token');
-let menu = Cookie.has('vue-admin-menu');
+// let menu = STORE.get('vue-admin-userinfo').menu || [];
+const userinfo = STORE.get('vue-admin-userinfo');
+let menu = userinfo?userinfo.menu || userinfo.menu :[];
 router.beforeEach((to, from, next) => {
   if(token && token!='null'){
-    if(!STORE.state.userInfo.token){
-      STORE.dispatch('changeToken',token);
-    }
-    if(STORE.state.userInfo.menu.length>0){
-      menu = STORE.state.userInfo.menu;
-      Cookie.set('vue-admin-menu',STORE.state.userInfo.menu)
-    }else{
-      STORE.dispatch('changeUserMenu',menu.split?menu.split(','):menu);
+    if(userinfo){
+      if(!VUEX.state.userInfo.userInfo){
+        VUEX.dispatch('changeUserInfo',userinfo.userInfo);
+      }
+      if(!VUEX.state.userInfo.menu){
+        VUEX.dispatch('changeUserMenu',userinfo.menu);
+      }
+      if(!VUEX.state.userInfo.resource){
+        VUEX.dispatch('changeUserResource',userinfo.resource);
+      }
+      if(!VUEX.state.userInfo.token){
+        VUEX.dispatch('changeToken',token);
+      }
     }
     if (to.path === '/login') {
       next({path: '/'});
     } else{
       // 获取有权限的页面
-      let passRoute = ['/','/login', '/404', '/home','/dev'].concat(menu.split?menu.split(','):menu);
+      let passRoute = ['/','/login', '/404', '/home','/dev','/h5/view'].concat(menu.split?menu.split(','):menu);
       let isPass = passRoute.findIndex(item =>item==to.name);
       // 有无权限进入该页面
       if (isPass!=-1) {
@@ -110,6 +118,6 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {
     document.title = `${to.meta.title} - VUE ADMIN-JOKER`;
   }
-  next();
+  // next();
 });
 export default router;

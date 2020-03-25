@@ -56,7 +56,6 @@ export default {
     Page
   },
   mounted(){
-    console.log(this.isPass);
     this.getList();
   },
   methods:{

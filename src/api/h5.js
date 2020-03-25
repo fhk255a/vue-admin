@@ -40,5 +40,22 @@ const H5 = {
     });
     return http(promise);
   },
+  qrCode(id){
+    let promise = request({
+      url: URL+'/qr',
+      method: 'post',
+      data:{
+        id
+      }
+    });
+    return http(promise);
+  },
+  getPid(id){
+    let promise = request({
+      url: URL+'/getPid/'+id,
+      method: 'get',
+    });
+    return http(promise);
+  }
 }
 export default H5;

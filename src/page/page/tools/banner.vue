@@ -36,20 +36,22 @@
         </div>
         <div class="banner-container" v-if="component.data.length>0">
           <div class="joker-form" style="background:#fff" v-for="(item,index) in component.data" :key="item.id">
-            <Item title="标题：">
-              <el-input v-model="item.title"/>
+            <Item className="w100 banner-list" >
+              <el-button @click="remove" type="danger">删除</el-button>
+              <Item title="标题：">
+                <el-input v-model="item.title"/>
+              </Item>
+              <Item title="图片路径：">
+                <el-input class="w100" v-model="item.image" />
+              </Item>
+              <Item title="图片：">
+                <div style="width:80px;" v-if="item.image!=''" class="banner-img">
+                  <img class="img" :src="item.image"/>
+                  <span class="icon-shanchu1 iconfont" @click="item.image=''"></span>
+                </div>
+                <i class="el-icon-plus" @click="openMedia(index)" v-else></i>
+              </Item>
             </Item>
-            <Item title="图片路径：">
-              <el-input class="w100" v-model="item.image" />
-            </Item>
-            <Item title="图片：">
-              <div style="width:80px;" v-if="item.image!=''" class="banner-img">
-                <img class="img" :src="item.image"/>
-                <span class="icon-shanchu1 iconfont" @click="item.image=''"></span>
-              </div>
-              <i class="el-icon-plus" @click="openMedia(index)" v-else></i>
-            </Item>
-            <div class="mb-20" v-if="index!=component.data.length-1"></div>
           </div>
         </div>
         <div>
@@ -117,6 +119,9 @@ export default {
     close(){
       this.dialog = false;
     },
+    remove(index){
+      this.component.data.splice(index,1);
+    },
     // 添加banner
     addBanner(){
       this.component.data.push({
@@ -149,6 +154,11 @@ export default {
     height: 1px;
     width: 100px;
     border-bottom:1px #070f14 dashed;
+  }
+  .banner-list >.joker-form-item-content{
+    width: 100%;
+    padding: 10px;
+    border:1px solid #eee;
   }
   .banner-container{
     background: #fff;

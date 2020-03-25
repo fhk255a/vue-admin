@@ -90,6 +90,30 @@ export const ROLE = {
     });
     return http(promise);
   },
+  // 配置菜单
+  setMenu(id,menu){
+    let promise = request({
+      url: URL1+'/menu',
+      method: 'post',
+      data:{
+        id,
+        menu
+      }
+    });
+    return http(promise);
+  },
+  // 配置资源
+  setResource(id,resource){
+    let promise = request({
+      url: URL1+'/resource',
+      method: 'post',
+      data:{
+        id,
+        resource
+      }
+    });
+    return http(promise);
+  },
 }
 const URL2 = 'menu';
 export const MENU = {
@@ -108,9 +132,54 @@ export const MENU = {
     });
     return http(promise);
   },
+  delete(id){
+    let promise = request({
+      url: URL2+'/delete',
+      method: 'post',
+      data:{id}
+    });
+    return http(promise);
+  },
   changeStatus(id,isHide){
     let promise = request({
       url: URL2+'/changeStatus',
+      method: 'post',
+      data:{
+        id,
+        isHide
+      }
+    });
+    return http(promise);
+  },
+}
+const URL3 = 'resource';
+export const RESOURCE = {
+  list(){
+    let promise = request({
+      url: URL3+'/list',
+      method: 'get',
+    });
+    return http(promise);
+  },
+  save(data){
+    let promise = request({
+      url: URL3+'/save',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  delete(id){
+    let promise = request({
+      url: URL3+'/delete',
+      method: 'post',
+      data:{id}
+    });
+    return http(promise);
+  },
+  changeStatus(id,isHide){
+    let promise = request({
+      url: URL3+'/changeStatus',
       method: 'post',
       data:{
         id,

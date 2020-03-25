@@ -40,7 +40,7 @@ export default {
     margin-right: 10px;
     display:flex;
     .joker-form-item-label{
-      min-height:40px;
+      // min-height:40px;
     }
   }
 </style>

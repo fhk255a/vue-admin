@@ -1,7 +1,7 @@
 <template>
   <div class="joker-page-home">
     <div class="home-container">
-      <Card :title="userInfo && userInfo.userInfo.nickName?`${userInfo.userInfo.nickName}  ${msg}`:'游客，'+msg">
+      <Card :title="userInfo.userInfo && userInfo.userInfo.nickName?`${userInfo.userInfo.nickName}  ${msg}`:'游客，'+msg">
         <div>
           <span class="title">{{goodsMsg}}</span>
           <span class="color-red" v-if="userInfo && !userInfo.token">你还未登录噢？去 <router-link to="/login" class="set-text color-blue">登录</router-link></span>
@@ -41,7 +41,6 @@ export default {
     Card,
   },
   mounted(){
-    console.log(this.TIME);
     let Y = this.TIME.getFullYear();
     let M = (this.TIME.getMonth()*1+1)>10?this.TIME.getMonth()*1+1:'0'+(this.TIME.getMonth()*1+1);
     let D = this.TIME.getDate()>10?this.TIME.getDate():'0'+this.TIME.getDate();

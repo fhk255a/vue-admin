@@ -130,6 +130,14 @@ const routerList = [
         component:() => import('@/page/page/index.vue'),
         meta:{title:'H5详情'},
       },
+      {
+        path:'view',
+        name: '/h5/view',
+        title:'H5详情',
+        isHide:true,
+        component:() => import('@/page/page/view/index.vue'),
+        meta:{title:'H5详情'},
+      },
     ]
   }
 ]

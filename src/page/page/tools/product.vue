@@ -38,17 +38,28 @@
             <el-radio v-model="currentData.showBtn" @change="changeInput()" label="1">是</el-radio>
             <el-radio v-model="currentData.showBtn" @change="changeInput()" label="0">否</el-radio>
           </Item>
-          <Item title="商品：">
+          <Item title="商品："></Item>
+          <Item className="w100">
             <ul class="product-list">
               <li :key="index" class="product-list-item" v-for="(item,index) in currentData.data">
+                <el-button type="danger" class="delete-btn" @click="remove(index)">删除</el-button>
                 <div class="item-body">
                   <div>
                     <img width="80px" height="80px" :src="item.mainImage" alt="">
                   </div>
-                  <el-input v-model="item.remark" @change="changeRemark()"/>
-                  <span class="iconfont icon-shanchu1" @click="remove(index)"></span>
                 </div>
-                <p class="item-remark">备注：{{item.remark}}</p>
+                <Item title="商品名称：" width="120px">
+                  <el-input v-model="item.title_zh" @change="changeRemark()"/>
+                </Item>
+                <Item title="售价：" width="120px">
+                  <el-input v-model="item.priceRange" @change="changeRemark()"/>
+                </Item>
+                <Item title="跳转链接：" width="120px">
+                  <el-input v-model="item.link" @change="changeRemark()"/>
+                </Item>
+                <Item title="备注：" width="120px">
+                  <el-input v-model="item.remark" @change="changeRemark()"/>
+                </Item>
               </li>
               <li class="product-list-add" @click="dialog=true">
                 <i class="el-icon-plus" />
@@ -127,6 +138,7 @@ export default {
             mainImage:item.mainImage,
             title_zh:item.title_zh,
             id:item.id,
+            link:'#',
             remark:item.remark,
             priceRange:item.priceRange
           });
@@ -167,12 +179,22 @@ export default {
       min-width: 50px;
     }
   }
+  .w100{
+    .joker-form-item-content{
+      width: 100%;
+    }
+  }
   .product-list{
     flex-wrap: wrap;
     display: flex;
     .product-list-item{
       width: 100%;
+      position: relative;
       margin-right: 8px;
+      .delete-btn{
+        position: absolute;
+        right: 10px;
+      }
       .item-body{
         display: flex;
         align-items: center;
@@ -184,10 +206,7 @@ export default {
       margin-bottom: 10px;
       border: 1px solid #eee;
       .el-input{
-        margin-left: 10px;
-      }
-      .icon-shanchu1{
-        margin-left: 10px;
+        display: block;
       }
     } 
     .product-list-add{

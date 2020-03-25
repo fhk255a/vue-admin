@@ -2,13 +2,13 @@
 const userInfo = {
   state:{
     // 凭证
-    token:'',
+    token:null,
     // 用户信息
-    userInfo:{},
+    userInfo:null,
     // 用户的菜单
-    menu:[],
+    menu:null,
     // 用户的资源
-    resource:[],
+    resource:null,
   },
   mutations:{
     token(state,token){

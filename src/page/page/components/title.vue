@@ -1,6 +1,6 @@
 <template>
   <div class="h5-page-component-title">
-    <div class="foor-title" v-if="data.isShowTitle">{{data.title}}</div>
+    <div class="foor-title" v-if="data.isShowTitle" :style="{color:data.color}">{{data.title}}</div>
     <div :style="{
       background:data.data.background,
       color:data.data.color,
