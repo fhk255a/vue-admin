@@ -1,5 +1,5 @@
 <template>
-  <div class="h5-page-componen-product">
+  <div class="item-components h5-page-componen-product">
     <div class="foor-title" v-if="data.isShowTitle" :style="{color:data.color}">{{data.title}}</div>
     <div class="product-list">
       <div class="product-item" 

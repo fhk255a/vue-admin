@@ -6,8 +6,8 @@ import router from '@/router';
 
 // 创建axios
 const request = axios.create({
-  // baseURL: 'http://localhost:3000',
-  baseURL: 'http://project.fhk255.cn',
+  baseURL: 'http://localhost:3000',
+  // baseURL: 'http://project.fhk255.cn',
   withCredentials: true
 });
 

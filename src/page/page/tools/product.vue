@@ -45,7 +45,9 @@
                 <el-button type="danger" class="delete-btn" @click="remove(index)">删除</el-button>
                 <div class="item-body">
                   <div>
-                    <img width="80px" height="80px" :src="item.mainImage" alt="">
+                    <img width="80px" height="80px" v-if="item.mainImage" :src="item.mainImage" alt="" >
+                    <!-- <span class="iconfont icon-shuanchu" >删除</span> -->
+                    <Upload @success="success" :index="index" :data="item.mainImage" @remove="item.mainImage=''"></Upload>
                   </div>
                 </div>
                 <Item title="商品名称：" width="120px">
@@ -102,6 +104,7 @@
 </template>
 
 <script>
+import Upload from '@/components/Upload';
 import Dialog from '@/components/Dialog';
 import Item from '@/components/Item';
 export default {
@@ -109,12 +112,21 @@ export default {
   data(){
     return{
       dialog:false,
-      tableData:[]
+      tableData:[],
     }
   },
   methods:{
+    successUpload(data){
+      console.log(data);
+    },
     changeInput(e){
       this.update();
+    },
+    success(data){
+      console.log(data);
+      if(data.code == 200){
+        this.currentData.data[data.index].mainImage = data.data;
+      }
     },
     changeRemark(e){
       console.log(e);
@@ -160,6 +172,7 @@ export default {
   },
   components:{
     Dialog,
+    Upload,
     Item
   }
 }

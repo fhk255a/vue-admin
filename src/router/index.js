@@ -24,6 +24,16 @@ const staticRouteMap = [
     },
     component: () => import('@/page/function/login.vue')
   },
+  // dev
+  {
+    path: '/dev',
+    name: '/dev',
+    hide: true,
+    meta: {
+      title: 'dev'
+    },
+    component: () => import('@/components/Medias.vue')
+  },
   // 404
   {
     path: '/404',
@@ -98,6 +108,7 @@ router.beforeEach((to, from, next) => {
       let isPass = passRoute.findIndex(item =>item==to.name);
       // 有无权限进入该页面
       if (isPass!=-1) {
+        
         next();
       } else {
         next({path: '/404'});

@@ -1,5 +1,5 @@
 <template>
-  <div class="h5-page-component-banner">
+  <div class="item-components h5-page-component-banner">
     <div class="foor-title" :style="{color:data.color}" v-if="data.isShowTitle">{{data.title}}</div>
     <el-carousel indicator-position="outside" :height="data.height+'px'">
       <!-- :style="{lineHeight:data.height+'px'}" -->
