@@ -106,6 +106,7 @@
 <script>
 import Upload from '@/components/Upload';
 import Dialog from '@/components/Dialog';
+import Media from '@/components/Media';
 import Item from '@/components/Item';
 export default {
   props:['component'],
@@ -127,6 +128,7 @@ export default {
       if(data.code == 200){
         this.currentData.data[data.index].mainImage = data.data;
       }
+      console.log(this.currentData.data[data.index].mainImage)
     },
     changeRemark(e){
       console.log(e);
@@ -173,6 +175,7 @@ export default {
   components:{
     Dialog,
     Upload,
+    Media,
     Item
   }
 }

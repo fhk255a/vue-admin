@@ -67,6 +67,27 @@ const staticRouteMap = [
       },
     ]
   },
+  {
+    path: '/config',
+    name: '/config',
+    component: Layout,
+    icon:'el-icon-setting',
+    redirect: '/config/list',
+    hide:false,
+    meta:{title:'系统配置'},
+    children:[
+      {
+        path: 'list',
+        name: '/config/list',
+        component: () => import('@/components/Medias.vue'),
+        hide: false,
+        icon:'el-icon-folder-opened',
+        meta: {
+          title: '媒体库'
+        }
+      },
+    ]
+  }
 ];
 
 //合并两组路由
@@ -104,7 +125,7 @@ router.beforeEach((to, from, next) => {
       next({path: '/'});
     } else{
       // 获取有权限的页面
-      let passRoute = ['/','/login', '/404', '/home','/dev','/h5/view'].concat(menu.split?menu.split(','):menu);
+      let passRoute = ['/','/login', '/404', '/home','/dev','/config/list','/config','/h5/view'].concat(menu.split?menu.split(','):menu);
       let isPass = passRoute.findIndex(item =>item==to.name);
       // 有无权限进入该页面
       if (isPass!=-1) {

@@ -9,7 +9,9 @@ import './assets/css/common.scss';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import './lib/func';
+import loadImg from './lib/directive';
 Vue.use(ElementUI);
+Vue.directive('load-img', loadImg);
 Vue.prototype.$request = request;
 Vue.config.productionTip = false;
 

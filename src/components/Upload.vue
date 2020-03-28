@@ -1,30 +1,42 @@
 <template>
   <div class="joker-component-upload">
-    <el-upload 
-      v-if="!data"
-      :action="$request.defaults.baseURL+'/function/upload'"
-      :headers="{'Authorization': getToken()}"
-      :with-credentials="true"
-      name="image"
-      class="upload-img"
-      :show-file-list="false"
-      :before-upload="beforeUploadImg"
-      :on-success="uploadImageSuccess"
-      :on-error="uploadImageError"
-      :style="{
-        width: width,
-        height: height,
-        lineHeight: height,
-      }"
-    >
-      <i class="el-icon-plus avatar-uploader-icon" ></i>
-    </el-upload>
-    <span class="upload-text color-blue" v-else @click="$emit('remove')">重新上传</span>
+    <template v-if="!data">
+      <el-upload 
+        :action="$request.defaults.baseURL+'/function/upload'"
+        :headers="{'Authorization': getToken()}"
+        :with-credentials="true"
+        name="image"
+        class="upload-img"
+        :show-file-list="false"
+        :before-upload="beforeUploadImg"
+        :on-success="uploadImageSuccess"
+        :on-error="uploadImageError"
+        :style="{
+          width: width,
+          height: height,
+          lineHeight: height,
+        }"
+      >
+        <i class="el-icon-plus avatar-uploader-icon" ></i>
+      </el-upload>
+      <span class="upload-text color-blue" @click="dialog=true">从媒体库添加</span>
+    </template>
+    <template v-else>
+      <span class="upload-text color-blue" @click="$emit('remove')">重新上传</span>
+      <span class="upload-text color-blue" @click="dialog=true">从媒体库添加</span>
+    </template>
+    <el-dialog class="media-dialog"
+      :visible.sync="dialog"
+      top="5vh"
+      width="80%">
+      <Media @submit="submit"/>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import {getToken} from '@/lib/token';
+import Media from '@/components/Medias';
 import FUNCTION from '@/api/function';
 export default {
   props:{
@@ -55,10 +67,16 @@ export default {
   },
   data(){
     return{
-      getToken
+      getToken,
+      dialog:false,
     }
   },
   methods:{
+    // 最终从媒体库选择得图
+    submit(url){
+      console.log(url);
+      this.dialog = false;
+    },
     // 上传失败
     uploadImageError(err, file, fileList) {
       this.$message.error('上传失败;'+err);
@@ -102,6 +120,9 @@ export default {
         return isJPG || isPng && isPassSize;
       }
     },
+  },
+  components:{
+    Media
   }
 }
 </script>
