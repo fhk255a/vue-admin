@@ -27,7 +27,9 @@
     </template>
     <el-dialog class="media-dialog"
       :visible.sync="dialog"
+      @mousedown.stop=""
       top="5vh"
+      :modal-append-to-body="false"
       width="80%">
       <Media @submit="submit"/>
     </el-dialog>

@@ -5,6 +5,7 @@
       <div class="h5-menu-title">
         组件库 
       </div>
+      {{currentTools.id}}
       <ul class="h5-menu-ul" >
         <li class="h5-menu-li" v-for="(item,index) in pageConfig" 
           :key="item.type" 

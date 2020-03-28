@@ -94,12 +94,11 @@ export default {
     },
     // 阻止冒泡
     stopClick(e){
-      console.log('点了工具栏')
+      console.log('进来了');
       this.show = false;
     },
     // 切换编辑区
     changeCurrentComponent(item,index){
-      console.log(item);
       this.$store.dispatch('changeCompData',item);
       this.$store.dispatch('changeComponentIndex',index);
       this.currentTools = {...item};
@@ -177,7 +176,8 @@ export default {
   },
   beforeCreate(){
     //点击空白处展示页面信息
-    document.addEventListener('mousedown',(ev)=>{
+    const DOM = document.getElementById('app');
+    DOM.addEventListener('mousedown',(ev)=>{
       if(ev.target.className == 'el-color-dropdown__btns' || ev.target.className== '' || ev.target.className == 'el-color-svpanel__black'){
         this.show = false;
         return;

@@ -15,6 +15,7 @@
         top="5vh"
         @mousedown.stop="stopFun"
         :title="currentData.dirName"
+        :modal-append-to-body="false"
         :visible.sync="innerVisible"
         append-to-body>
         <div class="current-image" v-show="currentIndex!=null">
@@ -39,6 +40,7 @@
           width="600px"
           :title="showImage.image"
           :visible.sync="showDialg"
+          :modal-append-to-body="false"
           top="5vh"
           append-to-body>
           <div style="width:100%;height:100%">
