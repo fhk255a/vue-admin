@@ -82,6 +82,7 @@ export default {
   mixins:[isPass],
   methods:{
     getData(){
+      this.$store.dispatch('loading',true);
       MENU.list().then(res=>{
         if(res.code== 200){
           this.tableList = res.data;
@@ -89,7 +90,9 @@ export default {
         }else{
           this.notify(res.msg,'淦','error');
         }
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 编辑
     edit(item){
@@ -107,6 +110,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$store.dispatch('loading',true);
         MENU.delete(item.id).then(res=>{
           if(res.code == 200){
             this.notify(`您手滑删掉了<span class="color-red"> [ ${item.title} ] </span>`,'我的天！','error');
@@ -114,12 +118,15 @@ export default {
           }
         }).catch(err=>{
 
-        })
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
     },
     changeStatus(item){
+      this.$store.dispatch('loading',true);
       MENU.changeStatus(item.id,item.isHide?1:0).then(res=>{
         if(res.code== 200){
           this.getData();
@@ -127,7 +134,9 @@ export default {
         }else{
           this.notify(res.msg,'淦','error');
         }
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 添加
     add(){
@@ -168,6 +177,7 @@ export default {
       if(this.currentData.id){
         data.id = this.currentData.id;
       }
+      this.$store.dispatch('loading',true);
       MENU.save(data).then(res=>{
         if(res.code == 200){
           this.notify(res.msg,'OHHH','success');
@@ -176,7 +186,9 @@ export default {
         }else{
           this.notify(res.msg,'EMMMMM','error');
         }
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 关闭弹框
     close(status){

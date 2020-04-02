@@ -137,6 +137,7 @@ export default {
         ...this.pageInfo,
         content:JSON.stringify(this.currentComponent)
       }
+      this.$store.dispatch('loading',true);
       H5.save(result).then(res=>{
         if(res.code == 200){
           console.warn('当前数据');
@@ -144,7 +145,9 @@ export default {
           this.notify('当前数据已保存，可以查看F12');
           this.$router.push(`/h5/details/${res.data}`)
         }
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 初始化
     init(){

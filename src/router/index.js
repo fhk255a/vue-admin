@@ -5,6 +5,16 @@ import Layout from '@/page/layout';
 import Cookie from '@/lib/cookie';
 import VUEX from '@/store';
 import STORE from '@/lib/store';
+// 页面加载进度条
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css' 
+NProgress.configure({     
+  easing: 'ease',  // 动画方式    
+  speed: 500,  // 递增进度条的速度    
+  showSpinner: false, // 是否显示加载ico    
+  trickleSpeed: 200, // 自动递增间隔    
+  minimum: 0.3 // 初始化时的最小百分比
+})
 
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location, onResolve, onReject) {
@@ -67,27 +77,6 @@ const staticRouteMap = [
       },
     ]
   },
-  {
-    path: '/config',
-    name: '/config',
-    component: Layout,
-    icon:'el-icon-setting',
-    redirect: '/config/list',
-    hide:false,
-    meta:{title:'系统配置'},
-    children:[
-      {
-        path: 'list',
-        name: '/config/list',
-        component: () => import('@/components/Medias.vue'),
-        hide: false,
-        icon:'el-icon-folder-opened',
-        meta: {
-          title: '媒体库'
-        }
-      },
-    ]
-  }
 ];
 
 //合并两组路由
@@ -106,6 +95,7 @@ const token = Cookie.has('vue-admin-token');
 const userinfo = STORE.get('vue-admin-userinfo');
 let menu = userinfo?userinfo.menu || userinfo.menu :[];
 router.beforeEach((to, from, next) => {
+  NProgress.start();
   if(token && token!='null'){
     if(userinfo){
       if(!VUEX.state.userInfo.userInfo){
@@ -125,7 +115,7 @@ router.beforeEach((to, from, next) => {
       next({path: '/'});
     } else{
       // 获取有权限的页面
-      let passRoute = ['/','/login', '/404', '/home','/dev','/config/list','/config','/h5/view'].concat(menu.split?menu.split(','):menu);
+      let passRoute = ['/','/login', '/404', '/home','/dev','/config/media','/config','/h5/view'].concat(menu.split?menu.split(','):menu);
       let isPass = passRoute.findIndex(item =>item==to.name);
       // 有无权限进入该页面
       if (isPass!=-1) {
@@ -152,4 +142,7 @@ router.beforeEach((to, from, next) => {
   }
   // next();
 });
+router.afterEach(()=>{
+  NProgress.done();
+})
 export default router;

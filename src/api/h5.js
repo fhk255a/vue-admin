@@ -40,13 +40,21 @@ const H5 = {
     });
     return http(promise);
   },
-  qrCode(id){
+  // 是否发布
+  status(id,status){
     let promise = request({
-      url: URL+'/qr',
+      url: URL+'/status',
       method: 'post',
       data:{
-        id
+        id,status
       }
+    });
+    return http(promise);
+  },
+  qrCode(id){
+    let promise = request({
+      url: URL+'/qr/'+id,
+      method: 'get',
     });
     return http(promise);
   },

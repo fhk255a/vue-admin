@@ -21,10 +21,18 @@
           </template>
         </el-input>
       </div>
+      <div class="login-item" >
+        <span class="color-blue" @click="qrLogin">
+          扫码体验
+        </span>
+      </div>
       <div class="login-item btns">
         <el-button @click="login()">登陆</el-button>
       </div>
     </div>
+    <Dialog @close="close" :show="dialog" width="500px" title="扫码登录体验账号">
+      <div class="login-code" v-html="QRCODE" />
+    </Dialog>
   </div>
 </template>
 
@@ -32,22 +40,87 @@
 import USER from '@/api/user';
 import Cookie from '@/lib/cookie';
 import STORE from '@/lib/store';
+import Dialog from '@/components/Dialog';
+import {ID} from '@/lib/common';
 export default {
   data(){
     return{
       username:'',
       password:'',
       ALLUSERS:[], // 所有用户
+      dialog:false, // 二维码框
+      QRCODE:'',
+      redata:{},
+      uuid:ID(),
+      websock:null,
     }
   },
   mounted(){
-    // 这一步是获取全部数据 在真实线上是发请求。
-    this.ALLUSERS = this.$store.state.competence.userList;
   },
   methods:{
+    close(){
+      this.dialog =false;
+    },
+    initWebSocket(id){ //初始化weosocket
+      const wsuri = `ws://project.fhk255.cn/loginSocket/${id}`;
+      this.websock = new WebSocket(wsuri);
+      this.websock.onmessage = this.websocketonmessage;
+      this.websock.onerror = this.websocketonerror;
+      this.websock.onclose = this.websocketclose;
+    },
+    websocketonerror(){//连接建立失败重连
+      this.initWebSocket(this.uuid);
+    },
+    websocketonmessage(e){ //数据接收
+      let timer = null;
+      const res = JSON.parse(e.data);
+      if(res && res.code && res.code == 200){
+        this.notify(res.msg,'OH~YES!','success')
+        Cookie.set('vue-admin-token',res.data.token)
+        STORE.set('vue-admin-userinfo',res.data)
+        STORE.set('vue-admin-menu',res.data.menu)
+        this.$store.dispatch('changeUserMenu',res.data.menu);
+        this.$store.dispatch('changeUserInfo',res.data.userInfo);
+        this.$store.dispatch('changeToken',res.data.token);
+        this.$store.dispatch('changeUserResource',res.data.resource);
+        timer = setTimeout(()=>{
+          window.location.reload();
+        },500)
+        this.websock = null;
+      }else if(res.code == 400){
+        this.notify(res.msg,'抱歉','error');
+        this.websock = null;
+      }
+      // this.redata = JSON.parse(e.data);
+    },
+    websocketsend(Data){//数据发送
+      this.websock.send(Data);
+    },
+    websocketclose(e){  //关闭
+      // console.log('断开连接',e);
+    },
+    // 扫码登录
+    qrLogin(){
+      // this.initWebSocket();
+      this.initWebSocket(this.uuid);
+      USER.getLoginCode(this.uuid).then(res=>{
+        if(res.code==200){
+          this.QRCODE = res.data.img;
+          this.dialog = true;
+        }else{
+          this.QRCODE = res.msg;
+          this.dialog = true;
+          this.notify(res.msg);
+        }
+      }).catch(err=>{
+        this.notify(err);
+      })
+    },
     login(){
+      // this.websocketsend(this.username)
       USER.login(this.username,this.password).then(res=>{
         if(res.code == 200){
+          this.notify(res.msg,'OH~YES!','success')
           Cookie.set('vue-admin-token',res.data.token)
           STORE.set('vue-admin-userinfo',res.data)
           STORE.set('vue-admin-menu',res.data.menu)
@@ -55,12 +128,17 @@ export default {
           this.$store.dispatch('changeUserInfo',res.data.userInfo);
           this.$store.dispatch('changeToken',res.data.token);
           this.$store.dispatch('changeUserResource',res.data.resource);
-          window.location.reload();
+          timer = setTimeout(()=>{
+            window.location.reload();
+          },500)
         }else{
-          this.notify(res.msg);
+          this.notify(res.msg,'EMMM~!','error');
         }
       });
     }
+  },
+  components:{
+    Dialog
   }
 }
 </script>
@@ -106,6 +184,15 @@ export default {
     font-size: 24px;
     color: #070f14;
     user-select: none;
+  }
+}
+.login-code{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  svg{
+    width: 100%;
+    height: 100%;
   }
 }
 </style>

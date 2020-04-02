@@ -59,6 +59,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$store.dispatch('loading',true);
         ORDER.cancel(row.id).then(res=>{
           if(res.code == 200){
             this.$message.success('取消成功!');
@@ -69,7 +70,9 @@ export default {
         })
       }).catch(() => {
         this.notify('您点了取消');          
-      });
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      })
     },
     search(form){
       this.header = form;
@@ -78,6 +81,7 @@ export default {
     // 获取订单列表
     getData(){
       // TODO 订单列表请求
+      this.$store.dispatch('loading',true);
       let params = {
         current:this.page.current,
         size:this.page.size,
@@ -86,7 +90,9 @@ export default {
       ORDER.list(params).then(res=>{
         this.page.total = res.data.total;
         this.tableList = res.data.data;
-      }).catch();
+      }).catch(()=>{}).finally(()=>{
+        this.$store.dispatch('loading',false);
+      })
     }
   },
   components:{

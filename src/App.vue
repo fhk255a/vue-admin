@@ -14,13 +14,13 @@ export default {
   mixins:[isPass],
   name: 'App',
   mounted(){
-    if(!STORE.get('vue-admin-menu')){
-      MENU.list().then(res=>{
-        this.$store.dispatch('changeMenuList',res.data);
-        STORE.set('vue-admin-menu',res.data)
-      })
-    }
     if(Cookie.has('vue-admin-token') && Cookie.has('vue-admin-token')!='null'){
+      if(!STORE.get('vue-admin-menu')){
+        MENU.list().then(res=>{
+          this.$store.dispatch('changeMenuList',res.data);
+          STORE.set('vue-admin-menu',res.data)
+        })
+      }
       if(!STORE.get('vue-admin-userinfo')){
         USER.getInfo().then(res=>{
           if(res.code == 200){

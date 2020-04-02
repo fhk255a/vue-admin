@@ -47,6 +47,32 @@ const USER = {
       params
     });
     return http(promise);
+  },
+  update(data){
+    let promise = request({
+      url: URL+'/update',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  delete(id){
+    let promise = request({
+      url: URL+'/delete',
+      method: 'post',
+      data:{id}
+    });
+    return http(promise);
+  },
+  getLoginCode(uuid){
+    let promise = request({
+      url: URL+'/getLoginCode',
+      method: 'get',
+      params:{
+        uuid
+      }
+    });
+    return http(promise);
   }
 }
 export default USER;

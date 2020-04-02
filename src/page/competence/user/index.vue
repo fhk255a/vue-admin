@@ -16,7 +16,7 @@
         </template>
         <template slot="set" slot-scope="row">
           <span class="set-text color-blue" v-if="isPass('competence::user::edit')" @click="edit(row.scope.data)">编辑</span>
-          <span class="set-text color-red" v-if="isPass('competence::user::remove')" @click="remove(row.scope.index)">删除</span>
+          <span class="set-text color-red" v-if="isPass('competence::user::remove')" @click="remove(row.scope.data)">删除</span>
         </template>
       </Table>
       <Page :page="page" @changePage="changePage"/>
@@ -112,7 +112,7 @@ export default {
     },
     // 切换状态
     changeStatus(status,index){
-      this.notify('你的操作被某种神秘力量销毁了','error','淦',' ');
+      this.notify('你的操作被某种神秘力量销毁了','淦','warning');
       this.tableList[index].status = !status;
     },
     add(){
@@ -138,23 +138,28 @@ export default {
     // 提交
     submit(){
       if(this.currentData.id){
-        const INDEX = this.tableList.findIndex(item=>this.currentData.id == item.id);
-        this.tableList[INDEX] = {...this.currentData};
-        this.$store.dispatch('changeUserList',this.tableList);
-        this.notify(`你修改了<span class="color-red"> [ ${this.currentData.id} ] </span>`,'success','老铁',' ');
-        this.dialog = {
-          dialog:false,
-          edit:false,
-          add:false
-        }
-        this.getData();
+        USER.update(this.currentData).then(res=>{
+          if(res.code == 200){
+            this.notify(res.msg,'OH~','success');
+            this.dialog = {
+              dialog:false,
+              edit:false,
+              add:false
+            }
+            this.getData();
+          }else{
+            this.notify(res.msg,'错误提示','error');
+          }
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }else{
-        let res = this.$store.state.competence.userList;
         if(this.currentData.username==''){
           this.$refs['reg-username'].focus();
           this.$message.error('用户名不能为空');
           return;
         }
+        this.$store.dispatch('loading',true);
         USER.register(this.currentData).then(res=>{
           if(res.code == 200){
             this.notify('你添加了一个新用户','success','老铁',' ');
@@ -168,22 +173,34 @@ export default {
             this.notify(res.msg,'错误提示','error');
             this.$refs['reg-username'].focus();
           }
-        })
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }
     },
     // 删除用户
-    remove(INDEX){
-      let res = this.$store.state.competence.userList;
-      const ID = res[INDEX].id;
+    remove(item){
       this.$confirm('是否删除该用户?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        res.splice(INDEX,1);
-        this.$store.dispatch('changeUserList',res);
-        this.getData();
-        this.notify(`您手滑删掉了<span class="color-red"> [ ${ID} ] </span>用户`,'error','我的天！',' ');
+        USER.delete(item.id).then(res=>{
+          if(res.code == 200){
+            this.notify(res.msg,'OH!','success');
+            this.dialog = {
+              dialog:false,
+              edit:false,
+              add:false
+            }
+            this.getData();
+          }else{
+            this.notify(res.msg,'错误提示','error');
+            this.$refs['reg-username'].focus();
+          }
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
@@ -191,13 +208,27 @@ export default {
     // 关闭
     close(status){
       this.dialog={
-        dialog:status,
+        dialog:false,
         edit:false,
         add:false
       }
+      this.currentData={
+        id:null,
+        username:'',
+        role:1000,
+        createTime:'',
+        remark:'',
+        password:123456,
+        mail:'',
+        qq:'',
+        status:1,
+        phone:'',
+        nickName:'',
+      };
     }
   },
   mounted(){
+    this.$store.dispatch('loading',true);
     ROLE.list().then(res=>{
       this.roleList = res.data.map(item=>{
         return {
@@ -206,7 +237,9 @@ export default {
         }
       })
       this.searchConfig[3].data = this.roleList;
-    })
+    }).finally(()=>{
+      this.$store.dispatch('loading',false);
+    });
     this.getData();
   },
   data(){
@@ -301,7 +334,7 @@ export default {
         password:123456,
         mail:'',
         qq:'',
-        status:true,
+        status:1,
         phone:'',
         nickName:'',
       },

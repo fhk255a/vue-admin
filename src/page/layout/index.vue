@@ -39,7 +39,7 @@
           </el-dropdown>
         </div>
       </div>
-      <div class="joker-layout-main">
+      <div class="joker-layout-main" v-loading="loading">
         <router-view/>
       </div>
     </div>
@@ -95,7 +95,7 @@
               <span v-if="data.children && data.children.length>0">{{data.label}}</span>
               <span v-else>
                 <span class="color-red">
-                  <span class="color-green" v-if="roleInfo && roleInfo.resource.findIndex(item=>item==data.value)!=-1">
+                  <span class="color-green" v-if="userInfo && userInfo.resource.findIndex(item=>item==data.value)!=-1">
                     {{data.label}} <i class=" iconfont icon-queren2"></i>
                   </span>
                   <span v-else class="color-red">
@@ -178,7 +178,7 @@ export default {
         role:true,
         title:'等级权限'
       }
-      const KEYS = this.roleInfo.resource;
+      const KEYS = this.userInfo.resource;
       this.$nextTick(()=>{
         this.$refs['resource-tree'].setCheckedKeys(KEYS);
         this.defaultSouce = KEYS;
@@ -199,7 +199,10 @@ export default {
         this.$store.dispatch('changeUserInfo',null);
         this.$store.dispatch('changeUserMenu',null);
         this.$store.dispatch('changeUserResource',null);
-        window.location.reload();
+        this.$router.push('/login');
+        setTimeout(()=>{
+          window.location.reload();
+        },500 )
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
@@ -208,6 +211,9 @@ export default {
   computed:{
     userInfo(){
       return this.$store.state.userInfo;
+    },
+    loading(){
+      return this.$store.state.func.loading;
     },
   }
 }
@@ -306,6 +312,32 @@ body > .el-container {
   .el-dialog__body{
     border-radius: 0;
     padding: 30px 20px;
+  }
+}
+#joker-loading{
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  opacity: 0.8;
+  background: #2b2c30;
+  top: 0;
+  bottom: 0;
+  user-select: none;
+  >div{
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    user-select: none;
+    img{
+      user-drag:none;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
   }
 }
 </style>

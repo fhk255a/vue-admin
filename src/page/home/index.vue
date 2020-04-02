@@ -1,7 +1,7 @@
 <template>
   <div class="joker-page-home">
     <div class="home-container">
-      <Card :title="userInfo.userInfo && userInfo.userInfo.nickName?`${userInfo.userInfo.nickName}  ${msg}`:'游客，'+msg">
+      <Card :title="userInfo.userInfo && userInfo.userInfo.nickName?`<span class='color-blue'>${userInfo.userInfo.nickName}  </span> <span >${msg}</span>`:'游客，'+msg">
         <div>
           <span class="title">{{goodsMsg}}</span>
           <span class="color-red" v-if="userInfo && !userInfo.token">你还未登录噢？去 <router-link to="/login" class="set-text color-blue">登录</router-link></span>

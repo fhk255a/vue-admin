@@ -1,7 +1,14 @@
 <template>
   <div class="joker-components-medias">
-    <Card title="媒体库" @mousedown.stop="stopFun">
+    <Card title="媒体库" @mousedown.stop="stopFun" >
+      <div slot="right" @click="getDirName" class="refresh-btn">
+        <span class="el-icon-refresh" ></span>
+        <span>刷新</span>
+      </div>
       <ul class="medias-ul" @mousedown.stop="stopFun">
+        <li class="medias-li upload-li">
+          <slot name="upload"></slot>
+        </li>
         <li :class="['medias-li',item.num<1?'isNull':'null']"
           @click="openFile(item,index)"
             :key="index" v-for="(item,index) in tableList" >
@@ -82,6 +89,17 @@ export default {
     Card,
     Item
   },
+  props:{
+    reload:{
+      type:Boolean,
+      default:()=>false
+    }
+  },
+  watch:{
+    reload(d){
+      console.log(d)
+    }
+  },
   data(){
     return{
       outerVisible:true,
@@ -108,20 +126,26 @@ export default {
     },
     // 获取所有文件夹及其数量
     getDirName(){
+      this.$store.dispatch('loading',true);
       MEDIA.dirList().then(res=>{
         if(res.code==200){
           this.tableList = res.data;
         }
+      }).catch(()=>{}).finally(()=>{
+        this.$store.dispatch('loading',false);
       })
     },
     // 根据文件夹名称获取文件夹下得图片
     dirQueryFiles(name,index){
+      this.$store.dispatch('loading',true);
       MEDIA.dirQueryFiles(name).then(res=>{
         this.tableList[index].files = res.data;
         this.currentData = this.tableList[index];
         console.log(this.currentData)
       }).catch(err=>{
 
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
       })
     },
     openFile(item,index){
@@ -150,6 +174,7 @@ export default {
         type: 'warning'
       }).then(() => {
         if(this.info.id){
+          this.$store.dispatch('loading',true);
           MEDIA.deleteFileItem(this.info.id).then(res=>{
             if(res.code==200){
               
@@ -158,6 +183,8 @@ export default {
             }
           }).catch(err=>{
 
+          }).finally(()=>{
+            this.$store.dispatch('loading',false);
           })
         }
       }).catch(() => {
@@ -187,7 +214,6 @@ export default {
       this.showDialg = true;
       const ITEM = {...this.currentData.files[this.currentIndex]};
       this.showImage = ITEM;
-      console.log(ITEM);
       this.showImage.image = ITEM.minImage.replace('x100','');
     }
   }
@@ -300,6 +326,23 @@ export default {
     color: #fff;
     padding: 2px 5px;
     transform: rotate(38deg);
+  }
+}
+.upload-li{
+  width: 100px;
+  cursor: pointer;
+  text-align: center;
+  &:hover{
+    background:rgba(125,125,125,0.1)
+  }
+}
+.refresh-btn {
+  cursor: pointer;
+  .el-icon-refresh{
+    margin-right: 5px;
+  }
+  >span{
+    font-size: 14px;
   }
 }
 </style>

@@ -74,6 +74,7 @@ export default {
         status:this.header.status,
         title_zh:this.header.title
       }
+      this.$store.dispatch('loading',true);
       PRODUCT.list(params).then(res=>{
         if(res.code == 200){
           this.tableList = res.data.data.map(item=>{
@@ -84,6 +85,8 @@ export default {
         }
       }).catch(err=>{
 
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
       });
     },
     // 切换状态

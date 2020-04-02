@@ -122,6 +122,7 @@ export default {
       if(this.currentData.id){
         data.id = this.currentData.id;
       }
+      this.$store.dispatch('loading',true);
       RESOURCE.save(data).then(res=>{
         if(res.code == 200){
           this.notify(res.msg,'O(∩_∩)O','success');
@@ -132,7 +133,9 @@ export default {
         }
       }).catch(err=>{
 
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     }
   },
   mounted(){

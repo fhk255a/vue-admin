@@ -103,12 +103,15 @@ export default {
         size:this.page.size,
         ...this.header,
       }
+      this.$store.dispatch('loading',true);
       ROLE.list(params).then(res=>{
         if(res.code == 200){
           this.tableList = res.data.data;
           this.page.total = res.data.total;
         }
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 分页
     changePage(page){
@@ -136,6 +139,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.$store.dispatch('loading',true);
         ROLE.delete(item.id).then(res=>{
           if(res.code == 200){
             this.notify(`您手滑删掉了<span class="color-red"> [ ${item.name} ] </span>`,'EMMMMM~~~~~','warning');
@@ -143,7 +147,9 @@ export default {
           }else{
             this.notify(res.msg);
           }
-        })
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }).catch(() => {
         this.$message.info('您点了取消');          
       });
@@ -177,6 +183,7 @@ export default {
         this.$refs['roleNameInput'].focus();
         return;
       }
+      this.$store.dispatch('loading',true);
       // 编辑
       if(this.dialog.edit){
         data.id = this.currentData.id;
@@ -188,7 +195,9 @@ export default {
           }else{
             this.notify(res.msg,'EMMMMM~','error');
           }
-        })
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }
       // 添加
       else{
@@ -205,7 +214,9 @@ export default {
               this.notify(res.msg,'EMMMMM~','error');
             }
           }
-        })
+        }).finally(()=>{
+          this.$store.dispatch('loading',false);
+        });
       }
     },
     // 关闭弹框
@@ -227,8 +238,9 @@ export default {
     // 保存菜单
     submitMenu(index){
       const menu = this.$refs['menu-tree'].getCheckedKeys();
-      const MENU = menu.concat(this.$refs['menu-tree'].getHalfCheckedKeys());
-      ROLE.setMenu(this.currentData.id,MENU.join(',')).then(res=>{
+      // const MENU = menu.concat(this.$refs['menu-tree'].getHalfCheckedKeys());
+      this.$store.dispatch('loading',true);
+      ROLE.setMenu(this.currentData.id,menu.join(',')).then(res=>{
         if(res.code == 200){
           this.notify(res.msg,'OH','success');
           this.setting={
@@ -242,7 +254,9 @@ export default {
         }
       }).catch(err=>{
 
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 配置菜单事件
     menu(item){
@@ -260,8 +274,8 @@ export default {
     },
     saveResource(){
       const resource = this.$refs['resource-tree'].getCheckedKeys();
-      const RESOURCE = resource.concat(this.$refs['resource-tree'].getHalfCheckedKeys());
-      ROLE.setResource(this.currentData.id,RESOURCE.join(',')).then(res=>{
+      this.$store.dispatch('loading',true);
+      ROLE.setResource(this.currentData.id,resource.join(',')).then(res=>{
         if(res.code == 200){
           this.notify(res.msg,'OH','success');
           this.setting={
@@ -275,7 +289,9 @@ export default {
         }
       }).catch(err=>{
         
-      })
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      });
     },
     // 配置资源事件
     resource(item){
@@ -285,7 +301,8 @@ export default {
         resource:true
       }
       this.currentData = {...item};
-      const KEYS = this.currentData.resource;
+      const KEYS = item.resource;
+      console.log(KEYS);
       this.$nextTick(()=>{
         this.$refs['resource-tree'].setCheckedKeys(KEYS);
         this.defaultSouce = KEYS;

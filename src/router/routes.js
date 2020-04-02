@@ -139,6 +139,37 @@ const routerList = [
         meta:{title:'H5详情'},
       },
     ]
+  },
+  {
+    path: '/config',
+    name: '/config',
+    component: Layout,
+    icon:'el-icon-setting',
+    redirect: '/config/media',
+    hide:false,
+    meta:{title:'系统配置'},
+    children:[
+      {
+        path: 'media',
+        name: '/config/media',
+        component: () => import('@/page/config/media'),
+        hide: false,
+        icon:'el-icon-folder-opened',
+        meta: {
+          title: '媒体库'
+        }
+      },
+      {
+        path: 'key',
+        name: '/config/keys',
+        component: () => import('@/page/config/key'),
+        hide: false,
+        icon:'el-icon-folder-opened',
+        meta: {
+          title: '参数配置'
+        }
+      },
+    ]
   }
 ]
 

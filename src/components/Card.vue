@@ -1,7 +1,7 @@
 <template>
   <div class="joker-component-card">
     <div class="j-card-title" :style="{background:color?color:''}">
-      <div class="left">{{title}}</div>
+      <div class="left" v-html="title"></div>
       <div class="right">
         <slot name="right"></slot>
       </div>

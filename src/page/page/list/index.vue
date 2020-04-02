@@ -10,6 +10,9 @@
           <span class="icon-btn color-blue" @click="view(row.scope.data)">查看</span>
           <span class="icon-btn color-blue" @click="qrCode(row.scope.data)">生成二维码</span>
         </template>
+        <template slot-scope="row" slot="status">
+          <el-switch @change="changeStatus(row.scope)" v-model="row.scope.data.status"/>
+        </template>
         <template slot-scope="row" slot="createTime">
           {{$timer(row.scope.data.createTime*1)}}
         </template>
@@ -43,6 +46,21 @@ export default {
       this.page = page;
       this.getData();
     },
+    changeStatus(row){
+      this.$store.dispatch('loading',true);
+      H5.status(row.id,row.status).then(res=>{
+        if(res.code==200){
+          this.notify(res.msg,'提示','success');
+        }else{
+          this.notify(res.msg,'提示','error');
+        }
+        this.getData();
+      }).catch(err=>{
+        this.notify(res.msg,'提示','error');
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      })
+    },
     add(){
       this.$router.push({
         path:'/h5/details/add'
@@ -62,9 +80,12 @@ export default {
     },
     qrCode(item){
       this.currentData = {...item};
+      this.$store.dispatch('loading',true);
       H5.qrCode(item.pid).then(res=>{
         this.QRCODE = res;
         this.dialog = true;
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
       })
     },
     // 查看
@@ -78,11 +99,14 @@ export default {
         current:this.page.current,
         size:this.page.size
       }
+      this.$store.dispatch('loading',true);
       H5.list(params).then(res=>{
         if(res.code == 200){
           this.tableList = res.data.data;
           this.page.total = res.data.total;
         }
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
       })
     }
   },
@@ -126,6 +150,7 @@ export default {
         {
           label:'发布状态',
           value:'status',
+          set:true
         },
         {
           label:'创建时间',
