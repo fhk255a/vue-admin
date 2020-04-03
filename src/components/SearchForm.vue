@@ -22,7 +22,7 @@
           <div class="joker-form-item-label">{{item.label}}</div>
           <div class="joker-form-item-content" :style="{'width':item.width?item.width+'px':width+'px'}">
             <el-select clearable v-model="header[item.key]" :placeholder="item.placeholder?item.placeholder:'请选择...'">
-              <el-option v-for="(label) in item.data" :key="label.value" :label="label.label" :value="label.value"/>
+              <el-option v-for="(label,index) in item.data" :key="`${index}_${label.label}`" :label="label.label" :value="label.value"/>
             </el-select>
           </div>
         </div>

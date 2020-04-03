@@ -1,6 +1,9 @@
 <template>
   <div class="joker-component-menu">
-    <div class="logo" v-show="!$store.state.func.collapse" @click="$router.push('/')">LOGO</div>
+    <div class="logo" v-show="!$store.state.func.collapse" @click="$router.push('/')">
+    <!-- V<i style="font-size:30px">ue</i> A<i style="font-size:30px">dmin</i> -->
+      <img src="@/assets/image/logo.png" alt="">
+    </div>
     <el-menu class="joker-menu el-menu-vertical" 
       :collapse="$store.state.func.collapse"
       :unique-opened="true"  
@@ -113,7 +116,7 @@ export default {
     }
     .logo{
       text-align: center;
-      padding: 40px 20px;
+      padding: 10px 0;
       font-weight: 600;
       font-size: 36px;
       color: #fff;

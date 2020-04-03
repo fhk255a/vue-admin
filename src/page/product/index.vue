@@ -47,6 +47,7 @@ import Container from '@/components/Container';
 import SearchForm from '@/components/SearchForm';
 import isPass from '@/lib/esss';
 import PRODUCT from '@/api/product';
+import {KEY} from '@/api/config';
 export default {
   mixins:[isPass],
   components:{
@@ -57,6 +58,11 @@ export default {
   },
   mounted(){
     this.getList();
+    KEY.get('PRODUCT_STATUS').then(res=>{
+      if(res.code==200){
+        this.searchConfig[2].data = res.data;
+      }
+    })
   },
   methods:{
     // 切换分页
@@ -142,7 +148,7 @@ export default {
       tableList:[],
       header:{
         id:'',
-        status:1,
+        status:'',
         title:'',
       },
       table:[
@@ -200,16 +206,7 @@ export default {
           type:'select',    
           label:'状态',
           key:'status',
-          data:[
-            {
-              label:'上架',
-              value:1
-            },
-            {
-              label:'下架',
-              value:0,
-            }
-          ]
+          data:[]
         }
       ]
     }

@@ -32,4 +32,42 @@ export const KEY = {
     });
     return http(promise);
   },
+  //创建key 查询下拉内容
+  create(data){
+    let promise = request({
+      url: URL+'/key/create',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  //修改key 查询下拉内容
+  update(data){
+    let promise = request({
+      url: URL+'/key/update',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  get(key){
+    let promise = request({
+      url: URL+'/key/'+key,
+      method: 'get',
+    });
+    return http(promise);
+  },
+  // 保存跟修改
+  updateItem(id,items,deleteIds=[]){
+    let promise = request({
+      url: URL+'/key/updateItem/'+id,
+      method: 'post',
+      data:{
+        items,
+        deleteIds
+      }
+    });
+    return http(promise);
+  },
+  // 修改父级
 };

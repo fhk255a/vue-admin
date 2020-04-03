@@ -73,3 +73,10 @@ Vue.prototype.$timer=(time, fmStr="yyyy-mm-dd hh:MM:ss")=>{
 
 	return fmStr;
 }
+
+Vue.prototype.$toTime=(data)=>{
+	if(data)
+	return new Date(data).toISOString().replace(/T/g,' ').replace(/\.[\d]{3}Z/,'')
+	else
+	return '';
+}

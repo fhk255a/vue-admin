@@ -33,9 +33,13 @@ import Page from '@/components/Page';
 import Dialog from '@/components/Dialog';
 import H5 from '@/api/h5';
 import PRODUCT from '@/api/product';
+import {KEY} from '@/api/config';
 export default {
   mounted(){
     this.getData();
+    KEY.get('H5_STATUS').then(res=>{
+      this.searchConfig[3].data = res.data;
+    })
   },
   methods:{
     search(form){
@@ -182,7 +186,8 @@ export default {
         {
           type:'select',
           label:'页面状态',
-          key:'status'
+          key:'status',
+          data:[],
         }
       ],
       header:{

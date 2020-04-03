@@ -83,6 +83,7 @@ import Table from '@/components/Table';
 import Container from '@/components/Container';
 import SearchForm from '@/components/SearchForm';
 import isPass from '@/lib/esss';
+import {KEY} from '@/api/config';
 export default {
   mixins:[isPass],
   methods:{
@@ -185,27 +186,15 @@ export default {
   },
   mounted(){
     this.getData();
+    KEY.get('PRODUCT_FROM').then(res=>{
+      if(res.code==200){
+        this.form = res.data;
+      }
+    })
   },
   data(){
     return{
-      form:[
-        {
-          label:'天猫',
-          value:'tmall',
-        },
-        {
-          label:'淘宝',
-          value:'taobao',
-        },
-        {
-          label:'阿里巴巴',
-          value:'1688',
-        },
-        {
-          label:'NOME',
-          value:'nome',
-        },
-      ],
+      form:[],
       tableList:[], // 店铺列表
       // 搜索配置
       searchConfig:[
