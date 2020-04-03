@@ -1,9 +1,14 @@
 # vue-admin
 
-> 一个vue运营后台
+> 这是一个vue运营后台前端项目
+架构 vue-cli + element-ui + vue-router + vuex
 
 ## Build Setup
 Demo：[Dome](http://vue-admin.fhk255.cn)
+
+
+后台是用node + koa 写的
+git地址是：[KOA](https://github.com/fhk255a/vud-admin-server.git)
 ``` bash
 # install dependencies 
 # 初始化项目
