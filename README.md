@@ -3,7 +3,7 @@
 > 一个vue运营后台
 
 ## Build Setup
-Demo：[Dome](http://fhk255.cn/project/vue-admin)
+Demo：[Dome](http://vue-admin.fhk255.cn)
 ``` bash
 # install dependencies 
 # 初始化项目
