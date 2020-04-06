@@ -10,6 +10,7 @@
     </Search-form>
     <div class="mb-20" />
     <Container>
+      <el-button @click="create">创建</el-button>
       <Table ref="table" :tableList="tableList" :config="table" @get="getData">
         <!-- 图片 -->
         <template slot="mainImage" slot-scope="row">
@@ -65,6 +66,10 @@ export default {
     })
   },
   methods:{
+    // 创建商品
+    create(){
+      this.$router.push('/product/details/add');
+    },
     // 切换分页
     changePage(page){
       this.page = page;

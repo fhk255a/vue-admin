@@ -26,6 +26,15 @@ const routerList = [
         meta:{title:'商品详情'},
       },
       {
+        path:'category',
+        title:'基础分类',
+        name:'/product/category',
+        isHide:false,
+        icon:'el-icon-collection-tag',
+        component: () => import('@/page/product/category/index.vue'),
+        meta:{title:'基础分类'},
+      },
+      {
         path:'shop',
         title:'店铺列表',
         name:'/product/shop',
@@ -164,9 +173,19 @@ const routerList = [
         name: '/config/keys',
         component: () => import('@/page/config/key'),
         hide: false,
-        icon:'el-icon-folder-opened',
+        icon:'el-icon-coin',
         meta: {
           title: '参数配置'
+        }
+      },
+      {
+        path: 'components',
+        name: '/config/components',
+        component: () => import('@/page/config/components'),
+        hide: false,
+        icon:'el-icon-s-grid',
+        meta: {
+          title: '页面组件'
         }
       },
     ]

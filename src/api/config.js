@@ -69,5 +69,15 @@ export const KEY = {
     });
     return http(promise);
   },
-  // 修改父级
+  // 删除key
+  delete(id){
+    let promise = request({
+      url: URL+'/key/delete',
+      method: 'post',
+      data:{
+        id
+      }
+    });
+    return http(promise);
+  },
 };

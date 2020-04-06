@@ -4,9 +4,11 @@
       <div class="joker-form">
         <el-tag type='info' class="tag-item"
           @click="viewItem(item,index)"
-          @close="handleClose(tag)"
-          :effect="currentIndex==index?'dark':'plain'"
-          v-for="(item,index) in tableList" :key="item.id">{{item.label}}</el-tag>
+          @close="handleClose(item)"
+          closable
+          v-for="(item,index) in tableList"  :key="item.id"
+          :effect="currentIndex==index?'dark':'plain'">{{item.label}}
+        </el-tag>
         <el-button class="button-new-tag" size="small" @click="create">+ 添加</el-button>
       </div>
     </Container>
@@ -95,10 +97,12 @@ import Item from '@/components/Item';
 import Dialog from '@/components/Dialog';
 import {KEY} from '@/api/config';
 import SearchForm from '@/components/SearchForm';
+import Popover from '@/components/Popover';
 export default {
   components:{
     Container,
     SearchForm,
+    Popover,
     Card,
     Dialog,
     Item
@@ -165,6 +169,27 @@ export default {
         node:'',
         status:true,
       };
+    },
+    // 删除tag
+    handleClose(item){
+      this.deleteDialog = true;
+      this.$confirm(`是否删除<span class="color-blue">[ ${item.label} ]</span>?`, '提示', {
+        confirmButtonText: '确定',
+        dangerouslyUseHTMLString: true,
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        KEY.delete(item.id).then(res=>{
+          if(res.code==200){
+            this.notify(res.msg,'提示','success');
+            this.getData();
+          }else{
+            this.notify(res.msg,'提示','error');
+          }
+        }).catch(err=>{
+          this.notify(res.msg,'提示','error');
+        })
+      })
     },
     // 添加options
     add(){
@@ -255,6 +280,7 @@ export default {
       dialog:false,
       tableList:[],
       currentIndex:null, // 选择的值
+      deleteDialog:false,
       currentData:{
         item:{
           label:'',

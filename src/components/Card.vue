@@ -1,5 +1,5 @@
 <template>
-  <div class="joker-component-card">
+  <div class="joker-component-card" :style="{borderColor:color?color:'#eee'}">
     <div class="j-card-title" :style="{background:color?color:''}">
       <div class="left" v-html="title"></div>
       <div class="right">

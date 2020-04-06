@@ -32,13 +32,29 @@ const PRODUCT = {
   },
   details(id){
     let promise = request({
-      url: URL+'/details',
+      url: URL+'/details/'+id,
       method: 'get',
-      params:{
-        id
-      }
+    });
+    return http(promise);
+  },
+  save(data){
+    let promise = request({
+      url: URL+'/save',
+      method: 'post',
+      data
     });
     return http(promise);
   },
 }
 export default PRODUCT;
+
+let URL1 = '/category'
+export const CATEGORY = {
+  tree(){
+    let promise = request({
+      url: URL1+'/tree',
+      method: 'get',
+    });
+    return http(promise);
+  }
+}

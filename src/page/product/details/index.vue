@@ -6,14 +6,18 @@
         <div class="j-product-details-main-image">
           <div class="product-img">
             <img class="img" :src="mainImage" alt="">
+            <span @click="setMainImage" class="set-text">设置为主图</span>
           </div>
           <div class="product-list-box">
             <ul class="product-list">
-              <li>
+              <li v-if="productInfo.mainImage">
                 <img @click="mainImage = productInfo.mainImage" class="img" :src="productInfo.mainImage" alt="">
               </li>
-              <li @click="mainImage = item" v-for="(item,index) in productDetails.images" :key="index">
+              <li @click="mainImage = item" v-for="(item,index) in productInfo.images" :key="index">
                 <img :src="item" class="img" alt="">
+              </li>
+              <li>
+                <Upload @success="uploadSuccess" path="product"></Upload>
               </li>
             </ul>
           </div>
@@ -22,35 +26,41 @@
       <Card title="商品基础信息" class="j-product-base-info">
         <div class="joker-form">
           <Item title="标题" width="80px">
-            <el-input style="width:500px" v-model="productInfo.title_zh"/>
-          </Item>
-          <Item title="国际标题" width="80px">
             <el-input style="width:500px" v-model="productInfo.title"/>
           </Item>
+          <Item title="副标题" width="80px">
+            <el-input style="width:500px" v-model="productInfo.subTitle"/>
+          </Item>
+          <Item title="来源链接" width="80px">
+            <el-input style="width:500px" v-model="productInfo.fromUrl"/>
+          </Item>
           <Item title="进货价" width="80px">
-            <el-input v-model="productInfo.purchaseRange" disabled/>
+            <el-input v-model="productInfo.inPrice" disabled/>
           </Item>
           <Item title="销售价" width="80px">
-            <el-input v-model="productInfo.priceRange"/>
+            <el-input v-model="productInfo.outPrice"/>
           </Item>
           <Item title="分类" width="80px">
-            {{productInfo.baseCategoryName}}
+            <el-cascader
+              v-model="productInfo.categoryId"
+              :props="{value:'id',label:'label',children:'children'}"
+              :options="category"></el-cascader>
           </Item>
-          <Item title="入库时间" width="80px">
-            {{productInfo.create_time}}
+          <Item title="入库时间" width="80px" v-if="$route.params.id!='add'">
+            {{$timer(productInfo.createTime)}}
           </Item>
-          <Item title="更新时间" width="80px">
-            {{productInfo.update_time}}
+          <Item title="更新时间" width="80px" v-if="$route.params.id!='add'">
+            {{$timer(productInfo.updateTime)}}
           </Item>
-          <li class="joker-form-item" v-for="(item,index) in attrList" :key="index">
-            <div class="joker-form-item-label">{{item.attributeNameZH}}</div>
+          <li class="joker-form-item" v-for="(item,index) in productInfo.attrList" :key="index">
+            <div class="joker-form-item-label">{{item.key}}</div>
             <div class="joker-form-item-content attr-list">
-              <div v-for="(it,i) in item.features" :key="i" class="joker-product-info-attr">
+              <div v-for="(it,i) in item" :key="i" class="joker-product-info-attr">
                 <template v-if="it.imgUrl">
-                  <img :class="['img',mainImage == it.imgUrl?'active':'']" @click="mainImage = it.imgUrl" :src="it.imgUrl" :alt="it.featureNameZH">
+                  <img :class="['img',mainImage == it.imgUrl?'active':'']" @click="mainImage = it.imgUrl" :src="it.imgUrl" :alt="it.key">
                 </template>
                 <template v-else>
-                  <el-tag type="info">{{it.featureNameZH}}</el-tag>
+                  <el-tag type="info">{{it.key}}</el-tag>
                 </template>
               </div>
             </div>
@@ -62,37 +72,55 @@
     <div class="mb-20"/>
     <Card title="商品SKU">
       <div>
-        <el-table :data="productDetails.skuList">
-          <el-table-column label="SKU ID" prop="skuId"></el-table-column>
-          <el-table-column label="SKU 名称">
+        <el-button @click="addSku">新增SKU</el-button>
+        <el-table :data="productInfo.skuList">
+          <el-table-column label="SKU ID" prop="id"></el-table-column>
+          <el-table-column label="SKU 名称" prop="label">
             <template slot-scope="row">
-              <span v-for="(item,index) in row.row.attrs" :key="index">
-                {{index==row.row.attrs.length-1?item.featureNameZH:item.featureNameZH+'-'}}
-              </span>
+              <el-input v-model="row.row.label"/>
             </template>
           </el-table-column>
           <el-table-column label="图片">
             <template slot-scope="row">
-              <div style="width:80px;height:80px">
-                <img class="img" :src="row.row.attrs[0].imgUrl" alt="" 
-                @click="$store.dispatch('imgDialog',{status:true,img:row.row.attrs[0].imgUrl})">
+              <div style="width:80px;height:80px" class="sku-item">
+                <img class="img" :src="row.row.imgUrl" alt="" 
+                @click="$store.dispatch('imgDialog',{status:true,img:row.row.imgUrl})">
+                <span @click="openSku(row.$index)" class="set-text">选择图片</span>
+                <Dialog :show="skuDialog" @close="closeSku">
+                  <ul class="sku-item-list">
+                    <li v-for="(item,index) in productInfo.images" 
+                      class="sku-item-img"
+                      :key="`sku-${index}`" @click="selectSku(item)">
+                      <img class="img" :src="item" alt="">
+                    </li>
+                  </ul>
+                </Dialog>
               </div>
             </template>
           </el-table-column>
           <el-table-column label="进货价">
             <template slot-scope="row">
-              <el-input v-model="row.row.pricesIn[0].price" disabled/>
+              <el-input v-model="row.row.inPrice" :disabled="$route.params.id!='add'"/>
             </template>
           </el-table-column>
           <el-table-column label="销售价">
             <template slot-scope="row">
-              <el-input v-model="row.row.pricesOut[0].price"/>
+              <el-input v-model="row.row.outPrice"/>
             </template>
           </el-table-column>
-          <el-table-column label="库存" prop="count" />
+          <el-table-column label="库存" prop="count" >
+            <template slot-scope="row">
+              <el-input v-model="row.row.count" type="number"/>
+            </template>
+          </el-table-column>
           <el-table-column label="状态">
             <template slot-scope="row">
               <el-switch v-model="row.row.status" :disabled="!isPass('product::details::skuStatus')"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="row">
+              <span class="set-text" @click="deleteSku(row.row,row.$index)">删除</span>
             </template>
           </el-table-column>
         </el-table>
@@ -106,9 +134,9 @@
       </template>
       <div>
         <div class="joker-form">
-          <Item :title="item.propKeyZH" 
-            v-for="(item,index) in productDetails.propList" :key="index">
-            {{item.propValue.propValueZH}}
+          <Item :title="item.key" 
+            v-for="(item,index) in productInfo.propList" :key="index">
+            {{item.value}}
           </Item>
         </div>
       </div>
@@ -119,7 +147,7 @@
       <template slot="right" v-if="isPass('product::details::editDetails')" >
         <div class="iconfont icon-shezhishedingpeizhichilun" @click="editDetails"></div>
       </template>
-      <div class="desc" v-html="productDetails.desc"></div>
+      <div class="desc" v-html="productInfo.desc"></div>
     </Card>
 <!-- 弹框 -->
     <el-dialog 
@@ -138,12 +166,12 @@
             </el-table-column>
             <el-table-column label="名称">
               <template slot-scope="row">
-                <el-input v-model="row.row.propKeyZH" :ref="'props-'+row.$index"/>
+                <el-input v-model="row.row.key" :ref="'props-'+row.$index"/>
               </template>
             </el-table-column>
             <el-table-column label="内容">
               <template slot-scope="row">
-                <el-input v-model="row.row.propValue.propValueZH"/>
+                <el-input v-model="row.row.value"/>
               </template>
             </el-table-column>
             <el-table-column label="操作" width="60px">
@@ -177,153 +205,20 @@
 </template>
 
 <script>
-import PRODUCT from '@/api/product';
-import Card from '@/components/Card';
-import Item from '@/components/Item';
-import Editor from '@/components/Editor';
-import productData from '@/store/data/product';
-import isPass from '@/lib/esss';
-export default {
-  mixins:[isPass],
-  methods:{
-    // 获取商品详情
-    getData(id){
-      const info = productData.data.items.find(item=>item.id == id);
-      PRODUCT.details(id).then(res=>{
-        if(res.code == 200){
-          this.productInfo = res.data;
-          this.mainImage = res.data.mainImage;
-          // 假数据
-          const falseData = this.$store.state.product.details;
-          this.productDetails = falseData.data.details;
-          this.mainImage = this.productInfo.mainImage;
-          this.skuList = falseData.data.details.skuList.map(item=>{
-            item.status = item.status == 1 ? true : false;
-            return item;
-          });
-          this.attrList = falseData.data.details.attributes;
-          this.propList = falseData.data.details.propList;
-          this.htmlDesc = falseData.data.details.desc;
-          this.notify(`<span class="color-blue">你已进入商品详情页，除了基础信息，其他均为假数据</span>`,'提示','warning');
-        }else{
-          this.notify(`<span class="color-red">${res.msg}</span>`,'EMMMMM...','error');
-        }
-      }).catch(err=>{
-        
-      })
-    },
-    // 修改详情页
-    editDetails(){
-      this.editDialog = true;
-      this.htmlDesc = this.productDetails.desc;
-    },
-    updateHtml(desc){
-      this.htmlDesc = desc;
-    },
-    // 保存商品
-    saveDesc(){
-      this.$confirm('是否保存商品详情?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.productDetails.desc = this.htmlDesc;
-        this.editDialog = false;
-        this.notify(`<span class="color-red">您更改了商品详情.</span>`);
-      }).catch(() => {
-        this.notify('您点了取消');          
-      });
-    },
-    // 编辑商品简介
-    editOther(){
-      this.otherDialog = true;
-      this.propList = [...this.productDetails.propList];
-    },
-    // 保存简介
-    saveProps(){
-      this.$confirm('是否保存商品简介?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        for(let i = 0 ; i < this.propList.length;i++){
-          if(this.propList[i].propKeyZH == ''){
-            this.$refs['props-'+i].focus();
-            this.$message.error('简介名称不能为空');
-            return;
-          }
-        }
-        this.productDetails.propList = this.propList;
-        this.otherDialog = false;
-        this.notify(`<span class="color-red">您更改了商品简介.</span>`);
-      }).catch(() => {
-        this.notify('您点了取消');          
-      });
-    },
-    // 删除简介
-    removeProps(row){
-      const INDEX = this.propList.findIndex(item=>{
-        return (item.propValue.propValueZH==row.propValue.propValueZH && item.propKeyZH == row.propKeyZH)
-      });
-      if(INDEX != -1){
-        this.propList.splice(INDEX,1);
-      }
-    },
-    // 添加简介
-    addProps(){
-      this.propList.push({
-        propValue:{
-          propValueZH:''
-        },
-        propKeyZH:'',
-      })
-    },
-    // 保存全部商品信息
-    saveProduct(){
-      let timer = null;
-      this.$confirm('是否确定更改商品?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        clearTimeout(timer);
-        this.$store.dispatch('changeProductDetails',this.productDetails);
-        this.$store.dispatch('changeProductInfo',this.productDetails);
-        this.notify(`您修改了<span class="color-blue">[ ${this.productInfo.id} ] </span>`,'success','修改成功','1秒后跳回列表');
-        timer = setTimeout(()=>{
-          this.$router.push('/product/list');
-        },1000)
-      }).catch(() => {
-        this.notify('您点了取消');          
-      });
-    }
-  },
-  data(){
-    return{
-      productInfo:{},  // 商品基础信息
-      productDetails:{},  //  商品详情
-      mainImage:'', // 主图
-      propList:[], // 简介列表
-      skuList:[], // sku列表
-      attrList:[], // 规格
-      editDialog:false, // 编辑详情页
-      otherDialog:false, // 修改简介页
-      htmlDesc:'',// 商品详情页
-    }
-  },
-  mounted(){
-    this.getData(this.$route.params.id);
-  },
-  components:{
-    Card,
-    Editor,
-    Item
-  }
-}
+import Index from './index.js';
+export default Index;
 </script>
 
-<style lang="scss">
+<style lang="scss" scope>
 #app .joker-page-product-details {
+  .sku-item{
+    >.img{
+      width: 60px;
+      height: 60px;
+      display: block;
+      border:1px solid #eee;
+    }
+  }
   .j-product-img{
     width: 440px;
     ::-webkit-scrollbar{height:5px;}
@@ -337,6 +232,12 @@ export default {
         width: 400px;
         height: 400px;
         overflow: hidden;
+        position: relative;
+        .set-text{
+          left: 0;
+          top:0;  
+          position: absolute;
+        }
       }
       .product-list-box{
         overflow-y:scroll;
@@ -344,7 +245,7 @@ export default {
         .product-list{
           display: flex;
           border:1px solid #eee;
-          li{
+          >li{
             width: 80px;
             height: 80px;
             border:1px solid #eee;
@@ -430,6 +331,16 @@ export default {
       color: #fff;
       padding: 8px 20px;
     }
+  }
+}
+.sku-item-list{
+  overflow: hidden;
+  .sku-item-img{
+    width: 80px;
+    cursor: pointer;
+    height: 80px;
+    float: left;
+    border:1px solid #eee;
   }
 }
 </style>

@@ -141,7 +141,6 @@ export default {
       MEDIA.dirQueryFiles(name).then(res=>{
         this.tableList[index].files = res.data;
         this.currentData = this.tableList[index];
-        console.log(this.currentData)
       }).catch(err=>{
 
       }).finally(()=>{
@@ -164,7 +163,7 @@ export default {
     // 确认按钮
     submit(){
       this.innerVisible = false;
-      this.$emit('submit',this.currentData.minImage);
+      this.$emit('submit',this.currentData.files[this.currentIndex].minImage);
     },
     // 删除操作
     remove(){
