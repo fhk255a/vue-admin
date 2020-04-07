@@ -1,47 +1,3 @@
-<template>
-  <div class="joker-page-product">
-    <Search-form @search="search" ref="searchForm" :config="searchConfig" :header="header" :btns="true" >
-      <template slot="btns" slot-scope="row">
-        <div class="joker-form-item" >
-          <el-button class="j-btn" @click="$refs.searchForm.search()">查询</el-button>
-          <el-button @click="clear(row.scope)">清空</el-button>
-        </div>
-      </template>
-    </Search-form>
-    <div class="mb-20" />
-    <Container>
-      <el-button @click="create">创建</el-button>
-      <Table ref="table" :tableList="tableList" :config="table" @get="getData">
-        <!-- 图片 -->
-        <template slot="mainImage" slot-scope="row">
-          <div class="product-img">
-            <img class="img" 
-            @click="$store.dispatch('imgDialog',{status:true,img:row.scope.data.mainImage})" 
-            :src="row.scope.data.mainImage" />
-          </div>
-        </template>
-        <!-- 状态 -->
-        <template slot="status" slot-scope="row">
-          <div>
-            <el-switch :disabled="!isPass('product::details::status')" @change="changeStatus(row.scope)" v-model="row.scope.data.status"></el-switch>
-          </div>
-        </template>
-        <!-- 操作 -->
-        <template slot="set" slot-scope="row">
-          <div>
-            <span class="icon-btn iconfont icon-bianjiqianbixieshuru" @click="view(row.scope.data)"></span>
-            <span v-if="isPass('product::list::remove')" class="icon-btn iconfont icon-shanchu" @click="remove(row.scope)"></span>
-            <span v-if="isPass('product::list::add')" class="icon-btn iconfont icon-qushuchakanshuxing" @click="set(row.scope.data)"></span>
-          </div>
-        </template>
-      </Table>
-    </Container>
-    <div class="mb-20" />
-    <Page @changePage="changePage" :page="page" align="right"/>
-  </div>
-</template>
-
-<script>
 import Page from '@/components/Page';
 import Table from '@/components/Table';
 import Container from '@/components/Container';
@@ -83,7 +39,7 @@ export default {
         size:this.page.size,
         id:this.header.id,
         status:this.header.status,
-        title_zh:this.header.title
+        title:this.header.title
       }
       this.$store.dispatch('loading',true);
       PRODUCT.list(params).then(res=>{
@@ -170,15 +126,19 @@ export default {
         },
         {
           label:'商品名称',
-          value:'title_zh'
+          value:'title'
         },
         {
           label:'售价',
-          value:'price_range_cn'
+          value:'outPrice'
         },
         {
           label:'分类',
-          value:'baseCategoryName'
+          value:'categoryName'
+        },
+        {
+          label:'店铺名称',
+          value:'shopName'
         },
         {
           label:'状态',
@@ -187,7 +147,7 @@ export default {
         },
         {
           label:'创建时间',
-          value:'create_time'
+          value:'createTime'
         },
         {
           label:'操作',
@@ -217,13 +177,3 @@ export default {
     }
   },
 }
-</script>
-
-<style lang="scss">
-.joker-page-product{
-  .product-img{
-    width: 80px;
-    height: 80px;
-  }
-}
-</style>

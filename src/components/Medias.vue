@@ -20,6 +20,7 @@
       <el-dialog
         width="70%"
         top="5vh"
+        @close="closeDialog"
         @mousedown.stop="stopFun"
         :title="currentData.dirName"
         :modal-append-to-body="false"
@@ -122,7 +123,10 @@ export default {
   methods:{
     // 阻止冒泡
     stopFun(){
-      console.log('11');
+    },
+    // 关掉弹窗
+    closeDialog(){
+      // this.$emit('submit',null);
     },
     // 获取所有文件夹及其数量
     getDirName(){

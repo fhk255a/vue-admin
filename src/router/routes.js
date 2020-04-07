@@ -14,7 +14,7 @@ const routerList = [
         title:'商品列表模块',
         name:'/product/list',
         icon:'icon-chanpin',
-        component: () => import('@/page/product/index.vue'),
+        component: () => import('@/page/product//list/index.vue'),
         meta:{title:'商品列表'},
       },
       {

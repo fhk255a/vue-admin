@@ -5,6 +5,7 @@
         :action="$request.defaults.baseURL+'/function/upload'"
         :headers="{'Authorization': getToken()}"
         :with-credentials="true"
+        :data="path?{path:path}:null"
         name="image"
         class="upload-img"
         :show-file-list="false"
@@ -28,10 +29,11 @@
     <el-dialog class="media-dialog"
       :visible.sync="dialog"
       @mousedown.stop=""
+      :modal="false"
       top="5vh"
       :modal-append-to-body="false"
       width="80%">
-      <Media @submit="submit"/>
+      <Media @submit="submit" />
     </el-dialog>
   </div>
 </template>
@@ -66,6 +68,10 @@ export default {
       type: String,
       default:()=>'80px'
     },
+    path:{
+      type: String,
+      default:()=>null
+    },
   },
   data(){
     return{
@@ -74,6 +80,14 @@ export default {
     }
   },
   methods:{
+    submit(data){
+      this.dialog = false; 
+      this.$emit('success', {
+        code: '200',
+        data: data,
+        index:this.index,
+      });
+    },
     // 上传失败
     uploadImageError(err, file, fileList) {
       this.$message.error('上传失败;'+err);

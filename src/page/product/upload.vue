@@ -1,9 +1,9 @@
 <template>
   <el-upload 
-    :action="$request.defaults.baseURL+'/function/upload'"
+    :action="$request.defaults.baseURL+'/function/uploadProduct'"
     :headers="{'Authorization': getToken()}"
     :with-credentials="true"
-    :data="{path:path}"
+    :data="{id:pid}"
     name="image"
     class="upload-img"
     :show-file-list="false"
@@ -22,11 +22,11 @@ export default {
   props:{
     index:{
       type:Number,
-      default:0
+      default:()=>0
     },
-    path:{
+    pid:{
       type:String,
-      default:()=>''
+      default:()=>'default'
     },
     maxSize: { //最大一张上传大小 默认500K
       type: Number,
@@ -53,7 +53,6 @@ export default {
   methods:{
     // 最终从媒体库选择得图
     submit(url){
-      console.log(url);
       this.dialog = false;
     },
     // 上传失败

@@ -14,6 +14,7 @@ function http (request) {
   })
 }
 const FUNCTION = {
+  // 上传系统图片
   upload(file){
     let promise = request({
       url: URL+'/upload',
@@ -24,5 +25,18 @@ const FUNCTION = {
     });
     return http(promise);
   },
+  // 上传商品图片
+  uploadProduct(file,id){
+    let promise = request({
+      url: URL+'/uploadProduct',
+      method: 'get',
+      data:{
+        file,
+        id
+      }
+    });
+    return http(promise);
+  },
+  
 }
 export default FUNCTION;

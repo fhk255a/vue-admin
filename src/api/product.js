@@ -58,3 +58,35 @@ export const CATEGORY = {
     return http(promise);
   }
 }
+
+let URL2 = '/shop'
+export const SHOP = {
+  list(params){
+    let promise = request({
+      url: URL2+'/list',
+      method: 'get',
+      params
+    });
+    return http(promise);
+  },
+  // 创建 & 保存店铺
+  save(data){
+    let promise = request({
+      url: URL2+'/save',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  // 删除店铺
+  delete(id){
+    let promise = request({
+      url: URL2+'/delete',
+      method: 'post',
+      data:{
+        id
+      }
+    });
+    return http(promise);
+  },
+}

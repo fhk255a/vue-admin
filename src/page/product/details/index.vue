@@ -9,15 +9,17 @@
             <span @click="setMainImage" class="set-text">设置为主图</span>
           </div>
           <div class="product-list-box">
-            <ul class="product-list">
+            <ul class="product-list" >
               <li v-if="productInfo.mainImage">
                 <img @click="mainImage = productInfo.mainImage" class="img" :src="productInfo.mainImage" alt="">
               </li>
-              <li @click="mainImage = item" v-for="(item,index) in productInfo.images" :key="index">
-                <img :src="item" class="img" alt="">
+              <li @click="mainImage = item" v-for="(item,index) in productInfo.images" :key="index" class="product-image-item">
+                <img :src="item.image" class="img" alt="" v-if="item.image">
+                <img :src="item" class="img" alt="" v-else>
+                <span class="delete-image el-icon-error" @click="deleteImage(index)"></span>
               </li>
               <li>
-                <Upload @success="uploadSuccess" path="product"></Upload>
+                <Upload @success="uploadSuccess" :pid="productInfo.id?productInfo.id+'':'default'"></Upload>
               </li>
             </ul>
           </div>
@@ -35,22 +37,33 @@
             <el-input style="width:500px" v-model="productInfo.fromUrl"/>
           </Item>
           <Item title="进货价" width="80px">
-            <el-input v-model="productInfo.inPrice" disabled/>
+            <el-input v-model="productInfo.inPrice"/>
           </Item>
           <Item title="销售价" width="80px">
             <el-input v-model="productInfo.outPrice"/>
           </Item>
+          <Item title="店铺" width="80px">
+            <div style="line-height:40px">
+              <span>{{productInfo.shopName}}</span>
+              <span class="set-text" @click="changeShopDialog">修改</span>
+            </div>
+          </Item>
           <Item title="分类" width="80px">
+            <div v-if="!categoryDialog" style="line-height:40px">
+              <span>{{productInfo.categoryName}}</span>
+              <span class="set-text" @click="getCategory">修改</span>
+            </div>
             <el-cascader
+              v-else
               v-model="productInfo.categoryId"
               :props="{value:'id',label:'label',children:'children'}"
               :options="category"></el-cascader>
           </Item>
           <Item title="入库时间" width="80px" v-if="$route.params.id!='add'">
-            {{$timer(productInfo.createTime)}}
+            <span style="line-height:30px">{{$timer(productInfo.createTime)}}</span>
           </Item>
           <Item title="更新时间" width="80px" v-if="$route.params.id!='add'">
-            {{$timer(productInfo.updateTime)}}
+            <span style="line-height:30px">{{$timer(productInfo.updateTime)}}</span>
           </Item>
           <li class="joker-form-item" v-for="(item,index) in productInfo.attrList" :key="index">
             <div class="joker-form-item-label">{{item.key}}</div>
@@ -201,6 +214,33 @@
     <div class="footer-btns">
       <el-button @click="saveProduct" v-if="isPass(('product::details::save'))" >保存</el-button>
     </div>
+<!-- 店铺区块 -->
+    <Dialog :show="shopShowDialog" width="60%">
+      <div class="joker-form shop-form">
+        <Item title="店铺ID">
+          <el-input v-model="shopHeader.id"/>
+        </Item>
+        <Item title="店铺名称">
+          <el-input v-model="shopHeader.name"/>
+        </Item>
+        <Item title="店铺来源">
+          <el-input v-model="shopHeader.from"/>
+        </Item>
+        <Item className="w100">
+          <el-button @click="getShopList">搜索</el-button>
+        </Item>
+      </div>
+      <el-table ref="multipleTable" :data="shopList" max-height="500px">
+        <el-table-column
+          type="selection"
+          width="55"/>
+        <el-table-column label="店铺名称" prop="name"></el-table-column>
+        <el-table-column label="评分" prop="score"></el-table-column>
+        <el-table-column label="logo"></el-table-column>
+      </el-table>
+      <Page @changePage="changePage" :page="page" align="right"/>
+      <el-button @click="saveShop">保存</el-button>
+    </Dialog>
   </div>
 </template>
 
@@ -261,6 +301,11 @@ export default Index;
     margin-left: 20px;
     .joker-form-item{
       width: 100%;
+    }
+    .shop-form{
+      >.joker-form-item{
+        width: auto;
+      }
     }
     .joker-form-item-label{
       width: 80px;
@@ -330,6 +375,31 @@ export default Index;
       background: #070f14;
       color: #fff;
       padding: 8px 20px;
+    }
+  }
+  .upload-img{
+    border: 1px solid #eee;
+    text-align: center;
+    font-size: 28px;
+    height: 80px;
+    line-height: 80px;
+  }
+  .joker-component-upload{
+    text-align: left;
+    .upload-text{
+      text-decoration: underline;
+      font-size: 12px;
+      cursor: pointer;
+    }
+  }
+  .product-image-item{
+    position: relative;
+    .delete-image{
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      cursor: pointer;
+      color: #fff;
     }
   }
 }
