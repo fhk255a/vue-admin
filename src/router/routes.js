@@ -149,6 +149,29 @@ const routerList = [
       },
     ]
   },
+  // 会员模块
+  {
+    path: '/member',
+    name: '/member',
+    component: Layout,
+    icon:'el-icon-user',
+    redirect: '/member/list',
+    hide:false,
+    meta:{title:'用户相关'},
+    children:[
+      {
+        path: 'list',
+        name: '/member/list',
+        component: () => import('@/page/member/list/index.vue'),
+        hide: false,
+        icon:'el-icon-s-custom',
+        meta: {
+          title: '用户列表'
+        }
+      },
+    ]
+  },
+  // 系统配置
   {
     path: '/config',
     name: '/config',
@@ -189,7 +212,7 @@ const routerList = [
         }
       },
     ]
-  }
+  },
 ]
 
 export default routerList;

@@ -265,6 +265,10 @@ export default {
           value:'from',
         },
         {
+          label:'商品数量',
+          value:'num',
+        },
+        {
           label:'入库时间',
           value:'createTime',
           set:true
