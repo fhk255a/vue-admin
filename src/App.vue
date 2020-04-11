@@ -43,4 +43,9 @@ export default {
 </script>
 
 <style lang="scss">
+  ::-webkit-scrollbar{height:5px;width:3px;cursor: pointer;}
+  ::-webkit-scrollbar-track{background-color: #fff;}
+  ::-webkit-scrollbar-thumb{background-color: #070f14;}
+  ::-webkit-scrollbar-thumb:hover {background-color: #070f14;cursor: pointer;}
+  ::-webkit-scrollbar-thumb:active {background-color: #070f14}
 </style>

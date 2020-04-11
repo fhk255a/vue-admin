@@ -213,6 +213,28 @@ const routerList = [
       },
     ]
   },
+  // 运营模块
+  {
+    path: '/operation',
+    name: '/operation',
+    component: Layout,
+    icon:'el-icon-data-line',
+    redirect: '/operation/homeConfig/add',
+    hide:false,
+    meta:{title:'运营模块'},
+    children:[
+      {
+        path: 'homeConfig/:id',
+        name: '/operation/homeConfig',
+        component: () => import('@/page/operation/homeConfig'),
+        hide: false,
+        icon:'el-icon-folder-opened',
+        meta: {
+          title: '首页配置'
+        }
+      },
+    ]
+  }
 ]
 
 export default routerList;

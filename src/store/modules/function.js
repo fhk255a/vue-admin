@@ -4,7 +4,8 @@ const func = {
   state:{
     // 菜单的显示与隐藏
     collapse:false, 
-    loading:false
+    loading:false,
+    productDialog:false,
   },
   mutations: {
     changeCollapse(state,collapse){
@@ -13,6 +14,9 @@ const func = {
     loading(state,loading){
       state.loading = loading;
     },
+    productDialog(state,productDialog){
+      state.productDialog = productDialog;
+    },
   },
   actions: {
     changeCollapse(context, collapse){
@@ -20,6 +24,9 @@ const func = {
     },
     loading(context,loading){
       context.commit('loading', loading);
+    },
+    productDialog(context,productDialog){
+      context.commit('productDialog', productDialog);
     }
   }
 }

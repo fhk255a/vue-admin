@@ -128,3 +128,13 @@
   width: 100%;
   padding: 10px;
 }
+.line-2{
+  font-size:14px;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.3;
+  overflow: hidden;
+  max-height: 38px;
+  min-height: 38px;
+}

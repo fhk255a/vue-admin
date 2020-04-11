@@ -90,3 +90,36 @@ export const SHOP = {
     return http(promise);
   },
 }
+
+// 商品集
+let URL3 = '/collection'
+export const COLLECTION = {
+  list(params){
+    let promise = request({
+      url: URL3+'/list',
+      method: 'get',
+      params
+    });
+    return http(promise);
+  },
+  // 创建 & 保存店铺
+  save(data){
+    let promise = request({
+      url: URL3+'/save',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  // 删除店铺
+  delete(id){
+    let promise = request({
+      url: URL3+'/delete',
+      method: 'post',
+      data:{
+        id
+      }
+    });
+    return http(promise);
+  },
+}

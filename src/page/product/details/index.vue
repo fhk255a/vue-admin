@@ -261,7 +261,7 @@ export default Index;
   }
   .j-product-img{
     width: 440px;
-    ::-webkit-scrollbar{height:5px;}
+    ::-webkit-scrollbar{height:3px;width:3px;}
     ::-webkit-scrollbar-track{background-color: #fff;}
     ::-webkit-scrollbar-thumb{background-color: #070f14;}
     ::-webkit-scrollbar-thumb:hover {background-color: #070f14}
