@@ -62,7 +62,8 @@ export default {
       this.dialog =false;
     },
     initWebSocket(id){ //初始化weosocket
-      const wsuri = `ws://project.fhk255.cn/loginSocket/${id}`;
+      // const wsuri = `ws://project.fhk255.cn/loginSocket/${id}`;
+      const wsuri = `ws://localhost:3000/loginSocket/${id}`;
       this.websock = new WebSocket(wsuri);
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onerror = this.websocketonerror;
