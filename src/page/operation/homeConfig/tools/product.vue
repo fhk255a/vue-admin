@@ -12,6 +12,7 @@
             <el-radio v-model="data.showMore" :label="false" @change="update">隐藏</el-radio>
           </Item>
           <Item title="商品布局：">
+            <el-radio v-model="data.itemType" label="1" @change="update">一行一个</el-radio>
             <el-radio v-model="data.itemType" label="2" @change="update">一行两个</el-radio>
             <el-radio v-model="data.itemType" label="3" @change="update">一行三个</el-radio>
           </Item>

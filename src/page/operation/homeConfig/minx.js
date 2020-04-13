@@ -93,7 +93,7 @@ export const getData =(type)=>{
       return {
         type:'product',
         title:'商品列表',
-        itemType:'2',
+        itemType:'2', // 一行几个
         isShowTitle:true,
         showRemark:true,
         showPrice:true,
