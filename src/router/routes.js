@@ -233,6 +233,16 @@ const routerList = [
           title: '首页配置'
         }
       },
+      {
+        path: 'category',
+        name: '/operation/category',
+        component: () => import('@/page/operation/category'),
+        hide: false,
+        icon:'el-icon-folder-opened',
+        meta: {
+          title: '展示分类'
+        }
+      },
     ]
   }
 ]

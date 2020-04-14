@@ -39,3 +39,15 @@ export default {
     return http(promise);
   }
 }
+
+export const CATEGORY = {
+  // 获取页面
+  getTree(params){
+    let promise = request({
+      url: URL+'/category/list',
+      method: 'get',
+      params
+    });
+    return http(promise);
+  }
+}
