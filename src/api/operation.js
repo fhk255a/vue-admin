@@ -49,5 +49,23 @@ export const CATEGORY = {
       params
     });
     return http(promise);
-  }
+  },
+  // 添加展示分类
+  add(data){
+    let promise = request({
+      url: URL+'/category/add',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
+  // 修改展示分类
+  update(data){
+    let promise = request({
+      url: URL+'/category/update',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
 }

@@ -77,6 +77,14 @@ const routerList = [
         meta:{title:'订单审核'},
         component: () => import('@/page/order/review/index.vue'),
       },
+      {
+        path:'cancel',
+        title:'退款申请',
+        isHide:false,
+        name:'/order/cancel',
+        meta:{title:'退款申请'},
+        component: () => import('@/page/order/cancel/index.vue'),
+      },
     ]
   },
   // 权限模块

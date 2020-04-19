@@ -10,7 +10,7 @@
         </template>
         <!-- 订单状态 -->
         <template slot-scope="row" slot="orderStatus">
-          {{searchConfig[4].data[searchConfig[4].data.findIndex(item=>item.value == row.scope.data.orderStatus)].label}}
+          {{searchConfig[4].data[searchConfig[4].data.findIndex(item=>item.id == row.scope.data.orderStatus)].label}}
         </template>
         <!-- 支付状态 -->
         <template slot-scope="row" slot="payStatus">
@@ -132,17 +132,12 @@ export default {
           set:true
         },
         {
-          label:'支付状态',
-          value:'payStatus',
-          set:true
-        },
-        {
           label:'订单金额',
-          value:'totalPrice'
+          value:'resultPrice'
         },
         {
           label:'商品数量',
-          value:'goodsNumber'
+          value:'num'
         },
         {
           label:'下单时间',
@@ -196,28 +191,20 @@ export default {
           key:'orderStatus',
           data:[
             {
-              label:'全部',
-              value:'',
+              id:-1,
+              label:'未付款',
             },
             {
-              label:'待审核',
-              value:'PENDING_REVIEW',
-            },
-            {
-              label:'已付款',
-              value:'PAYSUCC',
-            },
-            {
-              label:'已取消',
-              value:'CANCEL',
-            },
-            {
-              label:'已发货',
-              value:'INTRACK',
-            },
-            {
+              id:0,
               label:'未发货',
-              value:'NEW',
+            },
+            {
+              id:1,
+              label:'已发货',
+            },
+            {
+              id:3,
+              label:'退款',
             },
           ]
         },

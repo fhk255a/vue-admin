@@ -26,19 +26,45 @@
       </el-table>
       <Page @changePage="changePage" :page="page"/>
     </Container>
+    <el-dialog class="media-dialog"
+      :visible.sync="dialog"
+      @mousedown.stop=""
+      :modal="false"
+      top="15vh"
+      :modal-append-to-body="false"
+      width="500px">
+      <div class="joker-form express-box">
+        <Item class="w100" title="物流名称">
+          <el-select v-model="currentData.expressName">
+            <el-option value="yunda" label="韵达"/>
+            <el-option value="shunfeng" label="顺丰"/>
+            <el-option value="zhongtong" label="中通"/>
+          </el-select>
+        </Item>
+        <Item class="w100" title="物流单号">
+          <el-input v-model="currentData.expressNo"/>
+        </Item>
+        <Item class="w100" title="物流费用">
+          <el-input v-model="currentData.expressPrice"/>
+        </Item>
+        <el-button @click="submit">提交</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import SearchForm from '@/components/SearchForm';
+import Item from '@/components/Item';
 import Container from '@/components/Container';
 import Page from '@/components/Page';
-import { REVIEW } from '@/api/order';
+import ORDER,{ REVIEW } from '@/api/order';
 export default {
   components:{
     SearchForm,
     Container,
-    Page
+    Page,
+    Item
   },
   methods:{
     changePage(page){
@@ -59,7 +85,30 @@ export default {
     },
     // 发货
     ship(item){
-
+      this.dialog = true;
+      this.currentData = {
+        orderId:item.id,
+        expressName:'',
+        expressNo:'',
+        expressPrice:'',
+      }
+    },
+    // 提交单号
+    submit(){
+      this.$store.dispatch('loading',true);
+      ORDER.ship(this.currentData).then(res=>{
+        if(res.code== 200){
+          this.$message.success('已发货')
+          this.dialog = false;
+          this.getData();
+        }else{
+          this.$message.error(res.msg);
+        }
+      }).catch(err=>{
+        this.$message.error(err);
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      })
     },
     getData(){
       const params = {
@@ -106,7 +155,14 @@ export default {
         current:1,
         size:10
       },
-      tableList:[]
+      tableList:[],
+      currentData:{
+        expressPrice:'',
+        orderId:'',
+        expressName:'',
+        expressNo:''
+      },
+      dialog:false,
     }
   },
   mounted(){
@@ -115,6 +171,8 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="scss">
+.express-box{
+  padding: 15px;
+}
 </style>
