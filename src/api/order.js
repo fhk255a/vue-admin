@@ -45,4 +45,16 @@ const ORDER = {
     return http(promise);
   },
 };
+
+const URL1 = 'order/review'
+export const REVIEW = {
+  list(params){
+    let promise = request({
+      url: URL1+'/list',
+      method: 'get',
+      params
+    });
+    return http(promise);
+  }
+}
 export default ORDER;
