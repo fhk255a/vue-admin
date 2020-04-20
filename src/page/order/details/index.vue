@@ -1,34 +1,36 @@
 <template>
-  <div class="joker-page-order-details" v-if="orderInfo.orderInfo">
+  <div class="joker-page-order-details" v-if="orderInfo">
     <div class="order-title">
-      {{orderInfo.orderInfo.id}}
+      {{orderInfo.id}}
       <el-tag>{{getOrderStatusLabel()}}</el-tag>
     </div>
     <div class="mb-20"/>
     <Card title="订单基础信息">
       <div class="base-info joker-form">
-        <Item title="用户：">{{orderInfo.orderInfo.userId}}</Item>
-        <Item title="下单时间：">{{$timer(orderInfo.orderInfo.createTime*1)}}</Item>
+        <Item title="用户名：">{{orderInfo.username}}</Item>
+        <Item title="用户ID：">{{orderInfo.userId}}</Item>
+        <Item title="用户昵称：">{{orderInfo.nickname}}</Item>
+        <Item title="下单时间：">{{$timer(orderInfo.createTime*1)}}</Item>
         <Item title="订单状态：">{{getOrderStatusLabel()}}</Item>
-        <Item title="支付状态：">{{orderInfo.orderInfo.payStatus==1?'已支付':'未支付'}}</Item>
-        <Item title="备注：">{{orderInfo.orderInfo.remark}}</Item>
+        <Item title="支付状态：">{{orderInfo.payStatus==1?'已支付':'未支付'}}</Item>
+        <Item title="备注：">{{orderInfo.remark}}</Item>
       </div>
     </Card>
     <div class="mb-20"/>
     <Card title="收货人信息">
       <div class="base-info joker-form" v-if="userInfo">
         <Item title="姓名：">{{userInfo.name}}</Item>
-        <Item title="手机：">{{userInfo.mobile}}</Item>
-        <Item title="地址：">{{userInfo.address}}</Item>
-        <Item title="邮政编码：">{{userInfo.zipCode}}</Item>
+        <Item title="手机：">{{userInfo.tel}}</Item>
+        <Item title="邮政编码：">{{userInfo.postalCode}}</Item>
+        <Item title="地址：" class="w100">{{userInfo.province}}-{{userInfo.city}}-{{userInfo.county}}-{{userInfo.country}}-{{userInfo.addressDetail}}</Item>
       </div>
     </Card>
     <div class="mb-20"/>
-    <Card :title="orderInfo.orderInfo.orderStatus != 'CANCEL'?'物流信息':'订单已取消'">
-      <div v-if="orderInfo.orderInfo.orderStatus == 'CANCEL'" class="base-info joker-form">
-        <Item title="取消人：">{{orderInfo.orderInfo.cancelUser}}</Item>
-        <Item title="取消原因：">{{orderInfo.orderInfo.cancelCode}}</Item>
-        <Item title="取消时间：">{{$timer(orderInfo.orderInfo.cancelDate*1)}}</Item>
+    <!-- <Card :title="orderInfo.orderStatus != 'CANCEL'?'物流信息':'订单已取消'">
+      <div v-if="orderInfo.orderStatus == 'CANCEL'" class="base-info joker-form">
+        <Item title="取消人：">{{orderInfo.cancelUser}}</Item>
+        <Item title="取消原因：">{{orderInfo.cancelCode}}</Item>
+        <Item title="取消时间：">{{$timer(orderInfo.cancelDate*1)}}</Item>
       </div>
       <el-steps v-else direction="vertical" :active="15">
         <el-step 
@@ -36,17 +38,26 @@
           :title="`${item.scanDateTime}  -  ${item.remark}`" 
         />
       </el-steps>
-    </Card>
+    </Card> -->
     <div class="mb-20"/>
     <Card color="#eee" title="订单商品">
-      <Table :tableList="orderInfo.packageList[0].erpPackageDetailInfoDtos" :config="tableConfig">
-        <template slot-scope="row" slot="image">
-          <div style="width:80px;height:80px">
-            <img class="img" :src="row.scope.data.image" @click="$store.dispatch('imgDialog',{status:true,img:row.scope.data.image})" alt="">
-          </div>
-        </template>
-      </Table>
+      <el-collapse>
+        <el-collapse-item v-for="(item,index) in orderInfo.products" :key="item.name" :title="item.name" :name="index">
+          <Table :tableList="item.products" :config="tableConfig">
+            <template slot-scope="row" slot="image">
+              <div style="width:80px;height:80px">
+                <img class="img" :src="row.scope.data.mainImage" @click="$store.dispatch('imgDialog',{status:true,img:row.scope.data.mainImage})" alt="">
+              </div>
+            </template>
+          </Table>
+        </el-collapse-item>
+      </el-collapse>
     </Card>
+    <div class="prict-box joker-form">
+      <Item title="订单总价：" class="w100">{{orderInfo.totalPrice}}</Item>
+      <Item title="优惠价格：" class="w100">{{orderInfo.discount}}</Item>
+      <Item title="实际价格：" class="w100">{{orderInfo.resultPrice}}</Item>
+    </div>
   </div>
 </template>
 
@@ -69,15 +80,9 @@ export default {
       const first = this.$store.state.order.details;
       ORDER.details(id).then(res=>{
         if(res.code == 200){
-          this.orderInfo = {
-            ...first.data,
-            orderInfo:{
-              ...res.data,
-              addressSnapshot:first.data.orderInfo.addressSnapshot
-            },
-          };
-          this.routes = this.orderInfo.packageList[0].routes;
-          this.userInfo = JSON.parse(this.orderInfo.orderInfo.addressSnapshot);
+          this.orderInfo = res.data;
+          // this.routes = this.orderInfo.packageList[0].routes;
+          this.userInfo = res.data.address;
         }else{
           this.$message.error(res.msg);
         }
@@ -85,7 +90,7 @@ export default {
     },
     // 获取订单状态
     getOrderStatusLabel(){
-      switch(this.orderInfo.orderInfo.orderStatus){
+      switch(this.orderInfo.orderStatus){
         case "PENDING_REVIEW":
           return '待审核';
         case "PAYSUCC":
@@ -113,7 +118,7 @@ export default {
       tableConfig:[
         {
           label:'商品ID',
-          value:'spuId',
+          value:'productId',
         },
         {
           label:'商品图片',
@@ -123,6 +128,10 @@ export default {
         {
           label:'商品名称',
           value:'title',
+        },
+        {
+          label:'SKU',
+          value:'skuName',
         },
         {
           label:'数量',
@@ -159,6 +168,14 @@ export default {
     }
     .el-step .el-step__main{
       margin-bottom: 10px;
+    }
+    .prict-box{
+      width: 100%;
+      text-align: right;
+      padding: 15px 0;
+      .w100{
+        justify-content: flex-end;
+      }
     }
   }
 </style>

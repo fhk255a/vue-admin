@@ -44,5 +44,26 @@ const ORDER = {
     });
     return http(promise);
   },
+  // 添加单号 发货
+  ship(data){
+    let promise = request({
+      url: URL+'/ship',
+      method: 'post',
+      data
+    });
+    return http(promise);
+  },
 };
+
+const URL1 = 'order/review'
+export const REVIEW = {
+  list(params){
+    let promise = request({
+      url: URL1+'/list',
+      method: 'get',
+      params
+    });
+    return http(promise);
+  }
+}
 export default ORDER;
