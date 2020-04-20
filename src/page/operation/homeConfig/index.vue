@@ -113,7 +113,7 @@ export default {
   methods:{
     initPage(){
       this.$store.dispatch('loading',true);
-      OPERATION.getPage(this.$route.params.id).then(res=>{
+      OPERATION.getPage(10).then(res=>{
         if(res.code==200){
           this.title = res.data.title;
           this.currentComponent = JSON.parse(res.data.content);
@@ -202,7 +202,7 @@ export default {
         pageType:'home',
         content:JSON.stringify(this.currentComponent),
         title:this.title,
-        id:this.$route.params.id,
+        id:10,
       }
       this.$store.dispatch('loading',true);
       if(params.id=='add'){

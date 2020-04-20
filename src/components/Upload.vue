@@ -120,12 +120,6 @@ export default {
       let kb = Math.floor((file.size / 1024 / 1024)*100)/100; 
       let maxSize =  this.maxSize;
       const isPassSize = kb < maxSize;
-      if (isJPG || isPng) {
-
-      } else {
-        this.$message.error('请上传"PNG"与"JPG"格式!');
-        return false;
-      }
       if (!isPassSize) {
         this.$message.error("Upload an image size can't exceed " + Math.ceil(maxSize * 1024) + "KB !");
         return false;

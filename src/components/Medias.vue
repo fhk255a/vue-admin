@@ -68,7 +68,9 @@
           </Item>
         </div>
         <div class="media-form-footer">
-          <el-button type="primary" style="float:left" class="set-text color-blue icon-btn" @click="submit">确认</el-button>
+          <el-button type="primary" style="float:left" class="set-text color-blue icon-btn" @click="submit('s')">选择x100</el-button>
+          <el-button type="primary" style="float:left" class="set-text color-blue icon-btn" @click="submit('m')">选择x240</el-button>
+          <el-button type="primary" style="float:left" class="set-text color-blue icon-btn" @click="submit('l')">选择原图</el-button>
           <el-button type="info" style="float:left" 
             :disabled="currentIndex==null"
             class="set-text color-green icon-btn" @click="view">查看原图</el-button>
@@ -165,9 +167,18 @@ export default {
       };
     },
     // 确认按钮
-    submit(){
+    submit(type){
       this.innerVisible = false;
-      this.$emit('submit',this.currentData.files[this.currentIndex].minImage);
+      let image = this.currentData.files[this.currentIndex].minImage;
+      switch(type){
+        case 's':
+          this.$emit('submit',image);
+        case 'm':
+          this.$emit('submit',image.replace('x100','x240')); 
+        case 'l':
+        default:
+          this.$emit('submit',image.replace('x100','')); 
+      }
     },
     // 删除操作
     remove(){
@@ -180,9 +191,9 @@ export default {
           this.$store.dispatch('loading',true);
           MEDIA.deleteFileItem(this.info.id).then(res=>{
             if(res.code==200){
-              
+              this.notify(res.msg);
             }else{
-
+              this.notify(res.msg);
             }
           }).catch(err=>{
 

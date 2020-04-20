@@ -241,7 +241,7 @@ const routerList = [
     meta:{title:'运营模块'},
     children:[
       {
-        path: 'homeConfig/:id',
+        path: 'homeConfig/10',
         name: '/operation/homeConfig',
         component: () => import('@/page/operation/homeConfig'),
         hide: false,
