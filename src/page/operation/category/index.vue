@@ -6,7 +6,8 @@
       <div class="mb-20"/>
       <div class="table-title">
         <div class="info">
-          <span class="w20">ID</span>
+          <span class="w10">ID</span>
+          <span class="w10">等级</span>
           <span class="w25">分类名称</span>
           <span class="w25">图标</span>
           <span class="w20">绑定基础分类</span>
@@ -24,7 +25,8 @@
         :data="tableList">
         <div class="h5-category-item" slot-scope="{ node, data }">
           <div :class="['h5-category-info','level-'+data.level]">
-            <span class="w20">{{ data.id }}</span>
+            <span class="w10">{{ data.id }}</span>
+            <span :class="['level w10','iconfont',data.level==1?'icon-ic_userlevel_':'icon-ic_userlevel_'+(data.level-1)]"></span>
             <span class="w25">{{ data.label }}</span>
             <span class="w25 logo">
               <img src="@/assets/image/image.png" :load-img="data.imgUrl" width="30" height="30" alt="">
@@ -55,10 +57,17 @@
           <el-input v-model="currentData.label"/>
         </Item>
         <Item class="w100" title="绑定的ID">
-          <el-input v-model="currentData.baseCategoryId"/>
+          <div style="display:flex">
+            <el-input v-model="currentData.baseCategoryId" style="width:180px"/>
+            <span class="color-red" style="width:200px;line-height:40px">默认是1(基础分类【通用】)</span>
+          </div>
         </Item>
         <Item class="w100" title="图标">
-          <el-input v-model="currentData.imgUrl"/>
+          <div v-if="currentData.imgUrl" class="logo">
+            <img class="img" :src="currentData.imgUrl"/>
+            <span @click="currentData.imgUrl = ''" class="set-text">删除图片</span>
+          </div>
+          <Upload v-else @success="uoloadSuccess" path="category"></Upload>
         </Item>
         <el-button @click="submit">提交</el-button>
       </div>
@@ -69,11 +78,13 @@
 <script>
 import Container from '@/components/Container';
 import Item from '@/components/Item';
+import Upload from '@/components/Upload';
 import {CATEGORY} from '@/api/operation';
 import SearchForm from '@/components/SearchForm';
 export default {
   components:{
     Container,
+    Upload,
     Item
   },
   data(){
@@ -84,7 +95,7 @@ export default {
         label: "",
         parentId: 0,
         imgUrl: null,
-        baseCategoryId:null
+        baseCategoryId:1
       },
       currentExpandedKey:[],
       parentData:{},
@@ -99,6 +110,11 @@ export default {
     clickNode(n){
       this.currentExpandedKey = [n.id];
     },
+    uoloadSuccess(res){
+      if(res.code == 200){
+        this.currentData.imgUrl = res.data;
+      }
+    },
     close(){
       this.dialogStatus = '';
       this.parentData = {};
@@ -107,7 +123,7 @@ export default {
         label: "",
         parentId: 0,
         imgUrl: null,
-        baseCategoryId:null
+        baseCategoryId:1
       }
     },
     // 删除
@@ -124,6 +140,7 @@ export default {
     create(){
       this.dialog = true;
       this.dialogStatus = 'create';
+      this.currentExpandedKey = [];
     },
     // 保存
     submit(){ 
@@ -131,7 +148,7 @@ export default {
         id:this.currentData.id?this.currentData.id:null,
         label:this.currentData.label,
         parentId:this.currentData.parentId,
-        baseCategoryId:this.currentData.baseCategoryId,
+        baseCategoryId:this.currentData.baseCategoryId?this.currentData.baseCategoryId:1,
         imgUrl:this.currentData.imgUrl,
       };
       if(this.currentData.label.trim()==''){
@@ -232,19 +249,36 @@ export default {
     max-width: 20%;
     min-width: 20%;
   }
+  .w10{
+    width: 10%;
+    max-width: 10%;
+    min-width: 10%;
+  }
   .w25{
     width: 25%;
     max-width: 25%;
     min-width: 25%;
   }
   .level-1{
-    color: #000;
+    color: #303133  ;
   }
   .level-2{
-    color: #666;
+    color: #606266;
   }
   .level-3{
-    color: #999;
+    color: #909399;
+  }
+  .level{
+    font-size:30px;
+  }
+  .icon-ic_userlevel_{
+    color: #92d1e5  ;
+  }
+  .icon-ic_userlevel_1{
+    color: #95ddb2  ;
+  }
+  .icon-ic_userlevel_2{
+    color: #ffb37c  ;
   }
   .h5-category-item{
     width: 100%;

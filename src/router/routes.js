@@ -73,6 +73,7 @@ const routerList = [
         path:'review',
         title:'订单审核',
         isHide:false,
+        icon:'el-icon-finished',
         name:'/order/review',
         meta:{title:'订单审核'},
         component: () => import('@/page/order/review/index.vue'),

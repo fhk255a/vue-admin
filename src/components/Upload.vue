@@ -5,7 +5,7 @@
         :action="$request.defaults.baseURL+'/function/upload'"
         :headers="{'Authorization': getToken()}"
         :with-credentials="true"
-        :data="path?{path:path}:null"
+        :data="path?{path:path,size:size}:{size:size}"
         name="image"
         class="upload-img"
         :show-file-list="false"
@@ -55,6 +55,10 @@ export default {
     maxSize: { //最大一张上传大小 默认500K
       type: Number,
       default: 0.5
+    },
+    size:{ // 返回的尺寸 有 3个选择 0:原图，1:240，3:80
+      type: Number,
+      default: 3,
     },
     maxNum: {//最大上传数
       type: Number,
