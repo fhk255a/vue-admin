@@ -58,8 +58,17 @@ export default {
     },
     // 切换状态
     changeStatus(item){
-      this.notify(`<span style="color:#070f14">[ ${item.data.id} ]</span>
-       的状态改为 <span style="color:#409EFF">"${item.data.status}"</span>`);
+      this.$store.dispatch('loading',true);
+      PRODUCT.status(item.id,item.status?1:0).then(res=>{
+        if(res.code == 200){
+          this.getData();
+        }
+        this.notify(`<span class="color-blue">[ ${res.msg} ]</span>`);
+      }).catch(err=>{
+        this.notify(`<span class="color-blue">[ ${err} ]</span>`);
+      }).finally(()=>{
+        this.$store.dispatch('loading',false);
+      })
     },
     search(from){
       this.header = from;

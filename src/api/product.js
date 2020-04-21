@@ -37,6 +37,16 @@ const PRODUCT = {
     });
     return http(promise);
   },
+  status(id,status){
+    let promise = request({
+      url: URL+'/changeStatus/'+id,
+      method: 'post',
+      data:{
+        status
+      }
+    });
+    return http(promise);
+  },
   save(data){
     let promise = request({
       url: URL+'/save',

@@ -77,6 +77,8 @@ import collection from './views/collection';
 import collectionTools from './tools/collection';
 import product from './views/product';
 import productTools from './tools/product';
+import notice from './views/notice';
+import noticeTools from './tools/notice';
 export default {
   data(){
     return{
@@ -90,7 +92,8 @@ export default {
         littleBanner,
         shareTop,
         collection,
-        product
+        product,
+        notice
       },
       // 工具组件
       toolsMenu:{
@@ -100,6 +103,7 @@ export default {
         shareTop:shareTopTools,
         collection:collectionTools,
         product:productTools,
+        notice:noticeTools,
       },
       currentComponent:[], // 当前采用的组件
       currentTools:{  // 当前编辑的工具
@@ -204,35 +208,37 @@ export default {
         title:this.title,
         id:10,
       }
-      this.$store.dispatch('loading',true);
-      if(params.id=='add'){
-        // 创建
-        OPERATION.add(params).then(res=>{
-          if(res.code==200){
-            this.notify(res.msg,'恭喜',"success");
-            this.$router.push('/operation/homeConfig/'+res.data.id);
-          }else{
-            this.notify(res.msg,'抱歉','error');
-          }
-        }).catch(err=>{
-          this.$message.error(err);
-        }).finally(()=>{
-          this.$store.dispatch('loading',false);
-        })
-      }else{
-        // 修改
-        OPERATION.save(params).then(res=>{
-          if(res.code==200){
-            this.notify(res.msg,'恭喜',"success");
-            this.initPage();
-          }else{
-            this.notify(res.msg,'抱歉','error');
-          }
-        }).catch(err=>{
-          this.$message.error(err);
-        }).finally(()=>{
-          this.$store.dispatch('loading',false);
-        })
+      if(JSON.stringify(this.currentComponent)){
+        this.$store.dispatch('loading',true);
+        if(params.id=='add'){
+          // 创建
+          OPERATION.add(params).then(res=>{
+            if(res.code==200){
+              this.notify(res.msg,'恭喜',"success");
+              this.$router.push('/operation/homeConfig/'+res.data.id);
+            }else{
+              this.notify(res.msg,'抱歉','error');
+            }
+          }).catch(err=>{
+            this.$message.error(err);
+          }).finally(()=>{
+            this.$store.dispatch('loading',false);
+          })
+        }else{
+          // 修改
+          OPERATION.save(params).then(res=>{
+            if(res.code==200){
+              this.notify(res.msg,"success");
+              this.initPage();
+            }else{
+              this.notify(res.msg,'error');
+            }
+          }).catch(err=>{
+            this.$message.error(err);
+          }).finally(()=>{
+            this.$store.dispatch('loading',false);
+          })
+        }
       }
     }
   },

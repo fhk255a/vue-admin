@@ -8,6 +8,10 @@ export const config = [
     title:'快捷入口',
   },
   {
+    type:'notice',
+    title:'公告',
+  },
+  {
     type:'littleBanner',
     title:'小型广告轮播',
   },
@@ -56,6 +60,19 @@ export const getData =(type)=>{
             title:'',
           }
         ]
+      }
+    case 'notice':
+      return{
+        type:'notice',
+        data:{
+          background:'#fffbe8',
+          color:'#f08435',
+          content:'',
+          scroll:true,
+          icon:'volume-o',
+          close:true,
+          mode:true,
+        }
       }
     case 'littleBanner':
       return{

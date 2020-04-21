@@ -23,7 +23,7 @@
         <!-- 状态 -->
         <template slot="status" slot-scope="row">
           <div>
-            <el-switch :disabled="!isPass('product::details::status')" @change="changeStatus(row.scope)" v-model="row.scope.data.status"></el-switch>
+            <el-switch :disabled="isPass('product::details::status')" @change="changeStatus(row.scope.data)" v-model="row.scope.data.status"></el-switch>
           </div>
         </template>
         <!-- 操作 -->
